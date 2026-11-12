@@ -1,210 +1,173 @@
 <!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#6c5ce7">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Mi Agenda">
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"></head><body>
 <title>Mi Agenda</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#0e0f11">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap">
 <style>
+  /* Diseño: un solo tema oscuro, sobrio. Hierro y oro. Columna única centrada, bloques rectos. */
   :root {
-    --bg: #f4f2ff;
-    --card: #ffffff;
-    --text: #1f1d2b;
-    --muted: #7a7891;
-    --line: #e7e4f5;
-    --accent: #6c5ce7;
-    --accent-2: #a29bfe;
-    --ok: #20c997;
-    --shadow: 0 6px 20px rgba(80, 60, 180, .10);
-    --radius: 22px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #14131c;
-      --card: #201f2c;
-      --text: #f2f1fa;
-      --muted: #9b99b3;
-      --line: #2e2c3e;
-      --shadow: 0 6px 20px rgba(0, 0, 0, .35);
-    }
+    --bg: #0e0f11;
+    --surface: #17191c;
+    --surface-2: #1f2226;
+    --line: #2b2f34;
+    --text: #ecebe6;
+    --muted: #8d9096;
+    --gold: #c9a24a;
+    --gold-soft: #c9a24a22;
+    --ok: #c9a24a;
+    --danger: #b5533c;
+    --f-display: "Oswald", "Arial Narrow", Impact, sans-serif;
+    --f-body: "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --f-verse: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --r: 8px;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    user-select: none;
-    -webkit-user-select: none;
-  }
+  html, body { margin: 0; }
+  body { font-family: var(--f-body); background: var(--bg); color: var(--text); user-select: none; -webkit-user-select: none; }
   button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
-  .app { max-width: 560px; margin: 0 auto; padding: 16px 16px 120px; padding-top: max(16px, env(safe-area-inset-top)); }
+  button:focus-visible, [role=button]:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .app { max-width: 560px; margin: 0 auto; padding-block: 18px 130px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 
   /* Cabecera */
-  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-  .hello { font-size: 15px; color: var(--muted); }
-  .title { font-size: 26px; font-weight: 800; margin-top: 2px; text-transform: capitalize; }
-  .streak { background: var(--card); border-radius: 999px; padding: 10px 14px; font-weight: 800; box-shadow: var(--shadow); white-space: nowrap; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .eyebrow { font-family: var(--f-display); font-size: 13px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+  .title { font-family: var(--f-display); font-size: 34px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; line-height: 1.05; margin-top: 4px; }
+  .streak { text-align: right; border: 1px solid var(--line); border-radius: var(--r); padding: 8px 12px; background: var(--surface); }
+  .streak b { display: block; font-family: var(--f-display); font-size: 26px; line-height: 1; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .streak span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+
+  /* Versículo */
+  .verse { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 4px; margin-bottom: 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .verse .cross { font-family: var(--f-display); color: var(--gold); font-size: 26px; line-height: 1; flex: none; }
+  .verse q { font-family: var(--f-verse); font-style: italic; font-size: 20px; line-height: 1.35; quotes: "«" "»"; display: block; text-wrap: pretty; }
+  .verse cite { display: block; margin-top: 6px; font-style: normal; font-size: 12px; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
 
   /* Semana */
-  .week { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
-  .week .arrow { width: 34px; height: 60px; border-radius: 14px; font-size: 20px; color: var(--muted); flex: none; }
-  .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; flex: 1; }
-  .day {
-    background: var(--card); border-radius: 16px; padding: 8px 0; text-align: center;
-    box-shadow: var(--shadow); position: relative; transition: transform .15s;
-  }
+  .week { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
+  .week .arrow { width: 30px; height: 58px; font-size: 22px; color: var(--muted); flex: none; }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; flex: 1; }
+  .day { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 8px 0 7px; text-align: center; transition: transform .12s; }
   .day:active { transform: scale(.94); }
-  .day .dn { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
-  .day .dd { font-size: 18px; font-weight: 800; margin-top: 2px; }
-  .day .dot { width: 6px; height: 6px; border-radius: 50%; margin: 4px auto 0; background: transparent; }
-  .day .dot.some { background: var(--accent-2); }
-  .day .dot.all { background: var(--ok); }
-  .day.today .dd { color: var(--accent); }
-  .day.sel { background: var(--accent); color: #fff; }
-  .day.sel .dn, .day.sel .dd { color: #fff; }
-  .day.sel .dot.some, .day.sel .dot.all { background: #fff; }
+  .day .dn { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: .1em; }
+  .day .dd { font-family: var(--f-display); font-size: 19px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .day .dot { width: 14px; height: 3px; margin: 5px auto 0; background: transparent; }
+  .day .dot.some { background: var(--muted); }
+  .day .dot.all { background: var(--gold); }
+  .day.today .dd { color: var(--gold); }
+  .day.sel { background: var(--gold); border-color: var(--gold); color: #111; }
+  .day.sel .dn, .day.sel .dd { color: #111; }
+  .day.sel .dot.some, .day.sel .dot.all { background: #111; }
 
   /* Progreso */
-  .progress {
-    background: linear-gradient(135deg, var(--accent), #a55eea);
-    color: #fff; border-radius: var(--radius); padding: 18px; display: flex; align-items: center; gap: 18px;
-    box-shadow: 0 10px 30px rgba(108, 92, 231, .35); margin-bottom: 20px;
-  }
-  .ring { width: 84px; height: 84px; flex: none; position: relative; }
-  .ring svg { transform: rotate(-90deg); }
-  .ring .pct { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; font-size: 20px; }
-  .progress .msg { font-size: 19px; font-weight: 800; }
-  .progress .sub { opacity: .85; margin-top: 4px; font-size: 14px; }
+  .progress { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; margin-bottom: 22px; }
+  .progress .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .progress .msg { font-family: var(--f-display); font-size: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  .progress .pct { font-family: var(--f-display); font-size: 30px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .progress .track { height: 6px; background: var(--line); margin-top: 12px; border-radius: 2px; overflow: hidden; }
+  .progress .track i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .5s; }
+  .progress .sub { color: var(--muted); margin-top: 8px; font-size: 13px; }
 
   /* Secciones y tarjetas */
-  .section { margin-bottom: 18px; }
-  .section h3 { font-size: 15px; color: var(--muted); margin: 0 0 10px 4px; font-weight: 700; }
-  .goal {
-    display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
-    background: var(--card); border-radius: 20px; padding: 14px; margin-bottom: 10px;
-    box-shadow: var(--shadow); border-left: 6px solid var(--c); transition: transform .15s, opacity .3s;
-    position: relative; overflow: hidden;
-  }
-  .goal:active { transform: scale(.97); }
-  .goal .em { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 28px; flex: none;
-    background: color-mix(in srgb, var(--c) 18%, transparent); }
+  .section { margin-bottom: 20px; }
+  .section h3 { font-family: var(--f-display); font-size: 13px; color: var(--muted); margin: 0 0 10px 2px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+  .section h3::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .goal { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; margin-bottom: 8px; transition: transform .12s, border-color .2s; }
+  .goal:active { transform: scale(.98); }
+  .goal .em { width: 48px; height: 48px; border-radius: 6px; display: grid; place-items: center; font-size: 24px; flex: none; background: var(--surface-2); border: 1px solid var(--line); }
   .goal .info { flex: 1; min-width: 0; }
-  .goal .gt { font-weight: 700; font-size: 17px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .goal .gm { font-size: 13px; color: var(--muted); margin-top: 3px; }
-  .goal .bar { height: 6px; background: var(--line); border-radius: 6px; margin-top: 8px; overflow: hidden; }
-  .goal .bar i { display: block; height: 100%; background: var(--c); border-radius: 6px; transition: width .3s; }
-  .goal .check {
-    width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--line); flex: none;
-    display: grid; place-items: center; font-size: 20px; color: transparent; transition: all .2s;
-  }
-  .goal.done .check { background: var(--ok); border-color: var(--ok); color: #fff; }
-  .goal.done .gt { text-decoration: line-through; opacity: .55; }
-  .goal.done .em { filter: grayscale(.6); opacity: .7; }
-  .goal .more { width: 36px; height: 40px; font-size: 22px; color: var(--muted); flex: none; border-radius: 12px; }
+  .goal .gt { font-weight: 600; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .goal .gm { font-size: 12px; color: var(--muted); margin-top: 3px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+  .goal .bar { height: 3px; background: var(--line); margin-top: 8px; overflow: hidden; }
+  .goal .bar i { display: block; height: 100%; background: var(--gold); transition: width .3s; }
+  .goal .check { width: 34px; height: 34px; border-radius: 4px; border: 2px solid var(--line); flex: none; display: grid; place-items: center; font-size: 18px; font-weight: 700; color: transparent; transition: all .2s; }
+  .goal.done { border-color: var(--gold-soft); }
+  .goal.done .check { background: var(--gold); border-color: var(--gold); color: #111; }
+  .goal.done .gt { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--gold); }
+  .goal.done .em { opacity: .5; }
+  .goal .more { width: 32px; height: 40px; font-size: 20px; color: var(--muted); flex: none; border-radius: 6px; }
   .goal .more:active { background: var(--line); }
-  .pop { animation: pop .35s ease; }
-  @keyframes pop { 50% { transform: scale(1.05); } }
 
-  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty .big { font-size: 64px; }
-  .empty p { font-size: 17px; margin: 10px 0 0; }
+  .empty { text-align: center; padding: 36px 20px; color: var(--muted); border: 1px dashed var(--line); border-radius: var(--r); }
+  .empty .big { font-family: var(--f-display); font-size: 22px; color: var(--text); text-transform: uppercase; letter-spacing: .05em; }
+  .empty p { font-size: 15px; margin: 8px 0 0; line-height: 1.5; }
 
-  /* Botón flotante */
-  .fab {
-    position: fixed; left: 50%; transform: translateX(-50%); bottom: max(22px, env(safe-area-inset-bottom));
-    background: var(--accent); color: #fff; border-radius: 999px; padding: 18px 30px; font-size: 19px; font-weight: 800;
-    box-shadow: 0 12px 30px rgba(108, 92, 231, .5); display: flex; white-space: nowrap; align-items: center; gap: 10px; z-index: 10;
-    transition: transform .15s;
-  }
-  .fab:active { transform: translateX(-50%) scale(.94); }
-  .fab span { font-size: 26px; line-height: 1; }
+  /* Botón principal */
+  .fab { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--gold); color: #111; border-radius: var(--r); padding: 17px 28px; font-family: var(--f-display); font-size: 18px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; box-shadow: 0 10px 30px #000a; display: flex; align-items: center; gap: 10px; z-index: 10; white-space: nowrap; transition: transform .12s; }
+  .fab:active { transform: translateX(-50%) scale(.95); }
+  .fab span { font-size: 24px; line-height: 1; }
 
   /* Hoja inferior */
-  .overlay { position: fixed; inset: 0; background: rgba(10, 8, 30, .45); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 20; }
+  .overlay { position: fixed; inset: 0; background: #000b; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 20; }
   .overlay.open { opacity: 1; pointer-events: auto; }
-  .sheet {
-    position: fixed; left: 0; right: 0; bottom: 0; max-width: 560px; margin: 0 auto; z-index: 30;
-    background: var(--bg); border-radius: 28px 28px 0 0; padding: 10px 16px max(20px, env(safe-area-inset-bottom));
-    max-height: 88vh; overflow-y: auto; transform: translateY(105%); transition: transform .3s cubic-bezier(.2, .9, .3, 1);
-  }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; max-width: 560px; margin: 0 auto; z-index: 30; background: var(--bg); border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); max-height: 88vh; overflow-y: auto; transform: translateY(105%); transition: transform .3s cubic-bezier(.2, .9, .3, 1); }
   .sheet.open { transform: translateY(0); }
-  .grab { width: 44px; height: 5px; background: var(--line); border-radius: 5px; margin: 0 auto 12px; }
-  .sheet-head { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-  .sheet-head h2 { flex: 1; margin: 0; font-size: 21px; }
-  .icon-btn { width: 44px; height: 44px; border-radius: 14px; background: var(--card); font-size: 20px; box-shadow: var(--shadow); flex: none; }
+  .grab { width: 40px; height: 4px; background: var(--line); border-radius: 4px; margin: 0 auto 14px; }
+  .sheet-head { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .sheet-head h2 { flex: 1; margin: 0; font-family: var(--f-display); font-size: 22px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .icon-btn { width: 42px; height: 42px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); font-size: 18px; flex: none; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-  .tile {
-    background: var(--card); border-radius: 20px; padding: 16px 6px; text-align: center; box-shadow: var(--shadow);
-    border: 3px solid transparent; transition: transform .15s;
-  }
-  .tile:active { transform: scale(.93); }
-  .tile .te { font-size: 36px; display: block; }
-  .tile .tl { font-size: 14px; font-weight: 700; margin-top: 6px; display: block; }
-  .tile.cat { background: color-mix(in srgb, var(--c) 16%, var(--card)); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 6px 14px; text-align: center; transition: transform .12s, border-color .15s; }
+  .tile:active { transform: scale(.94); border-color: var(--gold); }
+  .tile .te { font-size: 30px; display: block; }
+  .tile .tl { font-size: 13px; font-weight: 600; margin-top: 8px; display: block; line-height: 1.25; }
+  .tile.cat .tl { font-family: var(--f-display); font-size: 15px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+  .tile .ts { display: block; font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-  .label { font-size: 14px; font-weight: 800; color: var(--muted); margin: 18px 4px 8px; text-transform: uppercase; letter-spacing: .04em; }
+  .label { font-family: var(--f-display); font-size: 13px; font-weight: 500; color: var(--muted); margin: 20px 2px 8px; text-transform: uppercase; letter-spacing: .2em; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip {
-    background: var(--card); border-radius: 16px; padding: 12px 14px; font-weight: 700; font-size: 15px;
-    box-shadow: var(--shadow); border: 3px solid transparent; transition: transform .12s;
-  }
-  .chip:active { transform: scale(.93); }
-  .chip.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--card)); }
-  .daychip { width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+  .chip { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; font-weight: 600; font-size: 14px; transition: transform .12s; }
+  .chip:active { transform: scale(.94); }
+  .chip.on { border-color: var(--gold); background: var(--gold-soft); color: var(--gold); }
+  .daychip { width: 44px; height: 44px; padding: 0; }
 
-  .preview {
-    display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 20px; padding: 14px;
-    box-shadow: var(--shadow); border-left: 6px solid var(--c);
-  }
-  .preview .em { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 30px; background: color-mix(in srgb, var(--c) 18%, transparent); }
-  .preview .gt { font-size: 19px; font-weight: 800; }
+  .preview { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--gold); border-radius: var(--r); padding: 12px; }
+  .preview .em { width: 52px; height: 52px; border-radius: 6px; display: grid; place-items: center; font-size: 26px; background: var(--surface-2); }
+  .preview .gt { font-size: 18px; font-weight: 700; }
 
   .stepper { display: flex; align-items: center; gap: 14px; }
-  .stepper button { width: 52px; height: 52px; border-radius: 16px; background: var(--card); box-shadow: var(--shadow); font-size: 26px; font-weight: 800; }
-  .stepper button:active { transform: scale(.92); }
-  .stepper .val { font-size: 26px; font-weight: 800; min-width: 70px; text-align: center; }
+  .stepper button { width: 52px; height: 52px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); font-size: 24px; font-weight: 700; }
+  .stepper button:active { border-color: var(--gold); }
+  .stepper .val { font-family: var(--f-display); font-size: 28px; font-weight: 600; min-width: 70px; text-align: center; font-variant-numeric: tabular-nums; }
 
-  .primary {
-    width: 100%; margin-top: 22px; background: var(--accent); color: #fff; border-radius: 20px; padding: 18px;
-    font-size: 19px; font-weight: 800; box-shadow: 0 10px 25px rgba(108, 92, 231, .4);
-  }
-  .primary:active { transform: scale(.97); }
-  .danger { background: #ff6b6b; box-shadow: 0 10px 25px rgba(255, 107, 107, .35); }
-  .secondary { background: var(--card); color: var(--text); box-shadow: var(--shadow); margin-top: 10px; }
+  .primary { width: 100%; margin-top: 22px; background: var(--gold); color: #111; border-radius: var(--r); padding: 17px; font-family: var(--f-display); font-size: 18px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+  .primary:active { transform: scale(.98); }
+  .danger { background: var(--danger); color: var(--text); }
+  .secondary { background: var(--surface); color: var(--text); border: 1px solid var(--line); margin-top: 10px; }
 
-  .text-input {
-    width: 100%; font: inherit; font-size: 18px; padding: 16px; border-radius: 18px; border: 3px solid var(--line);
-    background: var(--card); color: var(--text); outline: none; user-select: text; -webkit-user-select: text;
-  }
-  .text-input:focus { border-color: var(--accent); }
+  .text-input { width: 100%; font: inherit; font-size: 17px; padding: 15px; border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); color: var(--text); outline: none; user-select: text; -webkit-user-select: text; }
+  .text-input:focus { border-color: var(--gold); }
 
-  /* Confeti */
-  .confetti { position: fixed; top: -40px; font-size: 26px; pointer-events: none; z-index: 50; animation: fall linear forwards; }
-  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+  /* Día completado */
+  .victory { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 50% 45%, #c9a24a33, #0e0f11f2 60%); opacity: 0; pointer-events: none; transition: opacity .4s; }
+  .victory.show { opacity: 1; pointer-events: auto; }
+  .victory .box { text-align: center; max-width: 420px; }
+  .victory .big { font-family: var(--f-display); font-size: 44px; font-weight: 700; text-transform: uppercase; color: var(--gold); letter-spacing: .04em; line-height: 1; }
+  .victory q { display: block; font-family: var(--f-verse); font-style: italic; font-size: 22px; line-height: 1.35; margin-top: 18px; quotes: "«" "»"; }
+  .victory cite { display: block; font-style: normal; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+  .victory .primary { max-width: 260px; margin: 26px auto 0; display: block; }
 
-  .toast {
-    position: fixed; left: 50%; top: max(20px, env(safe-area-inset-top)); transform: translate(-50%, -150%);
-    background: var(--text); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-weight: 700; z-index: 60;
-    transition: transform .3s; white-space: nowrap;
-  }
+  .toast { position: fixed; left: 50%; top: calc(20px + env(safe-area-inset-top, 0px)); transform: translate(-50%, -160%); background: var(--surface-2); border: 1px solid var(--gold); color: var(--text); padding: 11px 18px; border-radius: var(--r); font-weight: 600; font-size: 14px; z-index: 60; transition: transform .3s; white-space: nowrap; }
   .toast.show { transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) { .sheet, .day, .goal, .victory, .toast { transition: none; } }
 </style>
-</head>
-<body>
+
 <div class="app">
   <header>
     <div>
-      <div class="hello" id="hello">¡Hola!</div>
+      <div class="eyebrow" id="hello">Disciplina</div>
       <div class="title" id="title">Hoy</div>
     </div>
-    <div class="streak" id="streak">🔥 0</div>
+    <div class="streak"><b id="streak">0</b><span>días firmes</span></div>
   </header>
+
+  <div class="verse">
+    <div class="cross">✝</div>
+    <div><q id="verseText"></q><cite id="verseRef"></cite></div>
+  </div>
 
   <div class="week">
     <button class="arrow" id="prevWeek" aria-label="Semana anterior">‹</button>
@@ -213,74 +176,114 @@
   </div>
 
   <div class="progress">
-    <div class="ring">
-      <svg width="84" height="84" viewBox="0 0 84 84">
-        <circle cx="42" cy="42" r="34" stroke="rgba(255,255,255,.25)" stroke-width="10" fill="none"/>
-        <circle id="ringFg" cx="42" cy="42" r="34" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round"
-                stroke-dasharray="213.6" stroke-dashoffset="213.6" style="transition: stroke-dashoffset .5s"/>
-      </svg>
-      <div class="pct" id="pct">0%</div>
-    </div>
-    <div>
-      <div class="msg" id="msg">¡A por el día!</div>
-      <div class="sub" id="sub">0 de 0 objetivos</div>
-    </div>
+    <div class="row"><div class="msg" id="msg">Empieza</div><div class="pct" id="pct">0%</div></div>
+    <div class="track"><i id="bar"></i></div>
+    <div class="sub" id="sub">0 de 0 objetivos</div>
   </div>
 
   <div id="list"></div>
 </div>
 
-<button class="fab" id="fab"><span>＋</span> Añadir objetivo</button>
+<button class="fab" id="fab"><span>＋</span> Nuevo objetivo</button>
 
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
+<div class="victory" id="victory"><div class="box">
+  <div class="big">Día ganado</div>
+  <q>Bien, buen siervo y fiel; sobre poco has sido fiel, sobre mucho te pondré.</q>
+  <cite>Mateo 25:21</cite>
+  <button class="primary" id="victoryClose">Amén</button>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------- Catálogo de objetivos (todo con botones) ---------- */
+/* ---------- Versículos (Reina-Valera 1960) ---------- */
+const VERSES = [
+  ['Todo lo puedo en Cristo que me fortalece.', 'Filipenses 4:13'],
+  ['Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo dondequiera que vayas.', 'Josué 1:9'],
+  ['Velad, estad firmes en la fe; portaos varonilmente, y esforzaos.', '1 Corintios 16:13'],
+  ['Porque no nos ha dado Dios espíritu de cobardía, sino de poder, de amor y de dominio propio.', '2 Timoteo 1:7'],
+  ['Y todo lo que hagáis, hacedlo de corazón, como para el Señor y no para los hombres.', 'Colosenses 3:23'],
+  ['Encomienda a Jehová tus obras, y tus pensamientos serán afirmados.', 'Proverbios 16:3'],
+  ['Pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán; caminarán, y no se fatigarán.', 'Isaías 40:31'],
+  ['Los pensamientos del diligente ciertamente tienden a la abundancia.', 'Proverbios 21:5'],
+  ['Hierro con hierro se aguza; y así el hombre aguza el rostro de su amigo.', 'Proverbios 27:17'],
+  ['No nos cansemos, pues, de hacer bien; porque a su tiempo segaremos, si no desmayamos.', 'Gálatas 6:9'],
+  ['Corramos con paciencia la carrera que tenemos por delante, puestos los ojos en Jesús.', 'Hebreos 12:1-2'],
+  ['Tus ojos miren lo recto, y diríjanse tus párpados hacia lo que tienes delante.', 'Proverbios 4:25'],
+  ['Mejor es el que tarda en airarse que el fuerte; y el que se enseñorea de su espíritu, que el que toma una ciudad.', 'Proverbios 16:32'],
+  ['Esforzaos y cobrad ánimo; no temáis, ni tengáis miedo, porque Jehová tu Dios es el que va contigo.', 'Deuteronomio 31:6'],
+];
+
+/* ---------- Catálogo de objetivos ---------- */
 const CATS = [
-  { id: 'sport', name: 'Deporte', emoji: '💪', color: '#ff6b6b', goals: [
-    ['🏃', 'Correr'], ['🏋️', 'Gimnasio'], ['🚶', 'Caminar 30 min'], ['🤸', 'Estirar'], ['🚴', 'Bici'], ['🏊', 'Nadar'], ['⚽', 'Fútbol'], ['🧗', 'Escalar'] ] },
-  { id: 'study', name: 'Estudio', emoji: '📚', color: '#4dabf7', goals: [
-    ['📖', 'Estudiar'], ['📝', 'Repasar apuntes'], ['✏️', 'Hacer deberes'], ['🗣️', 'Practicar idioma'], ['🎓', 'Ver una clase'], ['🧪', 'Preparar examen'] ] },
-  { id: 'work', name: 'Trabajo', emoji: '💼', color: '#845ef7', goals: [
-    ['⭐', 'Tarea importante'], ['📧', 'Revisar email'], ['👥', 'Reunión'], ['📞', 'Llamada'], ['🗓️', 'Planificar el día'], ['💻', 'Proyecto'] ] },
-  { id: 'health', name: 'Salud', emoji: '❤️', color: '#20c997', goals: [
-    ['💧', 'Beber agua', 8], ['💊', 'Medicación'], ['🍎', 'Comer fruta', 3], ['😴', 'Dormir 8 horas'], ['🧘', 'Meditar'], ['🥗', 'Comer sano'], ['🦷', 'Cepillarse', 3] ] },
-  { id: 'home', name: 'Hogar', emoji: '🏠', color: '#fab005', goals: [
-    ['🧹', 'Limpiar'], ['🛒', 'Hacer la compra'], ['🍳', 'Cocinar'], ['🧺', 'Poner lavadora'], ['🪴', 'Regar plantas'], ['🗑️', 'Sacar la basura'], ['🛏️', 'Hacer la cama'], ['🐶', 'Pasear al perro', 2] ] },
-  { id: 'social', name: 'Social', emoji: '🎉', color: '#f783ac', goals: [
-    ['📱', 'Llamar a la familia'], ['🍻', 'Quedar con amigos'], ['❤️', 'Cita'], ['🎂', 'Cumpleaños'], ['💌', 'Escribir a alguien'] ] },
-  { id: 'fun', name: 'Ocio', emoji: '🎨', color: '#ff922b', goals: [
-    ['📕', 'Leer'], ['🎸', 'Tocar música'], ['🎨', 'Dibujar'], ['🎮', 'Jugar'], ['🎬', 'Ver una peli'], ['📵', 'Desconectar del móvil'] ] },
-  { id: 'money', name: 'Dinero', emoji: '💰', color: '#51cf66', goals: [
-    ['🐷', 'Ahorrar'], ['📊', 'Revisar gastos'], ['🧾', 'Pagar facturas'], ['🚫', 'Cero caprichos'] ] },
+  { id: 'faith', name: 'Fe', sub: 'Primero Dios', emoji: '✝️', goals: [
+    ['🙏', 'Oración de la mañana'], ['📖', 'Leer la Biblia'], ['🕯️', 'Devocional'], ['⛪', 'Misa / culto'], ['🌙', 'Oración de la noche'], ['🤲', 'Dar gracias por 3 cosas'], ['🍞', 'Ayuno'] ] },
+  { id: 'body', name: 'Cuerpo', sub: 'Templo y fuerza', emoji: '🏋️', goals: [
+    ['🏋️', 'Entrenar fuerza'], ['🏃', 'Correr'], ['💪', 'Flexiones', 5], ['🧊', 'Ducha fría'], ['☀️', 'Sol 15 minutos'], ['😴', 'Dormir 8 horas'], ['🥩', 'Comer limpio'], ['💧', 'Beber agua', 8], ['🚶', '10.000 pasos'] ] },
+  { id: 'focus', name: 'Enfoque', sub: 'Mente afilada', emoji: '🎯', goals: [
+    ['🎯', 'Bloque de trabajo profundo', 3], ['📵', 'Sin redes sociales'], ['📚', 'Leer 20 páginas'], ['🧠', 'Estudiar 1 hora'], ['🗓️', 'Planificar el día'], ['📝', 'Escribir en el diario'] ] },
+  { id: 'discipline', name: 'Disciplina', sub: 'Dominio propio', emoji: '🛡️', goals: [
+    ['⏰', 'Levantarse temprano'], ['🛏️', 'Hacer la cama'], ['🛡️', 'Pureza'], ['🚫', 'Sin alcohol'], ['🍬', 'Sin azúcar'], ['🎮', 'Sin videojuegos'], ['🧹', 'Orden en casa'] ] },
+  { id: 'mission', name: 'Misión', sub: 'Trabajo y ambición', emoji: '⚔️', goals: [
+    ['⭐', 'Tarea más importante'], ['💼', 'Trabajo sin excusas'], ['📞', 'Llamada difícil'], ['🛠️', 'Aprender una habilidad'], ['🧭', 'Revisar mis metas'], ['🚀', 'Avanzar en mi proyecto'] ] },
+  { id: 'money', name: 'Finanzas', sub: 'Mayordomía', emoji: '💰', goals: [
+    ['🏦', 'Ahorrar'], ['📊', 'Revisar gastos'], ['📈', 'Invertir'], ['🧾', 'Pagar a tiempo'], ['🚫', 'Cero caprichos'], ['🎁', 'Diezmo / dar'] ] },
+  { id: 'family', name: 'Familia', sub: 'Hermandad', emoji: '🤝', goals: [
+    ['📱', 'Llamar a mis padres'], ['🏠', 'Tiempo con la familia'], ['❤️', 'Detalle con mi pareja'], ['🤝', 'Quedar con un hermano'], ['🙌', 'Servir a alguien'] ] },
 ];
 
 const TIMES = [
-  { id: 'morning', label: '☀️ Mañana' },
-  { id: 'afternoon', label: '🌤️ Tarde' },
-  { id: 'night', label: '🌙 Noche' },
-  { id: 'any', label: '⏰ Cuando sea' },
+  { id: 'morning', label: 'Mañana' },
+  { id: 'afternoon', label: 'Tarde' },
+  { id: 'night', label: 'Noche' },
+  { id: 'any', label: 'Durante el día' },
 ];
-const TIME_TITLES = { morning: '☀️ Mañana', afternoon: '🌤️ Tarde', night: '🌙 Noche', any: '⏰ En cualquier momento' };
+const TIME_TITLES = { morning: 'Mañana', afternoon: 'Tarde', night: 'Noche', any: 'Durante el día' };
 
 const REPEATS = [
-  { id: 'once', label: '1️⃣ Solo ese día' },
-  { id: 'daily', label: '🔁 Todos los días', days: [0, 1, 2, 3, 4, 5, 6] },
-  { id: 'weekdays', label: '💼 Lunes a viernes', days: [1, 2, 3, 4, 5] },
-  { id: 'weekend', label: '🏖️ Fin de semana', days: [0, 6] },
-  { id: 'custom', label: '✋ Elegir días' },
+  { id: 'once', label: 'Solo ese día' },
+  { id: 'daily', label: 'Todos los días', days: [0, 1, 2, 3, 4, 5, 6] },
+  { id: 'weekdays', label: 'Lunes a viernes', days: [1, 2, 3, 4, 5] },
+  { id: 'weekend', label: 'Fin de semana', days: [0, 6] },
+  { id: 'custom', label: 'Elegir días' },
 ];
 const DAY_SHORT = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
 const DAY_NAMES = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-const EMOJI_PICK = ['🎯', '⭐', '✅', '🔥', '💡', '🚀', '🎵', '📌', '🌱', '🧠', '✈️', '🎁', '🛠️', '📷', '🧩', '🏆'];
+const EMOJI_PICK = ['🎯', '✝️', '⚔️', '🛡️', '🏋️', '📖', '🔥', '🧭', '⛰️', '🦁', '🏆', '⭐', '🛠️', '📚', '💼', '🚀'];
 
 /* ---------- Almacenamiento ---------- */
 const KEY = 'mi-agenda-v1';
 let db = { goals: [], done: {} };
 try { const raw = localStorage.getItem(KEY); if (raw) db = Object.assign(db, JSON.parse(raw)); } catch (e) {}
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} };
+let cloudDoc = null, writing = false, pending = false;
+async function pushCloud() {
+  if (!cloudDoc) return;
+  if (writing) { pending = true; return; }
+  writing = true;
+  try { await cloudDoc.set({ state: JSON.stringify(db), savedAt: Date.now() }); } catch (e) {}
+  writing = false;
+  if (pending) { pending = false; pushCloud(); }
+}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} pushCloud(); };
+// Guardado en tu cuenta (se sincroniza entre dispositivos); si no está disponible, queda en este navegador
+(async () => {
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [store, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (!store || !user) return;
+    const uid = await user.id();
+    if (!uid) return;
+    const ref = store.doc('data/users/' + uid + '/agenda');
+    const snap = await ref.get();
+    cloudDoc = ref;
+    if (snap.exists && snap.data().state) {
+      db = Object.assign({ goals: [], done: {} }, JSON.parse(snap.data().state));
+      try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {}
+      render();
+    } else if (db.goals.length) pushCloud();
+  } catch (e) {}
+})();
 
 /* ---------- Fechas ---------- */
 const pad = n => String(n).padStart(2, '0');
@@ -305,16 +308,12 @@ function goalsFor(dateStr) {
 }
 const countFor = (g, d) => (db.done[d] && db.done[d][g.id]) || 0;
 const isDone = (g, d) => countFor(g, d) >= (g.target || 1);
-
 function dayStats(d) {
   const gs = goalsFor(d);
-  const done = gs.filter(g => isDone(g, d)).length;
-  return { total: gs.length, done };
+  return { total: gs.length, done: gs.filter(g => isDone(g, d)).length };
 }
-
 function streak() {
   let n = 0, d = new Date();
-  // si hoy aún no está completo, empezamos a contar desde ayer
   const t = dayStats(ymd(d));
   if (!(t.total && t.done === t.total)) d = addDays(d, -1);
   for (let i = 0; i < 365; i++) {
@@ -325,19 +324,24 @@ function streak() {
   }
   return n;
 }
+function verseFor(dateStr) {
+  const n = Math.floor(parse(dateStr).getTime() / 864e5);
+  return VERSES[((n % VERSES.length) + VERSES.length) % VERSES.length];
+}
 
 /* ---------- Render principal ---------- */
 const $ = id => document.getElementById(id);
 
 function render() {
-  const now = new Date(), h = now.getHours();
-  $('hello').textContent = h < 13 ? '☀️ ¡Buenos días!' : h < 20 ? '🌤️ ¡Buenas tardes!' : '🌙 ¡Buenas noches!';
+  const h = new Date().getHours();
+  $('hello').textContent = h < 13 ? 'Gana la mañana' : h < 20 ? 'Mantén el rumbo' : 'Cierra el día con honra';
   const sd = parse(selected);
-  $('title').textContent = selected === TODAY ? 'Hoy' :
-    sd.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
-  $('streak').textContent = `🔥 ${streak()}`;
+  $('title').textContent = selected === TODAY ? 'Hoy' : sd.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
+  $('streak').textContent = streak();
+  const [vt, vr] = verseFor(selected);
+  $('verseText').textContent = vt;
+  $('verseRef').textContent = vr;
 
-  // semana
   const days = $('days'); days.innerHTML = '';
   for (let i = 0; i < 7; i++) {
     const d = addDays(weekStart, i), ds = ymd(d), st = dayStats(ds);
@@ -349,20 +353,18 @@ function render() {
     days.appendChild(b);
   }
 
-  // progreso
   const st = dayStats(selected);
   const pct = st.total ? Math.round(st.done / st.total * 100) : 0;
   $('pct').textContent = pct + '%';
-  $('ringFg').style.strokeDashoffset = 213.6 * (1 - pct / 100);
-  $('sub').textContent = `${st.done} de ${st.total} objetivo${st.total === 1 ? '' : 's'}`;
-  $('msg').textContent = !st.total ? '¡Añade tu primer objetivo!' :
-    pct === 100 ? '¡Día perfecto! 🏆' : pct >= 50 ? '¡Ya casi lo tienes! 💪' : pct > 0 ? '¡Buen comienzo! 🚀' : '¡A por el día! ✨';
+  $('bar').style.width = pct + '%';
+  $('sub').textContent = `${st.done} de ${st.total} objetivo${st.total === 1 ? '' : 's'} cumplido${st.total === 1 ? '' : 's'}`;
+  $('msg').textContent = !st.total ? 'Define tu misión' :
+    pct === 100 ? 'Misión cumplida' : pct >= 50 ? 'No aflojes' : pct > 0 ? 'En marcha' : 'El día no se gana solo';
 
-  // lista
   const list = $('list'); list.innerHTML = '';
   const gs = goalsFor(selected);
   if (!gs.length) {
-    list.innerHTML = `<div class="empty"><div class="big">🌈</div><p>Nada por aquí todavía.<br>Toca <b>＋ Añadir objetivo</b> abajo.</p></div>`;
+    list.innerHTML = `<div class="empty"><div class="big">Sin objetivos</div><p>Un hombre sin plan es un barco sin timón.<br>Pulsa <b>Nuevo objetivo</b> y elige con un toque.</p></div>`;
     return;
   }
   for (const t of ['morning', 'afternoon', 'night', 'any']) {
@@ -388,8 +390,8 @@ function goalCard(g) {
   const c = countFor(g, selected), target = g.target || 1, done = c >= target;
   const card = document.createElement('div');
   card.className = 'goal' + (done ? ' done' : '');
-  card.style.setProperty('--c', g.color);
   card.setAttribute('role', 'button');
+  card.tabIndex = 0;
   card.innerHTML = `
     <div class="em">${g.emoji}</div>
     <div class="info">
@@ -400,10 +402,8 @@ function goalCard(g) {
     <div class="check">✓</div>
     <button class="more" aria-label="Opciones">⋯</button>`;
   card.querySelector('.gt').textContent = g.title;
-  card.onclick = e => {
-    if (e.target.closest('.more')) { openOptions(g); return; }
-    toggle(g);
-  };
+  card.onclick = e => { if (e.target.closest('.more')) { openOptions(g); return; } toggle(g); };
+  card.onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === card) { e.preventDefault(); toggle(g); } };
   return card;
 }
 
@@ -416,7 +416,7 @@ function toggle(g) {
   vibrate(15);
   const after = dayStats(selected);
   render();
-  if (after.total && after.done === after.total && before.done !== before.total) celebrate();
+  if (after.total && after.done === after.total && before.done !== before.total) victory();
 }
 
 /* ---------- Hoja inferior ---------- */
@@ -426,93 +426,80 @@ function openSheet(html) {
   $('overlay').classList.add('open');
   $('sheet').classList.add('open');
 }
-function closeSheet() {
-  $('overlay').classList.remove('open');
-  $('sheet').classList.remove('open');
-}
+function closeSheet() { $('overlay').classList.remove('open'); $('sheet').classList.remove('open'); }
 $('overlay').onclick = closeSheet;
 
 let draft = null;
 
-// Paso 1: elegir categoría
 function stepCategory() {
   openSheet(`
-    <div class="sheet-head"><h2>¿Qué tipo de objetivo?</h2><button class="icon-btn" data-close>✕</button></div>
+    <div class="sheet-head"><h2>Área de tu vida</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
     <div class="grid">${CATS.map(c => `
-      <button class="tile cat" style="--c:${c.color}" data-cat="${c.id}">
-        <span class="te">${c.emoji}</span><span class="tl">${c.name}</span>
+      <button class="tile cat" data-cat="${c.id}">
+        <span class="te">${c.emoji}</span><span class="tl">${c.name}</span><span class="ts">${c.sub}</span>
       </button>`).join('')}
-      <button class="tile" data-custom><span class="te">✍️</span><span class="tl">Otro</span></button>
+      <button class="tile cat" data-custom><span class="te">✍️</span><span class="tl">Otro</span><span class="ts">Escríbelo tú</span></button>
     </div>`);
   bind('[data-close]', closeSheet);
   bind('[data-cat]', el => stepGoal(CATS.find(c => c.id === el.dataset.cat)));
   bind('[data-custom]', () => stepCustom());
 }
 
-// Paso 2: elegir objetivo de la categoría
 function stepGoal(cat) {
   openSheet(`
-    <div class="sheet-head"><button class="icon-btn" data-back>‹</button><h2>${cat.emoji} ${cat.name}</h2><button class="icon-btn" data-close>✕</button></div>
+    <div class="sheet-head"><button class="icon-btn" data-back aria-label="Atrás">‹</button><h2>${cat.name}</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
     <div class="grid">${cat.goals.map((g, i) => `
-      <button class="tile cat" style="--c:${cat.color}" data-i="${i}">
-        <span class="te">${g[0]}</span><span class="tl">${g[1]}</span>
-      </button>`).join('')}
+      <button class="tile" data-i="${i}"><span class="te">${g[0]}</span><span class="tl">${g[1]}</span></button>`).join('')}
       <button class="tile" data-custom><span class="te">✍️</span><span class="tl">Otro</span></button>
     </div>`);
   bind('[data-back]', stepCategory);
   bind('[data-close]', closeSheet);
   bind('[data-i]', el => {
     const g = cat.goals[+el.dataset.i];
-    stepDetails({ emoji: g[0], title: g[1], color: cat.color, target: g[2] || 1 });
+    stepDetails({ emoji: g[0], title: g[1], color: '#c9a24a', target: g[2] || 1 });
   });
   bind('[data-custom]', () => stepCustom(cat));
 }
 
-// Opcional: escribir un objetivo propio
 function stepCustom(cat) {
-  const color = cat ? cat.color : '#6c5ce7';
   let emoji = cat ? cat.emoji : '🎯';
   openSheet(`
-    <div class="sheet-head"><button class="icon-btn" data-back>‹</button><h2>✍️ Objetivo propio</h2><button class="icon-btn" data-close>✕</button></div>
-    <input class="text-input" id="customTitle" maxlength="40" placeholder="Ej: Aprender a cocinar paella">
-    <div class="label">Elige un icono</div>
+    <div class="sheet-head"><button class="icon-btn" data-back aria-label="Atrás">‹</button><h2>Objetivo propio</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+    <input class="text-input" id="customTitle" maxlength="40" placeholder="Ej: Terminar el informe">
+    <div class="label">Icono</div>
     <div class="chips">${EMOJI_PICK.map(e => `<button class="chip ${e === emoji ? 'on' : ''}" data-e="${e}" style="font-size:22px;padding:8px 12px">${e}</button>`).join('')}</div>
-    <button class="primary" data-next>Siguiente ›</button>`);
+    <button class="primary" data-next>Siguiente</button>`);
   bind('[data-back]', () => cat ? stepGoal(cat) : stepCategory());
   bind('[data-close]', closeSheet);
-  bind('[data-e]', el => {
-    emoji = el.dataset.e;
-    document.querySelectorAll('[data-e]').forEach(b => b.classList.toggle('on', b === el));
-  });
+  bind('[data-e]', el => { emoji = el.dataset.e; document.querySelectorAll('[data-e]').forEach(b => b.classList.toggle('on', b === el)); });
   bind('[data-next]', () => {
     const title = $('customTitle').value.trim();
-    if (!title) { $('customTitle').focus(); toast('Escribe un nombre corto ✏️'); return; }
-    stepDetails({ emoji, title, color, target: 1 });
+    if (!title) { $('customTitle').focus(); toast('Escribe un nombre corto'); return; }
+    stepDetails({ emoji, title, color: '#c9a24a', target: 1 });
   });
 }
 
-// Paso 3: cuándo y cada cuánto (todo con botones, con valores por defecto)
 function stepDetails(base) {
   draft = Object.assign({ time: guessTime(), repeat: 'once', days: [parse(selected).getDay()] }, base);
   const paint = () => {
     openSheet(`
-      <div class="sheet-head"><button class="icon-btn" data-back>‹</button><h2>Casi listo</h2><button class="icon-btn" data-close>✕</button></div>
-      <div class="preview" style="--c:${draft.color}"><div class="em">${draft.emoji}</div><div class="gt"></div></div>
+      <div class="sheet-head"><button class="icon-btn" data-back aria-label="Atrás">‹</button><h2>Fija el compromiso</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+      <div class="preview"><div class="em">${draft.emoji}</div><div class="gt"></div></div>
 
-      <div class="label">¿Cuándo?</div>
+      <div class="label">Cuándo</div>
       <div class="chips">${TIMES.map(t => `<button class="chip ${draft.time === t.id ? 'on' : ''}" data-time="${t.id}">${t.label}</button>`).join('')}</div>
 
-      <div class="label">¿Se repite?</div>
+      <div class="label">Repetición</div>
       <div class="chips">${REPEATS.map(r => `<button class="chip ${draft.repeat === r.id ? 'on' : ''}" data-rep="${r.id}">${r.label}</button>`).join('')}</div>
       ${draft.repeat === 'custom' ? `<div class="chips" style="margin-top:10px">${[1, 2, 3, 4, 5, 6, 0].map(d =>
         `<button class="chip daychip ${draft.days.includes(d) ? 'on' : ''}" data-day="${d}">${DAY_SHORT[d]}</button>`).join('')}</div>` : ''}
 
-      <div class="label">¿Cuántas veces al día?</div>
+      <div class="label">Veces al día</div>
       <div class="stepper">
-        <button data-step="-1">−</button><div class="val">${draft.target}×</div><button data-step="1">＋</button>
+        <button data-step="-1" aria-label="Menos">−</button><div class="val">${draft.target}×</div><button data-step="1" aria-label="Más">＋</button>
       </div>
 
-      <button class="primary" data-save>✓ Añadir objetivo</button>`);
+      <button class="primary" data-save>Me comprometo</button>`);
     document.querySelector('.preview .gt').textContent = draft.title;
     bind('[data-back]', stepCategory);
     bind('[data-close]', closeSheet);
@@ -542,7 +529,7 @@ function guessTime() {
 }
 
 function saveDraft() {
-  if (draft.repeat !== 'once' && !draft.days.length) { toast('Elige al menos un día 📅'); return; }
+  if (draft.repeat !== 'once' && !draft.days.length) { toast('Elige al menos un día'); return; }
   const g = {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
     emoji: draft.emoji, title: draft.title, color: draft.color, time: draft.time, target: draft.target,
@@ -550,30 +537,23 @@ function saveDraft() {
     date: selected, from: selected, days: draft.days.slice().sort(), skip: [],
   };
   db.goals.push(g);
-  save();
-  closeSheet();
-  render();
-  vibrate(25);
-  toast(`${g.emoji} ¡Objetivo añadido!`);
+  save(); closeSheet(); render(); vibrate(25);
+  toast('Compromiso fijado. Cúmplelo.');
 }
 
-// Opciones de un objetivo
 function openOptions(g) {
   const recurring = g.repeat !== 'once';
   openSheet(`
-    <div class="sheet-head"><h2>${g.emoji} <span id="optTitle"></span></h2><button class="icon-btn" data-close>✕</button></div>
-    ${(g.target || 1) > 1 ? `<button class="primary secondary" data-reset>↺ Poner contador a 0</button>` : ''}
-    ${recurring ? `<button class="primary secondary" data-skip>⏭️ Saltar solo este día</button>` : ''}
-    <button class="primary danger" data-del>🗑️ ${recurring ? 'Borrar para siempre' : 'Borrar objetivo'}</button>
+    <div class="sheet-head"><h2 id="optTitle"></h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+    ${(g.target || 1) > 1 ? `<button class="primary secondary" data-reset>Poner contador a 0</button>` : ''}
+    ${recurring ? `<button class="primary secondary" data-skip>Saltar solo este día</button>` : ''}
+    <button class="primary danger" data-del>${recurring ? 'Borrar para siempre' : 'Borrar objetivo'}</button>
     <button class="primary secondary" data-close>Cancelar</button>`);
-  $('optTitle').textContent = g.title;
+  $('optTitle').textContent = g.emoji + ' ' + g.title;
   bind('[data-close]', closeSheet);
   bind('[data-reset]', () => { if (db.done[selected]) db.done[selected][g.id] = 0; save(); closeSheet(); render(); });
-  bind('[data-skip]', () => { g.skip = [...(g.skip || []), selected]; save(); closeSheet(); render(); toast('⏭️ Saltado hoy'); });
-  bind('[data-del]', () => {
-    db.goals = db.goals.filter(x => x.id !== g.id);
-    save(); closeSheet(); render(); toast('🗑️ Borrado');
-  });
+  bind('[data-skip]', () => { g.skip = [...(g.skip || []), selected]; save(); closeSheet(); render(); toast('Saltado este día'); });
+  bind('[data-del]', () => { db.goals = db.goals.filter(x => x.id !== g.id); save(); closeSheet(); render(); toast('Objetivo borrado'); });
 }
 
 /* ---------- Utilidades ---------- */
@@ -584,21 +564,8 @@ function toast(text) {
   const t = $('toast'); t.textContent = text; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
 }
-function celebrate() {
-  const bits = ['🎉', '⭐', '🏆', '✨', '🎊', '💪', '🔥'];
-  for (let i = 0; i < 40; i++) {
-    const s = document.createElement('div');
-    s.className = 'confetti';
-    s.textContent = bits[i % bits.length];
-    s.style.left = Math.random() * 100 + 'vw';
-    s.style.animationDuration = 1.8 + Math.random() * 1.6 + 's';
-    s.style.animationDelay = Math.random() * .5 + 's';
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 4200);
-  }
-  vibrate([30, 60, 30]);
-  toast('🏆 ¡Todos los objetivos cumplidos!');
-}
+function victory() { $('victory').classList.add('show'); vibrate([40, 80, 40]); }
+$('victoryClose').onclick = () => $('victory').classList.remove('show');
 
 $('fab').onclick = stepCategory;
 $('prevWeek').onclick = () => { weekStart = addDays(weekStart, -7); render(); };
@@ -606,5 +573,5 @@ $('nextWeek').onclick = () => { weekStart = addDays(weekStart, 7); render(); };
 
 render();
 </script>
-</body>
-</html>
+
+</body></html>

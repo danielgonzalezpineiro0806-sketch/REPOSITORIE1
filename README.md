@@ -1,6 +1,6 @@
 # 🎯 Mi Agenda
 
-Agenda personal para añadir objetivos **tocando botones**, casi sin escribir.
+Agenda de disciplina, fe y enfoque para añadir objetivos **tocando botones**, casi sin escribir. Estilo oscuro y sobrio con versículo bíblico diario.
 
 ## Cómo se usa
 
