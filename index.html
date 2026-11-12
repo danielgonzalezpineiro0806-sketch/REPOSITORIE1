@@ -155,6 +155,7 @@
   .label { font-family: var(--f-display); font-size: 13px; font-weight: 500; color: var(--muted); margin: 20px 2px 8px; text-transform: uppercase; letter-spacing: .2em; }
   .label.first { margin-top: 0; }
   .hint { color: var(--muted); font-size: 13px; line-height: 1.45; margin: 0 2px 12px; }
+  .sync { text-align: center; font-size: 12px; margin: 20px 0 0; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; font-weight: 600; font-size: 14px; transition: transform .12s; }
   .chip:active { transform: scale(.94); }
@@ -312,6 +313,7 @@
       </div>
     </header>
     <div id="prog"></div>
+    <p class="hint sync" id="sync"></p>
   </section>
 </div>
 
@@ -539,13 +541,18 @@ function adopt(obj) {
   }
 }
 function saveLocal() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
-let cloudDoc = null, writing = false, pending = false;
+let cloudDoc = null, cloudOk = false, writing = false, pending = false;
+// Dice dónde están guardados los datos, para que no haya dudas
+function renderSync() {
+  $('sync').textContent = cloudOk ? 'Tus datos se guardan en tu cuenta de Claude y en este dispositivo.' : 'Tus datos se guardan solo en este dispositivo.';
+}
 async function pushCloud() {
   if (!cloudDoc) return;
   if (writing) { pending = true; return; }
   writing = true;
-  try { await cloudDoc.set({ state: JSON.stringify(db), savedAt: db.t }); } catch (e) {}
+  try { await cloudDoc.set({ state: JSON.stringify(db), savedAt: db.t }); cloudOk = true; } catch (e) { cloudOk = false; }
   writing = false;
+  renderSync();
   if (pending) { pending = false; pushCloud(); }
 }
 function save() { db.t = Date.now(); saveLocal(); pushCloud(); }
@@ -559,7 +566,7 @@ async function initCloud() {
     if (!uid) return;
     const ref = store.doc('data/users/' + uid + '/agenda');
     const snap = await ref.get();
-    cloudDoc = ref;
+    cloudDoc = ref; cloudOk = true; renderSync();
     if (snap.exists && snap.data().state) {
       const remote = JSON.parse(snap.data().state);
       if (!db.goals.length || (remote.t || 0) >= (db.t || 0)) { adopt(remote); saveLocal(); render(); }
@@ -1297,6 +1304,7 @@ window.addEventListener('hashchange', () => { const v = location.hash === '#prog
 
 try { const raw = localStorage.getItem(KEY); if (raw) adopt(JSON.parse(raw)); else adopt({}); } catch (e) { adopt({}); }
 setView(location.hash === '#progreso' ? 'prog' : 'hoy');
+renderSync();
 initCloud();
 </script>
 
