@@ -21,9 +21,17 @@ Abre `index.html` en el navegador (móvil u ordenador). En el móvil, con «Aña
 - **Propósito de la semana:** una sola cosa para toda la semana. El domingo se revisa si se cumplió.
 - **Planes de lectura:** Proverbios en un mes y los cuatro Evangelios, con el capítulo que toca cada día.
 
+### El soldado
+
+Arriba a la derecha hay un soldado que evoluciona con tus puntos. Tiene doce formas y en cada rango recibe una pieza de la armadura de Efesios 6: cinturón de la verdad, calzado de la paz, coraza de justicia, escudo de la fe, yelmo de la salvación y espada del Espíritu; después manto, cresta, armas de la luz, estandarte y corona de la vida.
+
+- Cada día suma hasta 100 puntos según lo cumplido, 50 más si se cumple todo y hasta 50 extra por racha.
+- Cada rango tiene tres galones intermedios.
+- El último rango, Vencedor, pide 72.000 puntos: un año entero de días ganados.
+
 ### Progreso
 
-La pestaña **Progreso** muestra el rango (de Recluta a Roca), la racha actual y la mejor, los días ganados, un mapa de las últimas 15 semanas, el porcentaje de cada hábito en 30 días, las marcas registradas y el historial de propósitos.
+La pestaña **Progreso** muestra el soldado con su rango y las doce formas, la racha actual y la mejor, los días ganados, un mapa de las últimas 15 semanas, el porcentaje de cada hábito en 30 días, las marcas registradas y el historial de propósitos.
 
 ## Datos
 
