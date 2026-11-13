@@ -637,14 +637,15 @@ const CROSS = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><
 const PLAY = '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>';
 
 /* ---------- El soldado: 12 formas, pieza a pieza (Efesios 6) ----------
-   Figura de proporción real (siete cabezas y media), con volumen por degradados en vez de contorno. */
+   Figura en postura natural (peso en una pierna, mano en el cinturón), modelada con luz lateral
+   y sombras en vez de contornos: el volumen lo dan los degradados y las sombras propias. */
 const SM = {                      // material: [base, luz, sombra]
-  skin: ['#c4946c', '#e6bd97', '#7d5437'], linen: ['#8d8473', '#b0a794', '#544d40'],
-  crimson: ['#8b2a25', '#bd4a41', '#451210'], leather: ['#6a4930', '#93693f', '#352313'],
-  iron: ['#8c96a1', '#eef2f5', '#444d57'], gold: ['#c0963a', '#fbeaa8', '#6f541a'],
-  white: ['#dcd9cf', '#fbfaf5', '#96928a'], wood: ['#79593a', '#9b7650', '#432e1c'],
-  hair: ['#2b211b', '#52402f', '#0f0b08'], blade: ['#c5ccd3', '#ffffff', '#6f7984'],
-  light: ['#f4e8c2', '#fffdf0', '#b8964a'],
+  skin: ['#b88a66', '#dcb18c', '#644330'], linen: ['#8a8170', '#aba28e', '#4a4438'],
+  crimson: ['#7f2622', '#ab4138', '#380e0c'], leather: ['#5f422b', '#86623c', '#2a1b0f'],
+  iron: ['#7f8993', '#d8dee4', '#383f48'], gold: ['#b08a36', '#efd994', '#594214'],
+  white: ['#d6d3c8', '#f7f5ee', '#8c887e'], wood: ['#735437', '#94704b', '#3b2818'],
+  hair: ['#261d17', '#4a392b', '#0d0906'], blade: ['#b9c1c9', '#f6f8fa', '#5f6973'],
+  light: ['#f0e3b8', '#fffdf0', '#ab8a40'],
 };
 let soldierSeq = 0;
 
@@ -652,248 +653,240 @@ function soldierSVG(level, opt) {
   opt = opt || {};
   const L = Math.max(1, Math.min(12, level));
   const b = L <= 2 ? 0 : L <= 6 ? 1 : 2;                       // complexión: crece con el rango
-  const sh = [30, 34, 38][b], ww = [17, 18.5, 20][b], hw = [19, 20.5, 22][b];
-  const au = [9.5, 11.5, 13.5][b], af = [7.5, 8.5, 9.5][b], tw = [13.5, 15, 16.5][b], cw = [10, 11, 12][b];
-  const nw = [5.5, 6.3, 7.2][b], lo = [10, 10.8, 11.6][b];
-  const cx = 100, golden = L >= 10;
+  const golden = L >= 10;
   const metal = golden ? 'gold' : 'iron', trim = L >= 9 ? 'gold' : metal;
   const tunic = L >= 6 ? 'crimson' : 'linen', cloak = L >= 12 ? 'white' : 'crimson';
   const id = 'sg' + (++soldierSeq);
   const n = v => Math.round(v * 10) / 10;
   const used = {};
   const F = m => { used[m] = 1; return `url(#${id}${m})`; };
-  // forma con volumen: relleno degradado y un filo fino del tono oscuro del material
-  const S = (d, m, extra) => `<path d="${d}" fill="${F(m)}" stroke="${SM[m][2]}" stroke-width=".7" stroke-linejoin="round" ${extra || ''}/>`;
+  const S = (d, m, extra) => `<path d="${d}" fill="${F(m)}" stroke="${SM[m][2]}" stroke-width=".5" stroke-opacity=".7" stroke-linejoin="round" ${extra || ''}/>`;
   const Ln = (d, color, w, o) => `<path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${o ? ` opacity="${o}"` : ''}/>`;
-  const Sh = (d, o) => `<path d="${d}" fill="#000" opacity="${o}"/>`;                // sombra
-  const Hi = (d, o) => `<path d="${d}" fill="#fff" opacity="${o}"/>`;                // brillo
-  const both = html => html + `<g transform="translate(200 0) scale(-1 1)">${html}</g>`;
+  const Sh = (d, o) => `<path d="${d}" fill="#000" opacity="${o}"/>`;                // sombra propia
+  const Hi = (d, o) => `<path d="${d}" fill="#fff" opacity="${o}"/>`;                // luz
+  const mir = d => d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (_, x, y) => n(200 - x) + ',' + y);   // espejo respecto al eje del cuerpo
 
-  let back = '', fig = '';
+  let back = '', body = '', head = '';
 
   /* --- Detrás: luz, rayos, sombra en el suelo --- */
   if (golden) {
     const r = L >= 12 ? 150 : L >= 11 ? 132 : 112, o = L >= 12 ? 0.5 : L >= 11 ? 0.4 : 0.28;
-    back += `<radialGradient id="${id}aura"><stop offset="0" stop-color="#edd384" stop-opacity="${o}"/><stop offset=".55" stop-color="#c9a24a" stop-opacity="${n(o / 3)}"/><stop offset="1" stop-color="#c9a24a" stop-opacity="0"/></radialGradient>`;
     let rays = '';
-    if (L >= 12) for (let i = 0; i < 12; i++) rays += `<polygon points="100,118 94,-60 106,-60" fill="#edd384" opacity=".13" transform="rotate(${i * 30} 100 118)"/>`;
-    fig += '';
-    back = `<defs>${back}</defs>` + (rays ? `<g class="s-rays">${rays}</g>` : '') + `<circle class="s-aura" cx="100" cy="118" r="${r}" fill="url(#${id}aura)"/>`;
+    if (L >= 12) for (let i = 0; i < 12; i++) rays += `<polygon points="100,118 94,-60 106,-60" fill="#edd384" opacity=".12" transform="rotate(${i * 30} 100 118)"/>`;
+    back += `<radialGradient id="${id}aura"><stop offset="0" stop-color="#edd384" stop-opacity="${o}"/><stop offset=".55" stop-color="#c9a24a" stop-opacity="${n(o / 3)}"/><stop offset="1" stop-color="#c9a24a" stop-opacity="0"/></radialGradient>` +
+      (rays ? `<g class="s-rays">${rays}</g>` : '') + `<circle class="s-aura" cx="100" cy="118" r="${r}" fill="url(#${id}aura)"/>`;
   }
-  back += `<ellipse cx="100" cy="262.5" rx="${34 + b * 4}" ry="4.6" fill="#000" opacity=".5"/>`;
+  back += `<ellipse cx="103" cy="262.6" rx="${40 + b * 3}" ry="4.4" fill="#000" opacity=".55"/>`;
 
-  /* --- Estandarte --- */
+  /* --- Estandarte, a la espalda --- */
   if (L >= 11) {
     const flag = L >= 12 ? 'white' : 'crimson', mark = L >= 12 ? SM.crimson[0] : SM.gold[1];
-    fig += Ln('M130,128 L134.5,-33', SM.wood[2], 3.4) + Ln('M130,128 L134.5,-33', SM.wood[1], 1.3, 0.8) +
-      `<circle cx="134.6" cy="-34.5" r="2.7" fill="${F('gold')}" stroke="${SM.gold[2]}" stroke-width=".6"/>` +
-      Ln('M123.5,-27 L158.5,-27', SM.gold[2], 3) + Ln('M123.5,-27.4 L158.5,-27.4', SM.gold[1], 1.1) +
-      `<g class="s-flag">` + S('M126,-26 L156,-26 L156,13 L148.5,6 L141,14 L133.5,6 L126,13 Z', flag) +
-      Sh('M146,-26 L156,-26 L156,13 L148.5,6 L146,8 Z', 0.16) +
-      `<rect x="139.2" y="-20.5" width="3.6" height="21" fill="${mark}"/><rect x="133.6" y="-14.6" width="14.8" height="3.6" fill="${mark}"/></g>`;
+    body += Ln('M129,120 L135,-32', SM.wood[2], 3.2) + Ln('M128.6,120 L134.6,-32', SM.wood[1], 1, 0.6) +
+      `<circle cx="135.1" cy="-33.6" r="2.6" fill="${F('gold')}"/>` +
+      Ln('M124,-26 L159,-27', SM.gold[2], 2.8) + Ln('M124,-26.5 L159,-27.5', SM.gold[1], 1) +
+      `<g class="s-flag">` + S('M126.5,-25 L156.5,-26 C157.5,-12 156,0 157,13 L149.5,6.5 L142,14.5 L134.5,6.5 L127,13.5 C126,0 127.5,-12 126.5,-25 Z', flag) +
+      Sh('M145,-25.6 L156.5,-26 C157.5,-12 156,0 157,13 L149.5,6.5 L146.5,9.6 C147.5,-2 146,-14 145,-25.6 Z', 0.2) + Sh('M132,-25.2 L135,-25.3 C136,-12 134.6,-2 135.4,7.4 L134.5,6.5 L132.6,8.4 C133,-3 131.6,-14 132,-25.2 Z', 0.12) +
+      `<rect x="140" y="-20" width="3.6" height="21" fill="${mark}"/><rect x="134.4" y="-14" width="14.8" height="3.6" fill="${mark}"/></g>`;
   }
 
-  /* --- Manto --- */
+  /* --- Manto: cae por detrás, algo abierto hacia un lado --- */
   if (L >= 8) {
-    const long = L >= 11, bx = sh + (long ? 18 : 12), by = long ? 252 : 236;
-    const d = `M${cx - sh + 4},64 C${cx - sh - 13},120 ${cx - bx - 2},190 ${cx - bx},${by} Q${cx - bx / 2},${by + 6} ${cx},${by - 1} Q${cx + bx / 2},${by + 6} ${cx + bx},${by} C${cx + bx + 2},190 ${cx + sh + 13},120 ${cx + sh - 4},64 Z`;
-    fig += `<g class="s-cape">` + S(d, cloak) +
-      Sh(`M${cx - sh - 3},100 C${cx - sh - 9},150 ${cx - bx + 5},200 ${cx - bx + 6},${by - 2} L${cx - bx + 11},${by} C${cx - bx + 10},200 ${cx - sh - 3},150 ${cx - sh + 1},100 Z`, 0.22) +
-      Sh(`M${cx + sh + 3},100 C${cx + sh + 9},150 ${cx + bx - 5},200 ${cx + bx - 6},${by - 2} L${cx + bx - 11},${by} C${cx + bx - 10},200 ${cx + sh + 3},150 ${cx + sh - 1},100 Z`, 0.3) +
-      Sh(`M${cx - 14},150 L${cx + 14},150 L${cx + 20},${by + 1} Q${cx},${by - 2} ${cx - 20},${by + 1} Z`, 0.28) +
-      (golden ? Ln(`M${cx - bx + 1},${by - 3} Q${cx - bx / 2},${by + 3} ${cx},${by - 4} Q${cx + bx / 2},${by + 3} ${cx + bx - 1},${by - 3}`, SM.gold[1], 1.8) : '') + `</g>`;
+    const long = L >= 11, y = long ? 252 : 236, xl = long ? 35 : 41, xr = long ? 158 : 152;
+    body += `<g class="s-cape">` + S(`M70,61 C56,90 ${xl + 4},150 ${xl},${y - 6} C${xl + 12},${y + 4} ${xl + 25},${y - 3} ${xl + 39},${y + 3} C96,${y - 3} 112,${y + 4} 128,${y - 1} C138,${y + 3} ${xr - 6},${y} ${xr},${y - 4} C${xr - 2},170 147,110 130,61 Z`, cloak) +
+      Sh(`M62,84 C54,120 ${xl + 9},170 ${xl + 7},${y - 3} L${xl + 15},${y + 0.6} C${xl + 16},175 59,125 66,86 Z`, 0.26) +
+      Sh(`M${xl + 24},150 C${xl + 22},185 ${xl + 22},215 ${xl + 24},${y - 1} L${xl + 34},${y + 2} C${xl + 31},210 ${xl + 30},180 ${xl + 30},150 Z`, 0.2) +
+      Sh(`M134,84 C143,120 ${xr - 8},170 ${xr - 6},${y - 3} L${xr},${y - 4} C${xr - 2},170 147,110 131,66 Z`, 0.4) +
+      Sh(`M86,150 L118,150 C121,185 124,215 126,${y} C112,${y + 3} 98,${y - 3} 84,${y + 2} C85,215 86,185 86,150 Z`, 0.36) +
+      (golden ? Ln(`M${xl + 1},${y - 8} C${xl + 13},${y + 2} ${xl + 26},${y - 5} ${xl + 39},${y + 1} C96,${y - 5} 112,${y + 2} 128,${y - 3} C138,${y + 1} ${xr - 6},${y - 2} ${xr - 1},${y - 6}`, SM.gold[1], 1.6) : '') + `</g>`;
   }
 
-  /* --- Piernas y calzado (se dibuja la izquierda; la otra es su espejo) --- */
-  const lx = cx - lo, t2 = tw / 2, c2 = cw / 2;
-  let leg = S(`M${n(lx - t2 - 1)},140 C${n(lx - t2 - 2)},166 ${n(lx - 7.6)},184 ${n(lx - 6.4)},197 C${n(lx - c2 - 2.6)},208 ${n(lx - c2 - 1.2)},229 ${n(lx - 4.3)},247 L${n(lx + 4.3)},247 C${n(lx + c2)},229 ${n(lx + c2 + 0.6)},208 ${n(lx + 6)},197 C${n(lx + 7)},184 ${n(lx + t2 + 1)},166 ${n(lx + t2 + 1)},140 Z`, 'skin') +
-    Sh(`M${n(lx - 5.6)},194 Q${lx},199.5 ${n(lx + 5.4)},194 Q${lx},202.5 ${n(lx - 5.6)},194 Z`, 0.22) +                       // rodilla
-    Hi(`M${n(lx - 3.5)},150 C${n(lx - 4.5)},165 ${n(lx - 4)},180 ${n(lx - 3)},190 L${n(lx - 1)},190 C${n(lx - 1.5)},176 ${n(lx - 1.5)},162 ${n(lx - 0.5)},150 Z`, 0.1);
-  const foot = `M${n(lx - 5)},246 L${n(lx + 4.6)},246 L${n(lx + 5.2)},256 Q${n(lx + 5.2)},261.6 ${n(lx + 1)},261.6 L${n(lx - 9.5)},261.6 Q${n(lx - 12.6)},261.6 ${n(lx - 11.4)},258 Q${n(lx - 9)},251.5 ${n(lx - 5)},246 Z`;
-  if (L >= 3) {
-    leg += S(`M${n(lx - c2 - 1.7)},221 L${n(lx + c2 + 1)},221 C${n(lx + c2 + 0.4)},232 ${n(lx + 5)},240 ${n(lx + 4.9)},247 L${n(lx - 4.9)},247 C${n(lx - 5.2)},240 ${n(lx - c2 - 1.7)},232 ${n(lx - c2 - 1.7)},221 Z`, 'leather') +
-      S(foot, 'leather') + Sh(`M${n(lx - 11)},259.4 L${n(lx + 5)},259.4 L${n(lx + 5)},261.6 L${n(lx - 11)},261.6 Z`, 0.45) +
-      `<rect x="${n(lx - c2 - 2.2)}" y="218.6" width="${n(cw + 3.8)}" height="4.4" rx="1.2" fill="${SM.leather[2]}"/>`;
-    if (L < 8) leg += Ln(`M${n(lx - 4)},228 L${n(lx + 4)},231 M${n(lx - 4)},231 L${n(lx + 4)},228 M${n(lx - 3.6)},236 L${n(lx + 3.6)},239 M${n(lx - 3.6)},239 L${n(lx + 3.6)},236`, SM.leather[2], 0.9, 0.9);
+  /* --- Piernas: la izquierda carga el peso, la derecha descansa abierta --- */
+  const legL = 'M77,128 C72.5,142 73,166 78,191 C74,203 74.6,224 80.5,246 L88.6,246 C92.6,228 94.6,212 91.6,194 C94.6,176 97.6,158 99.6,138 L99,128 Z';
+  const legR = 'M123,128 C128.6,142 128.6,166 125.6,191 C130.6,203 130,224 125.2,246 L116.9,246 C113,230 110.6,212 112.6,195 C108,178 103,158 100.4,138 L101,128 Z';
+  const footL = 'M80,244 L89,244 C90.6,250 90.6,256 89.6,260 Q88.6,262.3 84,262.3 L77,262.3 Q73.4,262.1 74.4,258.6 C75.6,253 77.6,248 80,244 Z';
+  const footR = 'M116.5,244 L125.6,244 C128,249.4 133,254.4 138.6,257.6 Q141.6,260.2 139.4,262.2 L121,262.3 Q116,262.3 116,258 C116,253 116.2,248 116.5,244 Z';
+  body += S(legL, 'skin') + S(legR, 'skin') +
+    Sh('M91.4,142 C92.6,160 90.4,180 87.6,194 C90.4,210 89.4,228 86,246 L88.6,246 C92.6,228 94.6,212 91.6,194 C94.6,176 97.6,158 99.6,138 L96,134 Z', 0.34) +
+    Sh('M117,140 C121,160 121.4,180 120.4,193 C123.4,208 122.4,228 121,246 L125.2,246 C130,224 130.6,203 125.6,191 C128.6,166 128.6,142 123,128 Z', 0.34) +
+    Sh('M100.4,138 C103,158 108,178 112.6,195 C111,205 111.6,216 113.4,226 L116,226 C114,214 114,204 115.4,195 C111,176 106,156 104,138 Z', 0.16) +
+    Hi('M78.6,150 C77.2,165 78.4,180 80.6,190 L82.4,190 C80.6,178 80,164 81.2,150 Z', 0.13) + Hi('M77.6,204 C76.8,214 78,226 80.4,236 L82,236 C80,225 79.2,214 79.8,204 Z', 0.1) +
+    Sh('M80.4,196.4 Q84.6,199.6 89.4,196.4 Q84.8,201.6 80.4,196.4 Z', 0.16) + Sh('M114.6,197 Q119.2,200.4 123.6,196.8 Q119.2,202.2 114.6,197 Z', 0.16);
+  if (L >= 3) {                                                  // calzado de la paz
+    body += S('M75.7,224 C75,232 77,240 80.3,246 L88.8,246 C91.6,238 93,231 93.3,224 Z', 'leather') + S(footL, 'leather') +
+      S('M129.7,224 C129.4,232 127.6,240 125.3,246 L116.8,246 C114,238 112,231 111.5,224 Z', 'leather') + S(footR, 'leather') +
+      Sh('M74.6,259.6 L90,259.6 L89.6,262.3 L76,262.3 Z', 0.4) + Sh('M116,259.6 L140.6,259.6 L139.4,262.3 L117,262.3 Z', 0.4) +
+      Sh('M86,224 L93.3,224 C93,231 91.6,238 88.8,246 L86.4,246 C88,238 87.6,231 86,224 Z', 0.3) + Sh('M123,224 L129.7,224 C129.4,232 127.6,240 125.3,246 L122,246 C123.6,238 124,231 123,224 Z', 0.3) +
+      `<path d="M74.9,221.6 Q84.5,219 94,221.6 L93.6,226 Q84.5,223.6 75.3,226 Z" fill="${SM.leather[2]}"/><path d="M110.8,221.6 Q120.5,219 130.4,221.6 L130,226 Q120.5,223.6 111.2,226 Z" fill="${SM.leather[2]}"/>`;
+    if (L < 8) body += Ln('M78,230 Q84.5,232.4 91.6,229.6 M78.8,236 Q84.5,238.2 90.4,235.6 M80,241.6 Q84.5,243.4 89.4,241.2 M113.4,230 Q120.4,232.4 127.6,229.6 M114.6,236 Q120.4,238.2 126.6,235.6 M116,241.6 Q120.6,243.4 125.6,241.2', SM.leather[2], 0.9, 0.85);
     else {                                                       // grebas
-      leg += S(`M${n(lx - 6.6)},197 Q${lx},189 ${n(lx + 6.2)},197 C${n(lx + c2 + 1)},208 ${n(lx + c2 + 0.2)},229 ${n(lx + 4.8)},246 L${n(lx - 4.8)},246 C${n(lx - c2 - 0.8)},229 ${n(lx - c2 - 2.4)},208 ${n(lx - 6.6)},197 Z`, metal) +
-        Hi(`M${n(lx - 1.6)},193 L${n(lx - 0.2)},193 L${n(lx - 0.6)},244 L${n(lx - 1.8)},244 Z`, 0.5) +
-        `<ellipse cx="${lx}" cy="195.5" rx="5.8" ry="4.6" fill="${F(metal)}" stroke="${SM[metal][2]}" stroke-width=".7"/>` +
-        (L >= 9 ? Ln(`M${n(lx - 4.8)},243.6 L${n(lx + 4.8)},243.6`, SM.gold[1], 1.8) : '');
+      body += S('M77,197 Q84.6,188.6 92,196.4 C94,212 92,230 88.7,245 L80.4,245 C75,224 74.6,206 77,197 Z', metal) +
+        S('M111.7,197.4 Q119,189 126.2,196.4 C130,208 129.4,226 125.3,245 L116.8,245 C112.6,228 110.6,210 111.7,197.4 Z', metal) +
+        Hi('M82.6,193 L84.4,192.4 C84,210 84.2,228 84.8,244 L83.4,244 C82.4,228 82,210 82.6,193 Z', 0.5) + Hi('M117,193.4 L118.8,193 C118.6,210 119,228 119.8,244 L118.4,244 C117,228 116.6,210 117,193.4 Z', 0.4) +
+        Sh('M88,196 L92,196.4 C94,212 92,230 88.7,245 L86,245 C89,230 90,212 88,196 Z', 0.3) + Sh('M122.6,196 L126.2,196.4 C130,208 129.4,226 125.3,245 L122.4,245 C125.6,228 126,210 122.6,196 Z', 0.34) +
+        (L >= 9 ? Ln('M80.6,243 L88.6,243 M117,243 L125.2,243', SM.gold[1], 1.6) : '');
     }
   } else {
-    leg += S(foot, 'skin') + Ln(`M${n(lx - 10)},258.4 L${n(lx - 9.4)},260.6 M${n(lx - 7.4)},258.8 L${n(lx - 7)},260.8 M${n(lx - 4.8)},259 L${n(lx - 4.6)},260.8`, SM.skin[2], 0.6, 0.8);
+    body += S(footL, 'skin') + S(footR, 'skin') + Sh('M85,246 L89,246 C90.6,250 90.6,256 89.6,260 L86.6,261 C87.6,256 87.4,251 85,246 Z', 0.26) +
+      Ln('M76.4,259 L76.8,261.4 M78.8,259.6 L79,261.6 M81.4,260 L81.4,261.8 M133,256.6 L134.6,259.4 M135.6,257.8 L137,260', SM.skin[2], 0.5, 0.8);
   }
-  fig += both(leg);
 
-  /* --- Túnica: falda con pliegues --- */
-  const sk = L === 1
-    ? `C${cx + hw + 3},135 ${cx + hw + 6},150 ${cx + hw + 7},163 L${cx + hw + 2},167 L${cx + 13},163.5 L${cx + 7},169 L${cx},164.5 L${cx - 8},169.5 L${cx - 14},164 L${cx - hw - 2},168 L${cx - hw - 7},163 C${cx - hw - 6},150 ${cx - hw - 3},135`
-    : `C${cx + hw + 3},135 ${cx + hw + 7},152 ${cx + hw + 8},167 Q${cx},172.5 ${cx - hw - 8},167 C${cx - hw - 7},152 ${cx - hw - 3},135`;
-  fig += S(`M${cx - ww - 1},113 L${cx + ww + 1},113 ${sk} ${cx - ww - 1},113 Z`, tunic);
-  for (const [x0, x1, o] of [[-13, -18, 0.2], [-5, -7, 0.16], [4, 6, 0.18], [12, 17, 0.24]])
-    fig += Sh(`M${cx + x0},120 L${cx + x0 + 2.4},120 L${cx + x1 + 4},166 L${cx + x1},166 Z`, o);
-  fig += Sh(`M${cx - ww - 1},113 L${cx + ww + 1},113 L${cx + ww + 2},121 Q${cx},125 ${cx - ww - 2},121 Z`, 0.3);
-  if (L === 1) fig += `<path d="M${cx + 8},143 L${cx + 16},141.5 L${cx + 17},150 L${cx + 9},151 Z" fill="${SM.linen[2]}" opacity=".8"/>`;
+  /* --- Túnica: falda con caída --- */
+  const hem = L === 1
+    ? 'C127,128 131,148 133.5,163 L127.6,169 L122,164 L115,171 L109,165.6 L102,171.6 L96,166 L90,171 L83.4,165.4 L77,170.4 L72.4,164.6 L67.5,166'
+    : 'C127,128 132,150 133.6,166 C126,171.6 119,168.6 112,172 C105,169 98,172.6 91,169.6 C84,172.6 75,169.6 67.5,167';
+  body += S(`M78,110 L122,110 ${hem} C69,150 73,128 78,110 Z`, tunic);
+  for (const [x, w, bx, o] of [[82, 3, 74, 0.26], [90, 2.4, 87, 0.18], [98, 3, 98.6, 0.22], [106.6, 2.6, 110, 0.2], [114, 3.4, 123, 0.3]])
+    body += Sh(`M${x},118 L${x + w},118 L${bx + w * 2.2},168 L${bx},168 Z`, o);
+  body += Hi('M85.6,120 L87,120 L82,166 L79,166 Z', 0.09) + Hi('M94,120 L95.4,120 L94,167 L91.4,167 Z', 0.08) +
+    Sh('M118,112 L122,110 C127,128 132,150 133.6,166 L127,168 C126,150 122,130 118,112 Z', 0.24) +
+    Sh('M78,110 L122,110 L123.6,121 Q100,127 76.4,121 Z', 0.34);
+  if (L === 1) body += `<path d="M104,140 L112.6,139 L113.4,148.6 L105,149.4 Z" fill="${SM.linen[2]}" opacity=".75"/>` + Ln('M104.6,141.6 L106,140.4 M110.6,147.4 L112.4,146.6', SM.linen[1], 0.5, 0.5);
 
-  if (L >= 4) {                                                  // tiras de cuero
-    const x0 = cx - hw - 3.5, x1 = cx + hw + 3.5, k = 7, w = (x1 - x0) / k;
-    for (let i = 0; i < k; i++) {
-      const x = x0 + i * w + 0.6;
-      fig += `<rect x="${n(x)}" y="118" width="${n(w - 1.2)}" height="31" rx="1.8" fill="${F('leather')}" stroke="${SM.leather[2]}" stroke-width=".6"/>`;
-      if (L >= 9) fig += `<rect x="${n(x + 0.7)}" y="143" width="${n(w - 2.6)}" height="5" rx="1.2" fill="${F('gold')}"/>`;
-      else fig += `<circle cx="${n(x + w / 2 - 0.6)}" cy="144.5" r="1" fill="${SM.iron[0]}"/>`;
+  if (L >= 4) {                                                  // tiras de cuero, abiertas en abanico
+    for (let i = 0; i < 8; i++) {
+      const t0 = 76.6 + i * 5.9, b0 = 70.4 + i * 7.4, d = `M${n(t0)},116 L${n(t0 + 5.2)},116 L${n(b0 + 6.4)},148.6 Q${n(b0 + 3.2)},151.4 ${n(b0)},148.6 Z`;
+      body += S(d, 'leather') + (i > 4 ? Sh(d, 0.22) : '');
+      body += L >= 9 ? `<rect x="${n(b0 + 0.8)}" y="143.6" width="4.8" height="4.6" rx="1" fill="${F('gold')}"/>` : `<circle cx="${n(b0 + 3.2)}" cy="145.4" r=".9" fill="${SM.iron[0]}"/>`;
     }
   }
 
   /* --- Cuello y torso --- */
-  fig += S(`M${cx - nw},47 L${n(cx - nw - 1.4)},62 Q${cx},69 ${n(cx + nw + 1.4)},62 L${cx + nw},47 Z`, 'skin') +
-    Sh(`M${cx - nw},50 Q${cx},59 ${cx + nw},50 L${cx + nw},54.5 Q${cx},63.5 ${cx - nw},54.5 Z`, 0.3);
-  const torso = `M${n(cx - nw - 2.5)},60 C${cx - sh + 11},61.5 ${cx - sh + 3},62.5 ${cx - sh + 1},70 C${cx - sh + 2},84 ${cx - sh + 6},95 ${n(cx - ww - 0.5)},116 L${n(cx + ww + 0.5)},116 C${cx + sh - 6},95 ${cx + sh - 2},84 ${cx + sh - 1},70 C${cx + sh - 3},62.5 ${cx + sh - 11},61.5 ${n(cx + nw + 2.5)},60 Q${cx},67.5 ${n(cx - nw - 2.5)},60 Z`;
-  fig += S(torso, tunic);
-  if (L < 4) {                                                   // el pecho se adivina bajo la tela
-    fig += Sh(`M${cx - sh + 8},80 Q${n(cx - sh / 2)},90 ${cx - 1},83 Q${n(cx - sh / 2)},93.5 ${cx - sh + 8},80 Z`, 0.2) +
-      Sh(`M${cx + sh - 8},80 Q${n(cx + sh / 2)},90 ${cx + 1},83 Q${n(cx + sh / 2)},93.5 ${cx + sh - 8},80 Z`, 0.26) +
-      Sh(`M${cx - 1},68 L${cx + 1},68 L${cx + 2},113 L${cx - 2},113 Z`, 0.1) +
-      Sh(`M${cx + 6},96 L${cx + 8.4},96 L${cx + 12},114 L${cx + 8.6},114 Z`, 0.14) + Sh(`M${cx - 9},98 L${cx - 7},98 L${cx - 9.4},114 L${cx - 12},114 Z`, 0.12) +
-      Ln(`M${n(cx - nw - 2.3)},60.4 Q${cx},68 ${n(cx + nw + 2.3)},60.4`, SM[tunic][2], 1, 0.8);
+  body += S('M92.6,42 C92.2,49 90.6,53.4 85.6,57.4 Q100,66.6 114.4,57.4 C109.4,53.4 107.8,49 107.4,42 Z', 'skin') +
+    Sh('M92.4,46 Q100,56 107.6,46 L108.6,52.6 Q100,62.6 91.4,52.6 Z', 0.36) + Sh('M101,50 C104,53 108,55.6 112,57.2 L114.4,57.4 C109.4,53.4 107.8,49 107.4,42 Z', 0.2);
+  const torso = 'M91.5,55.5 C84,58.6 76,60 69.6,63.6 C66.6,70 67.6,80 70,88 C72.6,97 76.6,105 78.6,113 L121.4,113 C123.4,105 127.4,97 130,88 C132.4,80 133.4,70 130.4,63.6 C124,60 116,58.6 108.5,55.5 Q100,63.4 91.5,55.5 Z';
+  body += S(torso, tunic);
+  if (L < 4) {                                                   // el cuerpo se adivina bajo la tela
+    body += Sh('M74,80 Q86,89.6 99,83 Q86,93.6 74,80 Z', 0.2) + Sh('M126,80 Q114,89.6 101,83 Q114,93.6 126,80 Z', 0.26) +
+      Sh('M112,60 C120,62 126,63 130.4,63.6 C133.4,70 132.4,80 130,88 C127.4,97 123.4,105 121.4,113 L112,113 C116,100 119,84 112,60 Z', 0.26) +
+      Sh('M97,90 L99,90 L96,112 L92.6,112 Z', 0.14) + Sh('M105,92 L107.4,92 L111,112 L107.6,112 Z', 0.16) + Sh('M86,96 L88,96 L84,112 L81,112 Z', 0.1) +
+      Hi('M72.6,68 C71.6,76 73,86 76,94 L78,94 C75.4,86 74.4,76 75.4,68 Z', 0.1) +
+      Ln('M91.7,55.9 Q100,63.6 108.3,55.9', SM[tunic][2], 0.9, 0.8);
   }
 
-  if (L >= 4) {                                                  // coraza
+  if (L >= 4) {                                                  // coraza de justicia
     const m = SM[metal];
-    fig += S(`M${cx - sh + 6},65 C${cx - sh + 3.5},80 ${cx - sh + 7},96 ${cx - ww - 1},113 Q${cx},118.5 ${cx + ww + 1},113 C${cx + sh - 7},96 ${cx + sh - 3.5},80 ${cx + sh - 6},65 L${n(cx + nw + 3.5)},61 Q${cx},70 ${n(cx - nw - 3.5)},61 Z`, metal) +
-      Hi(`M${cx - sh + 9},70 Q${n(cx - sh / 2 - 1)},66 ${cx - 3},72 Q${cx - 2},84 ${n(cx - sh / 2)},87 Q${cx - sh + 9},85 ${cx - sh + 9},70 Z`, 0.2) +
-      Sh(`M${cx - sh + 9},82 Q${n(cx - sh / 2)},92 ${cx - 1},85.5 Q${n(cx - sh / 2)},95.5 ${cx - sh + 9},82 Z`, 0.28) +
-      Sh(`M${cx + sh - 9},82 Q${n(cx + sh / 2)},92 ${cx + 1},85.5 Q${n(cx + sh / 2)},95.5 ${cx + sh - 9},82 Z`, 0.36) +
-      Ln(`M${cx},71 L${cx},113`, m[2], 0.8, 0.8);
-    for (const y of [95, 102, 109]) fig += Ln(`M${cx - 9.5},${y} Q${cx - 4.8},${y + 2.4} ${cx},${y} Q${cx + 4.8},${y + 2.4} ${cx + 9.5},${y}`, m[2], 0.8, 0.65) +
-      Hi(`M${cx - 8.5},${y + 1.8} Q${cx - 4.8},${y + 4} ${cx - 1},${y + 1.8} L${cx - 1},${y + 4.4} L${cx - 8},${y + 4.4} Z`, 0.12);
-    fig += Hi(`M${cx - sh + 8.5},68 L${cx - sh + 11},67.5 C${cx - sh + 9},82 ${cx - sh + 12},95 ${cx - ww + 3},110 L${cx - ww + 1.2},110 C${cx - sh + 9.5},95 ${cx - sh + 6.5},82 ${cx - sh + 8.5},68 Z`, 0.42);
-    if (L >= 9) fig += Ln(`M${cx - sh + 6},65 L${n(cx - nw - 3.5)},61 Q${cx},70 ${n(cx + nw + 3.5)},61 L${cx + sh - 6},65`, SM.gold[1], 1.9) + Ln(`M${cx - ww - 1},112.6 Q${cx},118 ${cx + ww + 1},112.6`, SM.gold[1], 1.9);
-    if (golden) fig += `<rect x="${cx - 1.7}" y="72" width="3.4" height="17" fill="${SM.crimson[0]}"/><rect x="${cx - 6.4}" y="76.4" width="12.8" height="3.4" fill="${SM.crimson[0]}"/>`;
+    body += S('M72,64.6 C69,74 70.6,84 73,92 C75,99 78,105 79.6,112 Q100,117.6 120.4,112 C122,105 125,99 127,92 C129.4,84 131,74 128,64.6 L110,58 Q100,66.6 90,58 Z', metal) +
+      Sh('M112,59 L128,64.6 C131,74 129.4,84 127,92 C125,99 122,105 120.4,112 L111,114.6 C115,100 118,80 112,59 Z', 0.3) +
+      Sh('M75,81 Q87,91 99.4,84 Q87,95.6 75,81 Z', 0.3) + Sh('M125,81 Q113,91 100.6,84 Q113,95.6 125,81 Z', 0.34) +
+      Hi('M76,70 Q86,65.6 97,71 Q97.6,80 88,83.6 Q77,82 76,70 Z', 0.16) +
+      Ln('M100,68 L100,113', m[2], 0.8, 0.7);
+    for (const y of [95, 101.6, 108]) body += Ln(`M90.6,${y} Q95.4,${y + 2.4} 100,${y} Q104.6,${y + 2.4} 109.4,${y}`, m[2], 0.8, 0.55) + Hi(`M91.4,${y + 1.8} Q95.4,${y + 4} 99,${y + 1.8} L99,${y + 4.2} L92,${y + 4.2} Z`, 0.1);
+    body += Hi('M73.6,68 L75.6,67.4 C73.6,78 75.4,88 78,96 C79.6,101 81.4,106 82.4,110 L80.6,110 C79,104 76.4,98 74.4,91 C72.4,83 72,76 73.6,68 Z', 0.4);
+    if (L >= 9) body += Ln('M72,64.6 L90,58 Q100,66.6 110,58 L128,64.6', SM.gold[1], 1.7) + Ln('M79.6,111.8 Q100,117.4 120.4,111.8', SM.gold[1], 1.7);
+    if (golden) body += `<rect x="98.3" y="71" width="3.4" height="17" fill="${SM.crimson[0]}"/><rect x="93.6" y="75.4" width="12.8" height="3.4" fill="${SM.crimson[0]}"/>`;
   }
 
   if (L >= 2) {                                                  // cinturón de la verdad
-    fig += `<rect x="${n(cx - ww - 2.6)}" y="112" width="${n(2 * ww + 5.2)}" height="8" rx="1.6" fill="${F('leather')}" stroke="${SM.leather[2]}" stroke-width=".7"/>`;
-    if (L >= 9) for (const dx of [-15, -10, 10, 15]) fig += `<circle cx="${cx + dx}" cy="116" r="1.3" fill="${SM.gold[1]}"/>`;
-    fig += `<rect x="${cx - 5.4}" y="110.8" width="10.8" height="10.4" rx="1.8" fill="${F('gold')}" stroke="${SM.gold[2]}" stroke-width=".7"/><rect x="${cx - 2.5}" y="113.6" width="5" height="4.8" rx=".8" fill="${SM.leather[2]}"/>`;
+    body += S('M77.6,109.6 Q100,115.4 122.4,109.6 L122.9,117.6 Q100,123.4 77.1,117.6 Z', 'leather') + Sh('M112,112.4 L122.4,109.6 L122.9,117.6 L112,120.4 Z', 0.3);
+    if (L >= 9) for (const [x, y] of [[84, 114.4], [89.6, 115.6], [110.4, 115.6], [116, 114.4]]) body += `<circle cx="${x}" cy="${y}" r="1.2" fill="${SM.gold[1]}"/>`;
+    body += `<rect x="94.8" y="111.6" width="10.4" height="10.4" rx="1.8" fill="${F('gold')}" stroke="${SM.gold[2]}" stroke-width=".6"/><rect x="97.6" y="114.4" width="4.8" height="4.8" rx=".8" fill="${SM.leather[2]}"/>`;
   } else {
-    fig += Ln(`M${cx - ww - 1},114 Q${cx},119 ${cx + ww + 1},114`, '#463f33', 2.2) + `<circle cx="${cx + 5}" cy="117" r="2.2" fill="#463f33"/>` + Ln(`M${cx + 5},118 L${cx + 3.6},130`, '#463f33', 1.6);
+    body += Ln('M78,111.6 Q100,117.6 122,111.6', '#3f392e', 2) + `<circle cx="105" cy="116" r="2" fill="#3f392e"/>` + Ln('M105,117 L103.4,129', '#3f392e', 1.5);
   }
 
-  /* --- Brazos --- */
-  const sx = cx - sh + 3, ex = cx - sh - 2, wx = cx - sh - 3, a2 = au / 2, f2 = af / 2;
-  let arm = S(`M${n(sx - a2 - 1)},70 C${n(sx - a2 - 3.4)},86 ${n(ex - a2 - 0.6)},99 ${n(ex - f2 - 1.2)},110 C${n(ex - f2 - 2.2)},121 ${n(wx - f2 + 0.6)},133 ${wx - 3.1},143 L${wx + 3.1},143 C${n(wx + f2 + 0.2)},133 ${n(ex + f2 + 1.8)},121 ${n(ex + f2 + 1)},110 C${n(ex + a2 + 1.2)},99 ${n(sx + a2 + 1)},86 ${n(sx + a2)},68 Q${sx},61 ${n(sx - a2 - 1)},70 Z`, 'skin') +
-    Sh(`M${n(ex - f2 - 0.8)},107 Q${ex},112.5 ${n(ex + f2 + 1)},107 Q${ex},115 ${n(ex - f2 - 0.8)},107 Z`, 0.18) +               // codo
-    Hi(`M${n(sx - a2 + 1)},76 C${n(sx - a2 - 0.6)},86 ${n(ex - a2 + 2)},96 ${n(ex - a2 + 2.4)},104 L${n(ex - a2 + 4)},104 C${n(ex - a2 + 3.8)},95 ${n(sx - a2 + 2)},86 ${n(sx - a2 + 3)},76 Z`, 0.13) +
-    S(`M${n(sx - a2 - 2)},71 Q${sx},59.5 ${n(sx + a2 + 1.2)},66 L${n(sx + a2 + 0.6)},85 Q${sx},88.5 ${n(sx - a2 - 2.8)},85 Z`, tunic) +   // manga
-    Sh(`M${n(sx - a2 - 2.6)},82 Q${sx},85.5 ${n(sx + a2 + 0.6)},82 L${n(sx + a2 + 0.6)},85 Q${sx},88.5 ${n(sx - a2 - 2.8)},85 Z`, 0.3);
-  if (L >= 5) {
-    const bm = L >= 8 ? metal : 'leather';
-    arm += S(`M${n(ex - f2 - 2.2)},116.5 L${n(ex + f2 + 2)},116.5 L${n(wx + f2 - 0.2)},139 L${n(wx - f2 + 0.2)},139 Z`, bm) +
-      (L >= 8 ? Hi(`M${n(ex - f2)},117 L${n(ex - f2 + 1.6)},117 L${n(wx - f2 + 2.8)},138.5 L${n(wx - f2 + 1.6)},138.5 Z`, 0.4) : Ln(`M${n(ex - f2 - 1)},123 L${n(ex + f2 + 1.4)},123 M${n(ex - f2 - 0.4)},130 L${n(ex + f2 + 0.8)},130`, SM.leather[2], 0.8, 0.9)) +
-      (L >= 9 ? Ln(`M${n(wx - f2 + 0.4)},137.6 L${n(wx + f2 - 0.4)},137.6`, SM.gold[1], 1.8) : '');
-  }
-  const hand = S(`M${wx - 3.3},142.4 L${wx + 3.3},142.4 C${wx + 5},146 ${wx + 5},152 ${wx + 3},155.4 Q${wx},157.4 ${wx - 3},155.4 C${wx - 5},152 ${wx - 5},146 ${wx - 3.3},142.4 Z`, 'skin') +
-    Ln(`M${wx - 2},150.4 L${wx - 1.8},155 M${wx + 0.2},150.8 L${wx + 0.2},155.6 M${wx + 2.2},150.4 L${wx + 2},155`, SM.skin[2], 0.6, 0.7);
-
-  fig += arm;                                                    // brazo de la espada (izquierda del dibujo)
-  if (L >= 7) {
-    const bl = golden ? 90 : 80, bm = golden ? 'light' : 'blade';
-    const blade = `-3.7,-10 3.7,-10 3.7,${-bl} 0,${-bl - 11} -3.7,${-bl}`;
-    fig += `<g transform="translate(${wx} 149) rotate(-8)">` +
+  /* --- Brazo izquierdo: suelto, la mano sobre la espada cuando la hay --- */
+  const armL = S('M56.2,84 C54.4,94 53.2,102 53.6,110 C52.4,120 53.6,132 55,142 L61.6,142 C63.6,132 64.6,120 63,111 C65.6,102 67.6,94 68.4,86 Z', 'skin') +
+    Sh('M62.6,88 C62.4,96 61,104 59.6,111 C60.6,121 60.4,132 59.4,142 L61.6,142 C63.6,132 64.6,120 63,111 C65.6,102 67.6,94 68.4,86 Z', 0.34) +
+    Hi('M56.6,92 C55.4,99 54.8,104 55,109 L56.6,109 C56.4,104 57,99 58.2,92 Z', 0.14) + Sh('M54.2,108 Q58,111.6 63,109.4 Q58,113.4 54.2,108 Z', 0.14) +
+    S('M70,62.4 C63,63.4 58.4,68 57,75 C55.8,80 55.4,85 55.6,89 Q62,92.6 68.6,90 C69,82 69.6,72 70,62.4 Z', tunic) +
+    Sh('M66,64 C63,72 62.6,82 62.6,91 L68.6,90 C69,82 69.6,72 70,62.4 Z', 0.26) + Sh('M55.6,86.4 Q62,90 68.6,87.4 L68.6,90 Q62,92.6 55.6,89 Z', 0.3);
+  const handL = S('M54.6,141.4 L62,141.4 C63.7,146 63.7,151 61.5,155 Q58.2,157.7 55.3,155 C53.3,151 53.3,146 54.6,141.4 Z', 'skin') +
+    Sh('M59.6,142 L62,141.4 C63.7,146 63.7,151 61.5,155 L59.4,156.4 C60.6,152 60.6,147 59.6,142 Z', 0.3) + Ln('M56.4,150.6 L56.6,154.6 M58.4,151 L58.4,155.4', SM.skin[2], 0.5, 0.7);
+  body += armL;
+  if (L >= 5) body += S('M53.1,116 L63.7,116 L61.9,140 L54.7,140 Z', L >= 8 ? metal : 'leather') + Sh('M59.6,116 L63.7,116 L61.9,140 L59,140 Z', 0.3) +
+    (L >= 8 ? Hi('M54.4,117 L55.8,117 L56.4,139 L55.4,139 Z', 0.45) : Ln('M53.6,123 L63.2,123 M54,131 L62.6,131', SM.leather[2], 0.8, 0.9)) + (L >= 9 ? Ln('M54.8,138.6 L61.8,138.6', SM.gold[1], 1.6) : '');
+  if (L >= 7) {                                                  // espada del Espíritu: punta en tierra
+    const bm = golden ? 'light' : 'blade', blade = '-3.5,9.5 3.5,9.5 3.5,97 0,108 -3.5,97';
+    body += `<g transform="translate(58.3 149) rotate(3)">` +
       (golden ? `<polygon class="s-glow" points="${blade}" fill="none" stroke="#edd384" stroke-width="11" stroke-linejoin="round" opacity=".28"/>` : '') +
-      `<rect x="-2.1" y="-7" width="4.2" height="15" rx="1" fill="${F('leather')}" stroke="${SM.leather[2]}" stroke-width=".6"/>` +
-      `<circle cx="0" cy="10.4" r="3.3" fill="${F(trim)}" stroke="${SM[trim][2]}" stroke-width=".6"/>` +
-      `<polygon points="${blade}" fill="${F(bm)}" stroke="${SM[bm][2]}" stroke-width=".7" stroke-linejoin="round"/>` +
-      `<polygon points="0,-10 3.7,-10 3.7,${-bl} 0,${-bl - 11}" fill="#000" opacity=".2"/>` +
-      Ln(`M0,-12 L0,${-bl + 2}`, SM[bm][2], 0.7, 0.6) +
-      `<rect x="-10.5" y="-11.6" width="21" height="4.2" rx="1.8" fill="${F(trim)}" stroke="${SM[trim][2]}" stroke-width=".7"/></g>`;
+      `<rect x="-2" y="-9" width="4" height="16" rx="1" fill="${F('leather')}"/>` +
+      `<circle cx="0" cy="-11.6" r="3.2" fill="${F(trim)}" stroke="${SM[trim][2]}" stroke-width=".5"/>` +
+      `<polygon points="${blade}" fill="${F(bm)}" stroke="${SM[bm][2]}" stroke-width=".5" stroke-linejoin="round"/>` +
+      `<polygon points="0,9.5 3.5,9.5 3.5,97 0,108" fill="#000" opacity=".24"/>` + Ln('M0,12 L0,96', SM[bm][2], 0.6, 0.5) +
+      `<rect x="-10.5" y="5.6" width="21" height="4.2" rx="1.8" fill="${F(trim)}" stroke="${SM[trim][2]}" stroke-width=".5"/></g>`;
   }
-  fig += hand;
+  body += handL;
 
-  fig += `<g transform="translate(200 0) scale(-1 1)">${arm}${L >= 5 ? '' : hand}</g>`;      // brazo del escudo
-  if (L === 5 || L === 6) {                                      // escudo redondo de madera
-    const zx = cx + sh + 7, zy = 122, r = 23;
-    fig += `<circle cx="${zx}" cy="${zy}" r="${r}" fill="${F('wood')}" stroke="${SM.wood[2]}" stroke-width=".8"/>` +
-      Ln(`M${zx - 11},${zy - 20} L${zx - 11},${zy + 20} M${zx - 3.6},${zy - 22.6} L${zx - 3.6},${zy + 22.6} M${zx + 3.6},${zy - 22.6} L${zx + 3.6},${zy + 22.6} M${zx + 11},${zy - 20} L${zx + 11},${zy + 20}`, SM.wood[2], 0.8, 0.8) +
-      `<circle cx="${zx}" cy="${zy}" r="${r - 1.9}" fill="none" stroke="${F('iron')}" stroke-width="3.6"/>` +
-      `<circle cx="${zx}" cy="${zy}" r="6.4" fill="${F('iron')}" stroke="${SM.iron[2]}" stroke-width=".7"/><circle cx="${zx - 1.8}" cy="${zy - 1.8}" r="2" fill="#fff" opacity=".7"/>`;
-  } else if (L >= 7) {                                           // escudo de la fe, con la cruz
-    const k = L >= 11 ? 1.13 : 1, zx = cx + sh + 8, zy = 120;
-    const sp = f => { const q = k * f; return `M${n(zx - 23 * q)},${n(zy - 29 * q)} Q${zx},${n(zy - 37 * q)} ${n(zx + 23 * q)},${n(zy - 29 * q)} L${n(zx + 23 * q)},${n(zy + 3 * q)} Q${n(zx + 21 * q)},${n(zy + 28 * q)} ${zx},${n(zy + 44 * q)} Q${n(zx - 21 * q)},${n(zy + 28 * q)} ${n(zx - 23 * q)},${n(zy + 3 * q)} Z`; };
+  /* --- Brazo derecho: doblado, la mano en el cinturón o tras el escudo --- */
+  body += S('M131.6,86 C133,94 135.6,101 139.6,108 Q146,112.6 150.7,107 C149.6,99 146.6,91 143.8,84 Z', 'skin') +
+    S('M150.7,104 C149,112 143,117.6 130,121 L127.6,113.4 C136,111.4 140.6,107 141.7,100.6 Z', 'skin') +
+    Sh('M131.6,86 C133,94 135.6,101 139.6,108 Q146,112.6 150.7,107 C149.6,99 146.6,91 143.8,84 Z', 0.26) + Sh('M150.7,104 C149,112 143,117.6 130,121 L129,117.6 C139,115 145.6,110.6 147.4,104 Z', 0.34) +
+    S('M130,62.4 C137,63.4 141.6,68 143,75 C144.2,80 144.6,85 144.6,89 Q138,92.6 131.4,90 C131,82 130.4,72 130,62.4 Z', tunic) +
+    Sh('M130,62.4 C137,63.4 141.6,68 143,75 C144.2,80 144.6,85 144.6,89 Q138,92.6 131.4,90 C131,82 130.4,72 130,62.4 Z', 0.3);
+  if (L < 5) body += S('M129.4,112.4 C125,111.4 120.8,113.4 119.6,116.6 C119.2,119.8 122.6,122 126.6,121.5 L131,120.6 Z', 'skin') + Sh('M124,117.6 C125.6,119.6 128,120.6 131,120.6 L126.6,121.5 C122.6,122 119.2,119.8 119.6,116.6 Z', 0.3);
+  else if (L <= 6) {                                             // escudo redondo de madera
+    body += `<g transform="rotate(-7 138 124)"><ellipse cx="138" cy="124" rx="21" ry="24.5" fill="${F('wood')}" stroke="${SM.wood[2]}" stroke-width=".6"/>` +
+      Ln('M128,103 L128,145 M134.6,100 L134.6,148 M141.4,100 L141.4,148 M148,103 L148,145', SM.wood[2], 0.8, 0.7) +
+      `<ellipse cx="138" cy="124" rx="19.3" ry="22.8" fill="none" stroke="${F('iron')}" stroke-width="3.2"/>` +
+      Sh('M140,100 C151,102 159,112 159,124 C159,136 151,146 140,148.4 C147,142 150,134 150,124 C150,114 147,106 140,100 Z', 0.3) +
+      `<ellipse cx="138" cy="124" rx="5.8" ry="6.6" fill="${F('iron')}" stroke="${SM.iron[2]}" stroke-width=".5"/><ellipse cx="136.4" cy="122" rx="1.7" ry="2" fill="#fff" opacity=".6"/></g>`;
+  } else {                                                       // escudo de la fe, con la cruz
+    const k = L >= 11 ? 1.12 : 1, zx = 138, zy = 122;
+    const sp = f => { const q = k * f; return `M${n(zx - 22 * q)},${n(zy - 29 * q)} Q${zx},${n(zy - 36 * q)} ${n(zx + 22 * q)},${n(zy - 29 * q)} L${n(zx + 22 * q)},${n(zy + 3 * q)} Q${n(zx + 20 * q)},${n(zy + 27 * q)} ${zx},${n(zy + 43 * q)} Q${n(zx - 20 * q)},${n(zy + 27 * q)} ${n(zx - 22 * q)},${n(zy + 3 * q)} Z`; };
     const rim = L >= 9 ? 'gold' : 'iron', field = golden ? 'gold' : 'crimson', mark = golden ? SM.crimson[0] : SM.gold[1];
-    fig += S(sp(1), rim) + S(sp(0.84), field) +
-      Hi(`M${n(zx - 17 * k)},${n(zy - 22 * k)} L${n(zx - 9 * k)},${n(zy - 25 * k)} L${n(zx - 9 * k)},${n(zy + 24 * k)} Q${n(zx - 16 * k)},${n(zy + 16 * k)} ${n(zx - 17 * k)},${n(zy + 2 * k)} Z`, 0.13) +
-      `<rect x="${n(zx - 2.9 * k)}" y="${n(zy - 21 * k)}" width="${n(5.8 * k)}" height="${n(46 * k)}" fill="${mark}"/>` +
-      `<rect x="${n(zx - 13 * k)}" y="${n(zy - 10.5 * k)}" width="${n(26 * k)}" height="${n(5.8 * k)}" fill="${mark}"/>` +
-      Sh(`M${zx},${n(zy - 21 * k)} L${n(zx + 2.9 * k)},${n(zy - 21 * k)} L${n(zx + 2.9 * k)},${n(zy + 25 * k)} L${zx},${n(zy + 25 * k)} Z`, 0.18);
+    body += `<g transform="rotate(-6 ${zx} ${zy})">` + S(sp(1), rim) + S(sp(0.84), field) +
+      `<rect x="${n(zx - 2.8 * k)}" y="${n(zy - 20 * k)}" width="${n(5.6 * k)}" height="${n(44 * k)}" fill="${mark}"/><rect x="${n(zx - 12.6 * k)}" y="${n(zy - 10 * k)}" width="${n(25.2 * k)}" height="${n(5.6 * k)}" fill="${mark}"/>` +
+      Sh(`M${zx + 4},${n(zy - 34 * k)} Q${n(zx + 14 * k)},${n(zy - 32 * k)} ${n(zx + 22 * k)},${n(zy - 29 * k)} L${n(zx + 22 * k)},${n(zy + 3 * k)} Q${n(zx + 20 * k)},${n(zy + 27 * k)} ${zx},${n(zy + 43 * k)} Q${n(zx + 9 * k)},${n(zy + 20 * k)} ${n(zx + 8 * k)},${n(zy - 4 * k)} Z`, 0.3) +
+      Hi(`M${n(zx - 17 * k)},${n(zy - 23 * k)} L${n(zx - 11 * k)},${n(zy - 25.4 * k)} L${n(zx - 11 * k)},${n(zy + 18 * k)} Q${n(zx - 16 * k)},${n(zy + 12 * k)} ${n(zx - 17 * k)},${n(zy + 2 * k)} Z`, 0.14) + `</g>`;
   }
 
-  if (L >= 8) {                                                  // hombreras
-    const px = cx - sh + 3, py = 68;
-    const plate = (dx, dy, q) => `M${n(px + dx - 12.5 * q)},${n(py + dy + 7 * q)} C${n(px + dx - 14 * q)},${n(py + dy - 4 * q)} ${n(px + dx - 7 * q)},${n(py + dy - 9.5 * q)} ${px + dx},${n(py + dy - 9.5 * q)} C${n(px + dx + 7 * q)},${n(py + dy - 9.5 * q)} ${n(px + dx + 11 * q)},${n(py + dy - 5 * q)} ${n(px + dx + 11 * q)},${n(py + dy + 4 * q)} Q${px + dx},${n(py + dy + 1 * q)} ${n(px + dx - 12.5 * q)},${n(py + dy + 7 * q)} Z`;
-    let pa = '';
-    if (L >= 11) pa += S(plate(-3, 8, 0.94), metal) + Ln(`M${px - 14.6},${py + 14.4} Q${px - 3},${py + 9.4} ${px + 7},${py + 12}`, SM[trim][1], 1.3);
-    pa += S(plate(0, 0, 1), metal) + Ln(`M${px - 11.6},${py + 5.8} Q${px},${py + 0.6} ${px + 10.4},${py + 3.4}`, SM[trim][1], 1.5) +
-      Hi(`M${px - 8},${py - 3} Q${px - 4},${py - 8} ${px + 2},${py - 8} L${px + 2},${py - 6} Q${px - 3},${py - 6} ${px - 6.4},${py - 2} Z`, 0.5);
-    fig += both(pa) + both(`<circle cx="${cx - sh + 13}" cy="65" r="2.7" fill="${F('gold')}" stroke="${SM.gold[2]}" stroke-width=".6"/>`);
+  if (L >= 8) {                                                  // hombreras de láminas
+    const p1 = 'M52.6,74.4 C52,64 58,58.4 66,58.4 C71,58.4 74.2,61 74.8,65 C72,69.6 62,72.8 52.6,74.4 Z', p2 = 'M51.8,80.6 C52,77 52.6,75 53.2,73.6 C62,72.6 70,70 74.6,66 L75,72.4 C70,76.8 60,79.8 51.8,80.6 Z';
+    const p3 = 'M51.4,86.6 C51.4,83.4 51.6,81.6 52,80 C61,79 69.6,76.4 75,72 L75,78 C69.6,82.6 60,85.6 51.4,86.6 Z';
+    for (const [f, dark] of [[x => x, 0], [mir, 0.3]]) {
+      body += (L >= 11 ? S(f(p3), metal) : '') + S(f(p2), metal) + S(f(p1), metal) + (dark ? Sh(f(p1), dark) + Sh(f(p2), dark) + (L >= 11 ? Sh(f(p3), dark) : '') : Hi('M56,66 C57.6,62.4 61,60.4 65,60.2 L65.4,61.8 C62,62.2 59.4,63.8 57.6,66.8 Z', 0.5)) +
+        Ln(f('M53,74 C62,72.6 71,69.6 74.6,65.4'), SM[trim][1], 1.1, dark ? 0.6 : 1);
+    }
+    body += `<circle cx="78" cy="63.6" r="2.5" fill="${F('gold')}"/><circle cx="122" cy="63.6" r="2.5" fill="${F('gold')}"/>`;
   }
 
-  /* --- Cabeza --- */
-  fig += both(`<ellipse cx="88.1" cy="39.4" rx="1.9" ry="3.7" fill="${F('skin')}" stroke="${SM.skin[2]}" stroke-width=".6"/>`);
-  fig += S('M88.5,34 C88.5,24.5 93,21.5 100,21.5 C107,21.5 111.5,24.5 111.5,34 L111.2,41 C110.8,47 107.4,51.8 103.6,54 Q100,55.4 96.4,54 C92.6,51.8 89.2,47 88.8,41 Z', 'skin');
-  fig += Sh('M89,41 C90.6,45 92.4,47 94.6,48.4 C93.4,50.4 93.6,52 94.6,53 C91.6,50.6 89.4,46.4 89,41 Z', 0.16) +          // pómulos y mandíbula
-    Sh('M111,41 C109.4,45 107.6,47 105.4,48.4 C106.6,50.4 106.4,52 105.4,53 C108.4,50.6 110.6,46.4 111,41 Z', 0.26) +
-    `<ellipse cx="95.2" cy="37.4" rx="3.5" ry="1.9" fill="#000" opacity=".2"/><ellipse cx="104.8" cy="37.4" rx="3.5" ry="1.9" fill="#000" opacity=".26"/>`;
-  fig += `<g class="s-eyes"><ellipse cx="95.3" cy="37.7" rx="2.1" ry="1.05" fill="#efe6da"/><ellipse cx="104.7" cy="37.7" rx="2.1" ry="1.05" fill="#efe6da"/>` +
-    `<circle cx="95.5" cy="37.7" r="1.05" fill="#2a1c12"/><circle cx="104.5" cy="37.7" r="1.05" fill="#2a1c12"/>` +
-    Ln('M93,37 Q95.3,35.9 97.6,37 M102.4,37 Q104.7,35.9 107,37', '#1c120c', 0.7) + `</g>`;
-  fig += Ln('M92.2,34.6 Q95,33.6 98,35 M107.8,34.6 Q105,33.6 102,35', SM.hair[0], 1.5);
-  fig += Sh('M100.2,37.4 L101.8,44 Q100.8,45.6 99,45.2 Q100.4,44.2 100.2,37.4 Z', 0.26) + Ln('M97.8,45 Q100,46.4 102.2,45', SM.skin[2], 0.7, 0.9) +
-    Hi('M99.2,37.6 L100,37.6 L100.2,43.6 L99.2,43.6 Z', 0.2);
-  if (golden) fig += S('M88.8,39 C88.6,47 92,53.6 95.6,57.4 Q100,60.4 104.4,57.4 C108,53.6 111.4,47 111.2,39 C110,44.6 107.4,46.6 104.4,46.6 Q100,45.8 95.6,46.6 C92.6,46.6 90,44.6 88.8,39 Z', 'hair');
-  else if (L >= 7) fig += S('M88.9,40 C89.2,47 92.6,51.8 96.4,54 Q100,55.4 103.6,54 C107.4,51.8 110.8,47 111.1,40 C109.8,45.2 107.4,46.8 104.4,46.8 Q100,46 95.6,46.8 C92.6,46.8 90.2,45.2 88.9,40 Z', 'hair');
-  else if (L >= 4) fig += `<path d="M88.9,40 C89.2,47 92.6,51.8 96.4,54 Q100,55.4 103.6,54 C107.4,51.8 110.8,47 111.1,40 C109.8,45.2 107.4,46.8 104.4,46.8 Q100,46 95.6,46.8 C92.6,46.8 90.2,45.2 88.9,40 Z" fill="${SM.hair[0]}" opacity=".3"/>`;
-  fig += L >= 7 ? Ln('M97,49.2 Q100,50 103,49.2', '#000', 0.8, 0.6) : Ln('M96.6,48.6 Q100,49.5 103.4,48.6', '#74432f', 1) + Sh('M97.6,50.4 Q100,51.4 102.4,50.4 Q100,52.4 97.6,50.4 Z', 0.14);
+  /* --- Cabeza: rasgos por planos de luz, sin ojos pintados --- */
+  const face = 'M89.6,31 C89.4,23.6 93.4,19 100,19 C106.6,19 110.6,23.6 110.4,31 L110.2,37.6 C109.8,42 107.6,45.8 104.6,48 Q100,50.6 95.4,48 C92.4,45.8 90.2,42 89.8,37.6 Z';
+  head += `<ellipse cx="89.3" cy="35.4" rx="1.6" ry="3.3" fill="${F('skin')}"/><ellipse cx="110.7" cy="35.4" rx="1.6" ry="3.3" fill="${SM.skin[2]}"/>` + S(face, 'skin') +
+    Sh('M100.6,19.2 C106.6,19.4 110.6,23.6 110.4,31 L110.2,37.6 C109.8,42 107.6,45.8 104.6,48 Q102.4,49.6 100.8,49.8 C103.6,44 104,38 102.6,33 Q101.2,26 100.6,19.2 Z', 0.26) +
+    Sh('M90.6,37 C91.6,41 93.4,43.6 95.6,45.2 C93.8,45.8 92.4,44.8 91.4,43 C90.6,41.4 90.4,39 90.6,37 Z', 0.16) + Sh('M109.4,37 C108.4,41 106.6,43.6 104.4,45.2 C106.2,45.8 107.6,44.8 108.6,43 C109.4,41.4 109.6,39 109.4,37 Z', 0.2) +
+    Sh('M91.6,32.2 Q95.4,31 98.6,32.4 Q98.4,35 95.4,35.2 Q92.4,35.2 91.6,32.2 Z', 0.26) + Sh('M108.4,32.2 Q104.6,31 101.4,32.4 Q101.6,35 104.6,35.2 Q107.6,35.2 108.4,32.2 Z', 0.36) +
+    `<g class="s-eyes"><path d="M93.5,33.7 Q95.4,32.6 97.3,33.7 Q95.4,34.6 93.5,33.7 Z" fill="#d9cbb8"/><path d="M102.7,33.7 Q104.6,32.6 106.5,33.7 Q104.6,34.6 102.7,33.7 Z" fill="#b9ab98"/><circle cx="95.5" cy="33.65" r=".85" fill="#22150d"/><circle cx="104.5" cy="33.65" r=".85" fill="#22150d"/><path d="M93.3,33.6 Q95.4,32.3 97.5,33.6 M102.5,33.6 Q104.6,32.3 106.7,33.6" fill="none" stroke="#1a100a" stroke-width=".55" stroke-linecap="round"/></g>` +
+    Ln('M92,31 Q95.2,29.8 98.6,31.4 M108,31 Q104.8,29.8 101.4,31.4', SM.hair[0], 0.95) +
+    Hi('M99.3,32 L100.1,32 L100,39.6 L99.1,39.6 Z', 0.22) + Sh('M100.4,32 L102.5,40 Q101.3,41.7 99.6,41.3 L100.7,39 Z', 0.32) + Sh('M97.5,41 Q100,42.5 102.5,41 Q100,43.2 97.5,41 Z', 0.34);
+  if (golden) head += S('M89.9,35.6 C89.6,43 92,49 95.4,52.6 Q100,56 104.6,52.6 C108,49 110.4,43 110.1,35.6 C109,41 107,42.6 104,42.8 Q100,42 96,42.8 C93,42.6 91,41 89.9,35.6 Z', 'hair') + Sh('M101,42.4 Q102.6,42.4 104,42.8 C107,42.6 109,41 110.1,35.6 C110.4,43 108,49 104.6,52.6 Q102.6,54.4 101,54.8 Z', 0.3);
+  else if (L >= 7) head += S('M89.9,36.5 C90.2,42 92.4,45.8 95.4,48 Q100,50.6 104.6,48 C107.6,45.8 109.8,42 110.1,36.5 C109,41 107,42.6 104,42.8 Q100,42 96,42.8 C93,42.6 91,41 89.9,36.5 Z', 'hair');
+  else if (L >= 4) head += `<path d="M89.9,36.5 C90.2,42 92.4,45.8 95.4,48 Q100,50.6 104.6,48 C107.6,45.8 109.8,42 110.1,36.5 C109,41 107,42.6 104,42.8 Q100,42 96,42.8 C93,42.6 91,41 89.9,36.5 Z" fill="${SM.hair[0]}" opacity=".32"/>`;
+  head += Ln('M96.8,44.7 Q100,45.5 103.2,44.7', L >= 7 ? '#000' : '#4a2a20', 0.9, L >= 7 ? 0.6 : 0.9) + (L >= 7 ? '' : Sh('M97.6,46.5 Q100,47.3 102.4,46.5 Q100,48.2 97.6,46.5 Z', 0.2));
 
   if (L < 6) {                                                   // pelo corto
-    fig += S('M88.3,36.4 C87.2,24.6 92,19.4 100,19.4 C108,19.4 112.8,24.6 111.7,36.4 C110.8,31.4 109.2,28.8 106.2,27.8 C102.4,28.8 97.2,28.8 93.6,27.6 C91,28.6 89.3,31.4 88.3,36.4 Z', 'hair') +
-      Ln('M93,22.6 Q97,20.6 101,21 M96,24.6 Q100,23 105,23.6', SM.hair[1], 0.7, 0.6);
+    head += S('M89.4,32 C88.6,22.6 92.6,16.8 100,16.8 C107.4,16.8 111.4,22.6 110.6,32 C110,28 108.6,25.4 106,24.2 C102,25.2 97.6,25 94.4,24 C91.6,25.2 90,28 89.4,32 Z', 'hair') +
+      Sh('M102,17 C108,17.6 111.4,22.6 110.6,32 C110,28 108.6,25.4 106,24.2 C105.6,21.6 104.4,19 102,17 Z', 0.3) + Ln('M93.6,20.4 Q97,18.4 100.6,18.6 M95.6,22.4 Q99,21 103,21.4', SM.hair[1], 0.6, 0.5);
   } else {                                                       // yelmo de la salvación
-    const m = SM[metal];
-    fig += both(S('M87.4,35.4 L92.3,35.4 L93.1,44.4 Q92.5,50 90.3,52.6 Q88.2,49.4 87.5,43.6 Z', metal) + Hi('M88.2,36 L89.6,36 L90,48 L88.8,46 Z', 0.4));
-    fig += S('M87.4,34.6 C86.4,22.6 92,17.8 100,17.8 C108,17.8 113.6,22.6 112.6,34.6 Z', metal) +
-      Hi('M90.4,30 C90.4,24.6 93,21 97.4,20 L98.6,21.4 C95,22.6 93,25.4 92.6,30 Z', 0.55) +
-      Sh('M104,19 C109.6,20.6 112.2,25 111.8,34.6 L108,34.6 C108.6,27 107.6,22.6 104,19 Z', 0.16) +
-      `<rect x="86.8" y="31.4" width="26.4" height="4" rx="1.4" fill="${F(trim)}" stroke="${SM[trim][2]}" stroke-width=".6"/>`;
-    if (L < 9) fig += `<circle cx="100" cy="17.2" r="2.1" fill="${F(metal)}" stroke="${m[2]}" stroke-width=".6"/>`;
+    const ck = 'M88.2,31.6 L92.7,31.2 L93.5,40 Q92.9,45.4 90.9,47.7 Q88.9,44.7 88.3,39.7 Z';
+    head += S(ck, metal) + S(mir(ck), metal) + Sh(mir(ck), 0.36) + Hi('M88.9,32.4 L90.1,32.3 L90.6,43.6 L89.5,41.6 Z', 0.4) +
+      S('M88.1,30.6 C87,20.2 92.4,15.4 100,15.4 C107.6,15.4 113,20.2 111.9,30.6 Z', metal) +
+      Hi('M90.9,27 C90.9,22 93.4,18.6 97.6,17.6 L98.6,19 C95.4,20 93.4,22.6 93,27 Z', 0.5) +
+      Sh('M103.6,16 C109.6,17.6 112.4,22 111.9,30.6 L107.4,30.6 C108.2,24 107.4,19.6 103.6,16 Z', 0.3) +
+      S('M87.3,28.4 Q100,25.6 112.7,28.4 L112.7,32.2 Q100,29.6 87.3,32.2 Z', trim) + Sh('M102,26.2 Q107.6,26.8 112.7,28.4 L112.7,32.2 Q107.6,30.6 102,30 Z', 0.3);
+    if (L < 9) head += `<circle cx="100" cy="14.8" r="2" fill="${F(metal)}"/>`;
     else {                                                       // cresta de mando
       let fl = '';
-      for (const a of [-66, -50, -34, -17, 0, 17, 34, 50, 66]) {
-        const r = a * Math.PI / 180;
-        fl += `M${n(100 + 9 * Math.sin(r))},${n(17 - 5 * Math.cos(r))} L${n(100 + 24 * Math.sin(r))},${n(17 - 24 * Math.cos(r))} `;
-      }
-      fig += `<g class="s-crest">` + S('M78,20 C72.5,-1 86,-9 100,-9 C114,-9 127.5,-1 122,20 C114,12.6 107,11.4 100,11.4 C93,11.4 86,12.6 78,20 Z', cloak) +
-        Ln(fl, SM[cloak][2], 0.8, 0.7) + Sh('M108,-8 C120,-5 126,4 122,20 C118.6,16.6 115.6,14.6 112.6,13.4 C116,5 114,-3 108,-8 Z', 0.2) + `</g>` +
-        `<rect x="96.4" y="10.8" width="7.2" height="6.4" rx="1.2" fill="${F('gold')}" stroke="${SM.gold[2]}" stroke-width=".6"/>`;
+      for (const a of [-66, -50, -34, -17, 0, 17, 34, 50, 66]) { const r = a * Math.PI / 180; fl += `M${n(100 + 9 * Math.sin(r))},${n(15 - 5 * Math.cos(r))} L${n(100 + 24 * Math.sin(r))},${n(15 - 25 * Math.cos(r))} `; }
+      head += `<g class="s-crest">` + S('M79,17.6 C73.4,-3 87,-11 100,-11 C113,-11 126.6,-3 121,17.6 C113.6,10.4 106.6,9.2 100,9.2 C93.4,9.2 86.4,10.4 79,17.6 Z', cloak) +
+        Ln(fl, SM[cloak][2], 0.7, 0.7) + Sh('M104,-10.6 C116,-9 126.6,-2 121,17.6 C117.6,14.4 114.4,12.4 111.4,11.2 C114.6,3 112,-5 104,-10.6 Z', 0.26) + `</g>` +
+        `<rect x="96.5" y="8.6" width="7" height="6.6" rx="1.2" fill="${F('gold')}"/>`;
     }
   }
-
-  let top = '';
   if (L >= 12) {                                                 // corona de la vida
-    top = `<g class="s-crown">` +
-      S('M86.4,-17 L84.6,-29.4 L91.6,-23.6 L95.8,-32 L100,-24.2 L104.2,-32 L108.4,-23.6 L115.4,-29.4 L113.6,-17 Z', 'gold') +
-      `<rect x="86.4" y="-19.6" width="27.2" height="3.6" rx="1" fill="${F('gold')}" stroke="${SM.gold[2]}" stroke-width=".6"/>` +
-      `<circle cx="100" cy="-17.8" r="1.4" fill="${SM.crimson[1]}"/><circle cx="92" cy="-17.8" r="1.1" fill="${SM.crimson[1]}"/><circle cx="108" cy="-17.8" r="1.1" fill="${SM.crimson[1]}"/></g>`;
+    head += `<g class="s-crown">` + S('M86.4,-19 L84.6,-31.4 L91.6,-25.6 L95.8,-34 L100,-26.2 L104.2,-34 L108.4,-25.6 L115.4,-31.4 L113.6,-19 Z', 'gold') +
+      `<rect x="86.4" y="-21.6" width="27.2" height="3.6" rx="1" fill="${F('gold')}" stroke="${SM.gold[2]}" stroke-width=".5"/>` +
+      `<circle cx="100" cy="-19.8" r="1.4" fill="${SM.crimson[1]}"/><circle cx="92" cy="-19.8" r="1.1" fill="${SM.crimson[1]}"/><circle cx="108" cy="-19.8" r="1.1" fill="${SM.crimson[1]}"/></g>`;
   }
 
-  // degradados: la luz viene de arriba a la izquierda
+  // la complexión estrecha o ensancha el cuerpo; la cabeza conserva su tamaño
+  const kx = [0.87, 0.94, 1][b], ky = [0.965, 0.985, 1][b], hy = n((262 - 52) * (1 - ky));
   let defs = '';
-  for (const m in used) defs += `<linearGradient id="${id}${m}" x1="0" y1="0" x2="1" y2=".25"><stop offset="0" stop-color="${SM[m][0]}"/><stop offset=".24" stop-color="${SM[m][1]}"/><stop offset=".6" stop-color="${SM[m][0]}"/><stop offset="1" stop-color="${SM[m][2]}"/></linearGradient>`;
+  for (const m in used) defs += `<linearGradient id="${id}${m}" x1="0" y1="0" x2="1" y2=".3"><stop offset="0" stop-color="${SM[m][0]}"/><stop offset=".22" stop-color="${SM[m][1]}"/><stop offset=".58" stop-color="${SM[m][0]}"/><stop offset="1" stop-color="${SM[m][2]}"/></linearGradient>`;
   const ft = L >= 11 ? -44 : L >= 9 ? -14 : 12;                  // 'fit': encuadre ajustado a la figura (cabecera)
-  const vb = opt.fit ? `30 ${ft} 144 ${268 - ft}` : opt.crop ? '26 -44 148 314' : '0 -44 200 314';
-  return `<svg class="soldier${opt.still ? ' still' : ''}" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${opt.label || 'Soldado'}"><defs>${defs}</defs>${back}<g class="s-fig">${fig}${top}</g></svg>`;
+  const vb = opt.fit ? `28 ${ft} 144 ${268 - ft}` : opt.crop ? '26 -44 148 314' : '0 -44 200 314';
+  return `<svg class="soldier${opt.still ? ' still' : ''}" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${opt.label || 'Soldado'}"><defs>${defs}</defs>${back}` +
+    `<g class="s-fig"><g transform="translate(100 262) scale(${kx} ${ky}) translate(-100 -262)">${body}</g><g transform="translate(0 ${hy})">${head}</g></g></svg>`;
 }
 
 /* ---------- Utilidades ---------- */
