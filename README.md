@@ -29,6 +29,16 @@ Arriba a la derecha hay un soldado que evoluciona con tus puntos. Tiene doce for
 - Cada rango tiene tres galones intermedios.
 - El último rango, Vencedor, pide 72.000 puntos: un año entero de días ganados.
 
+### Libertad
+
+Pestaña para dejar adicciones (pornografía, alcohol, tabaco, redes, videojuegos, apuestas…):
+
+- Contador en vivo de días, horas y minutos libre, mejor racha y metas (1, 3, 7, 14, 30, 90 días…).
+- Botón **Tengo ganas**: 10 minutos con respiración guiada, ideas de qué hacer, tus motivos y un versículo.
+- Botón **He caído**: registra qué lo provocó y vuelve a empezar sin perder la mejor racha.
+- Disparadores más frecuentes, calendario de las últimas 4 semanas y consejos prácticos.
+- Modo discreto para ocultar el nombre de la lucha.
+
 ### Progreso
 
 La pestaña **Progreso** muestra el soldado con su rango y las doce formas, la racha actual y la mejor, los días ganados, un mapa de las últimas 15 semanas, el porcentaje de cada hábito en 30 días, las marcas registradas y el historial de propósitos.

@@ -150,11 +150,11 @@
 
   /* Barra inferior */
   .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--bg); border-top: 1px solid var(--line); padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
-  .nav-in { max-width: 528px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
+  .nav-in { max-width: 528px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr auto 1fr; align-items: center; gap: 6px; }
   .tab { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; color: var(--muted); font-family: var(--f-display); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; border-radius: var(--r); }
   .tab svg { width: 22px; height: 22px; }
   .tab.on { color: var(--gold); }
-  .fab { background: var(--gold); color: var(--ink); border-radius: var(--r); padding: 13px 22px; font-family: var(--f-display); font-size: 17px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: transform .12s; }
+  .fab { background: var(--gold); color: var(--ink); border-radius: var(--r); padding: 13px 16px; font-family: var(--f-display); font-size: 17px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: transform .12s; }
   .fab:active { transform: scale(.95); }
   .fab span { font-size: 22px; line-height: 1; }
 
@@ -365,6 +365,58 @@
   @keyframes evo-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   @keyframes evo-stamp { from { opacity: 0; transform: scale(1.7); } to { opacity: 1; transform: scale(1); } }
 
+  /* Libertad */
+  .lib-intro .lib-lead { font-size: 16px; line-height: 1.5; margin: 8px 0 4px; }
+  .lib-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; scrollbar-width: none; }
+  .lib-tabs .chip { flex: none; white-space: nowrap; }
+  .lib-main { text-align: center; margin-bottom: 12px; }
+  .lib-head { display: flex; justify-content: space-between; align-items: center; }
+  .lib-head .more { width: 32px; height: 32px; font-size: 20px; color: var(--muted); border-radius: 6px; }
+  .lib-days { margin-top: 6px; }
+  .lib-days b { display: block; font-family: var(--f-display); font-size: clamp(76px, 26vw, 108px); line-height: 1; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .lib-days span { display: block; font-family: var(--f-display); font-size: 18px; letter-spacing: .2em; text-transform: uppercase; margin-top: 4px; }
+  .lib-clock { margin-top: 8px; color: var(--muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .lib-main .sub b { color: var(--text); font-weight: 600; }
+  .lib-why { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
+  .lib-why span { font-size: 12px; border: 1px solid var(--gold-soft); color: var(--gold); border-radius: 999px; padding: 4px 10px; }
+  .lib-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .lib-btns .primary { margin-top: 0; font-size: 16px; padding: 15px 10px; }
+  .medals { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 6px; }
+  .medal { border: 1px solid var(--line); border-radius: var(--r); padding: 8px 4px; text-align: center; color: var(--muted); }
+  .medal b { display: block; font-family: var(--f-display); font-size: 20px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .medal span { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; }
+  .medal.on { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+  .medal.next { border-color: var(--gold); color: var(--gold); }
+  .lcal { display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px; }
+  .lc { aspect-ratio: 1; border-radius: 3px; background: var(--heat-1); }
+  .lc.ok { background: var(--gold); }
+  .lc.fell { background: var(--danger); }
+  .lc.pre { background: transparent; border: 1px solid var(--line); }
+  .lc.now { outline: 1px solid var(--text); outline-offset: 1px; }
+  .chip.trig { cursor: default; }
+  .tips { display: flex; flex-direction: column; gap: 8px; }
+  .tip { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 0 16px; }
+  .tip summary { cursor: pointer; padding: 14px 0; font-weight: 600; font-size: 15px; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+  .tip summary::-webkit-details-marker { display: none; }
+  .tip summary::after { content: "+"; color: var(--gold); font-family: var(--f-display); font-size: 20px; line-height: 1; }
+  .tip[open] summary::after { content: "−"; }
+  .tip p { margin: 0 0 14px; color: var(--muted); line-height: 1.55; font-size: 14px; }
+  .tile.sel { border-color: var(--gold); background: var(--gold-soft); }
+  .sos { position: fixed; inset: 0; z-index: 46; background: var(--bg); overflow-y: auto; display: grid; place-items: center; padding: calc(20px + env(safe-area-inset-top, 0px)) max(22px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(22px, env(safe-area-inset-left, 0px)); }
+  .sos q { font-family: var(--f-verse); font-style: italic; font-size: 19px; line-height: 1.35; quotes: "«" "»"; display: block; margin-top: 20px; text-wrap: pretty; }
+  .sos .t-box { max-width: 440px; }
+  .sos-clock { font-size: clamp(56px, 18vw, 76px); margin: 14px 0 4px; }
+  .sos-sub { color: var(--muted); font-size: 14px; margin: 0; }
+  .breath { position: relative; width: 150px; height: 150px; margin: 18px auto 0; display: grid; place-items: center; }
+  .b-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--gold); background: radial-gradient(circle, #c9a24a33, transparent 70%); transform: scale(.6); transition: transform 4s ease-in-out; }
+  .breath.in .b-ring, .breath.hold .b-ring { transform: scale(1); }
+  .breath.out .b-ring { transform: scale(.6); transition-duration: 6s; }
+  .breath span { position: relative; font-family: var(--f-display); font-size: 20px; letter-spacing: .14em; text-transform: uppercase; }
+  .sos-act { margin-top: 18px; background: var(--surface); border: 1px solid var(--gold-soft); border-radius: var(--r); padding: 14px; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: center; text-align: left; }
+  .sos-act span { font-size: 28px; grid-row: span 2; }
+  .sos-act b { font-weight: 600; font-size: 15px; line-height: 1.35; }
+  .sos-act .chip { justify-self: start; padding: 6px 10px; font-size: 12px; }
+
   .toast { position: fixed; left: 50%; top: calc(20px + env(safe-area-inset-top, 0px)); transform: translate(-50%, -160%); background: var(--surface-2); border: 1px solid var(--gold); color: var(--text); padding: 11px 18px; border-radius: var(--r); font-weight: 600; font-size: 14px; z-index: 60; transition: transform .3s; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; }
   .toast.show { transform: translate(-50%, 0); }
   @media (prefers-reduced-motion: reduce) {
@@ -375,6 +427,7 @@
     .evo .evo-text > * { opacity: 1; animation: none !important; }
     .evo .evo-rays { opacity: 1; animation: none !important; }
     .evo-rays i, .avatar.pump { animation: none; }
+    .b-ring { transition: none; }
   }
 </style>
 
@@ -412,6 +465,16 @@
     <div id="list"></div>
   </section>
 
+  <section id="viewLib" hidden>
+    <header>
+      <div>
+        <div class="eyebrow">Un día cada vez</div>
+        <div class="title">Libertad</div>
+      </div>
+    </header>
+    <div id="lib"></div>
+  </section>
+
   <section id="viewProg" hidden>
     <header>
       <div>
@@ -428,6 +491,9 @@
   <button class="tab on" id="tabHoy">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 12l3 3 5-6"/></svg>Hoy
   </button>
+  <button class="tab" id="tabLib">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Libertad
+  </button>
   <button class="fab" id="fab"><span>＋</span> Nuevo</button>
   <button class="tab" id="tabProg">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Progreso
@@ -437,6 +503,7 @@
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
 
+<div class="sos" id="sos" hidden><div class="t-box" id="sosBox"></div></div>
 <div class="timer" id="timer" hidden><div class="t-box" id="timerBox"></div></div>
 
 <div class="victory" id="victory"><div class="box">
@@ -914,7 +981,7 @@ function toast(text) {
 
 /* ---------- Estado y guardado ---------- */
 const KEY = 'mi-agenda-v1';
-const blank = () => ({ goals: [], done: {}, log: {}, week: {}, xp: null, seen: null, t: 0 });
+const blank = () => ({ goals: [], done: {}, log: {}, week: {}, fights: [], xp: null, seen: null, t: 0 });
 let db = blank();
 const TODAY = ymd(new Date());
 let selected = TODAY;
@@ -963,7 +1030,7 @@ async function initCloud() {
     cloudDoc = ref; cloudOk = true; renderSync();
     if (snap.exists && snap.data().state) {
       const remote = JSON.parse(snap.data().state);
-      if (!db.goals.length || (remote.t || 0) >= (db.t || 0)) { adopt(remote); saveLocal(); render(); if (pendingEvo) showEvo(); }
+      if (!db.goals.length || (remote.t || 0) >= (db.t || 0)) { adopt(remote); saveLocal(); render(); if (view === 'lib') renderLib(); if (pendingEvo) showEvo(); }
       else pushCloud();
     } else if (db.goals.length) pushCloud();
   } catch (e) {}
@@ -1385,14 +1452,359 @@ function setView(v) {
   view = v;
   $('viewHoy').hidden = v !== 'hoy';
   $('viewProg').hidden = v !== 'prog';
+  $('viewLib').hidden = v !== 'lib';
   $('tabHoy').classList.toggle('on', v === 'hoy');
   $('tabProg').classList.toggle('on', v === 'prog');
+  $('tabLib').classList.toggle('on', v === 'lib');
   render();
+  if (v === 'lib') renderLib();
   window.scrollTo(0, 0);
 }
 function go(v) {
   setView(v);
-  try { location.hash = v === 'prog' ? 'progreso' : 'hoy'; } catch (e) {}
+  try { location.hash = v === 'prog' ? 'progreso' : v === 'lib' ? 'libertad' : 'hoy'; } catch (e) {}
+}
+
+/* ---------- Libertad: lucha contra adicciones ---------- */
+const FIGHTS = [
+  { key: 'porn', name: 'Pornografía', emoji: '🛡️' },
+  { key: 'mast', name: 'Masturbación', emoji: '🔒' },
+  { key: 'alcohol', name: 'Alcohol', emoji: '🍺' },
+  { key: 'tabaco', name: 'Tabaco / vapeo', emoji: '🚬' },
+  { key: 'redes', name: 'Redes sociales', emoji: '📱' },
+  { key: 'juegos', name: 'Videojuegos', emoji: '🎮' },
+  { key: 'apuestas', name: 'Apuestas', emoji: '🎰' },
+  { key: 'azucar', name: 'Azúcar / comida basura', emoji: '🍬' },
+];
+const TRIGGERS = ['Aburrimiento', 'Soledad', 'Estrés', 'Cansancio', 'Ansiedad', 'Tristeza', 'Enfado', 'De noche', 'Móvil en la cama', 'Redes sociales', 'Solo en casa', 'Tras una discusión', 'Insomnio', 'Fin de semana'];
+const REASONS = ['Por mi fe', 'Por mi futura familia', 'Por mi pareja', 'Por una mente clara', 'Por mi energía', 'Por mi libertad', 'Por mi salud', 'Por ser un ejemplo'];
+const MILESTONES = [1, 3, 7, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365, 500, 730, 1000];
+const V_LIB = [
+  ['No os ha sobrevenido ninguna tentación que no sea humana; pero fiel es Dios, que no os dejará ser tentados más de lo que podéis resistir, sino que dará también juntamente con la tentación la salida, para que podáis soportar.', '1 Corintios 10:13'],
+  ['Estad, pues, firmes en la libertad con que Cristo nos hizo libres, y no estéis otra vez sujetos al yugo de esclavitud.', 'Gálatas 5:1'],
+  ['Así que, si el Hijo os libertare, seréis verdaderamente libres.', 'Juan 8:36'],
+  ['Someteos, pues, a Dios; resistid al diablo, y huirá de vosotros.', 'Santiago 4:7'],
+  ['Huye también de las pasiones juveniles, y sigue la justicia, la fe, el amor y la paz.', '2 Timoteo 2:22'],
+  ['¿Con qué limpiará el joven su camino? Con guardar tu palabra.', 'Salmos 119:9'],
+  ['Hice pacto con mis ojos.', 'Job 31:1'],
+  ['Velad y orad, para que no entréis en tentación; el espíritu a la verdad está dispuesto, pero la carne es débil.', 'Mateo 26:41'],
+  ['Porque no nos ha dado Dios espíritu de cobardía, sino de poder, de amor y de dominio propio.', '2 Timoteo 1:7'],
+];
+const V_FALL = [
+  ['Porque siete veces cae el justo, y vuelve a levantarse.', 'Proverbios 24:16'],
+  ['Si confesamos nuestros pecados, él es fiel y justo para perdonar nuestros pecados, y limpiarnos de toda maldad.', '1 Juan 1:9'],
+  ['Ahora, pues, ninguna condenación hay para los que están en Cristo Jesús.', 'Romanos 8:1'],
+  ['Por la misericordia de Jehová no hemos sido consumidos, porque nunca decayeron sus misericordias. Nuevas son cada mañana; grande es tu fidelidad.', 'Lamentaciones 3:22-23'],
+];
+const SOS_ACTIONS = [
+  ['🚪', 'Levántate y sal de la habitación ahora mismo'],
+  ['🧊', 'Agua fría en la cara o una ducha fría'],
+  ['💪', '20 flexiones, sin pensarlo'],
+  ['🚶', 'Sal a caminar 10 minutos, sin el móvil'],
+  ['📞', 'Escribe o llama a un hermano de confianza'],
+  ['🙏', 'Reza en voz alta: di lo que sientes'],
+  ['📵', 'Deja el móvil en otra habitación'],
+  ['📖', 'Lee un salmo en voz alta'],
+];
+// Consejos: generales y específicos por lucha
+const TIPS_GENERAL = [
+  ['Las ganas son una ola', 'Suben, llegan a un pico y bajan, normalmente en 10 a 20 minutos, si no las alimentas. No discutas con el pensamiento: cambia de sitio y de actividad hasta que pase. Para eso está el botón «Tengo ganas».'],
+  ['Conoce tus disparadores', 'Casi todas las caídas llegan con hambre, enfado, soledad o cansancio. Cada vez que caigas, marca qué lo provocó; con el tiempo la app te enseñará tus patrones y sabrás cuándo estar en guardia.'],
+  ['Lo que se esconde, crece', 'Cuéntaselo a una persona de confianza: un amigo, un mentor, tu sacerdote o pastor. Tener a alguien a quien rendir cuentas multiplica las posibilidades de lograrlo.'],
+  ['Sustituye, no solo quites', 'El hueco que deja un hábito se llena con algo. Ten preparado con qué: deporte, un proyecto, gente, servicio. Cuanto más llena esté tu vida, menos espacio queda.'],
+  ['Después de una caída', 'No te hundas en la vergüenza: es la que te empuja a la siguiente caída. Reconócelo, pide perdón, mira qué la provocó y empieza de nuevo ese mismo día. Lo que llevas ganado no se borra: tu mejor racha queda guardada.'],
+  ['Pide ayuda si la necesitas', 'Si lo has intentado muchas veces sin poder parar, o está dañando tu trabajo, tus estudios o tus relaciones, habla con un psicólogo especializado en conductas adictivas o con tu médico. Pedir ayuda es de valientes.'],
+];
+const TIPS = {
+  porn: [
+    ['Corta el acceso', 'Activa un filtro de contenido adulto en el móvil y el ordenador (en iPhone, Tiempo de uso > Restricciones de contenido; en Android, Family Link o un DNS con filtro) y pide a otra persona que ponga la contraseña. Cuanto más difícil sea llegar, más tiempo tienes para frenar.'],
+    ['El móvil duerme fuera', 'La mayoría de caídas ocurren de noche, en la cama y a solas con el móvil. Cárgalo fuera del dormitorio y usa un despertador normal.'],
+    ['Limpia tus redes', 'Deja de seguir cuentas con contenido provocativo y evita el contenido de vídeos cortos sin fin: suele ser la puerta de entrada. Lo que entra por los ojos se queda en la mente.'],
+    ['Pacto con tus ojos', 'Cuando aparezca una imagen, aparta la mirada en los primeros segundos. Lo que mantienes delante de los ojos es lo que alimentas.'],
+    ['No juegues cerca del borde', 'No es solo el contenido explícito: también lo que «casi» lo es. Si algo te acerca, trátalo como si ya fuera la caída.'],
+    ['Cansancio y soledad, alerta máxima', 'Acuéstate a una hora fija y no te quedes a solas sin plan cuando estés agotado o triste. Llama a alguien, sal de casa.'],
+  ],
+  mast: [
+    ['Rompe la rutina', 'Suele ir unido a momentos concretos: la cama, la ducha larga, el móvil por la noche. Cambia esos momentos: duchas cortas, levantarte en cuanto suene el despertador, el móvil fuera del dormitorio.'],
+    ['Cuida lo que ves', 'Va muy unido a lo que consumes con los ojos. Aplica los mismos filtros y límites que para la pornografía.'],
+    ['Gasta energía', 'El ejercicio intenso y el deporte ayudan a canalizar la tensión y a dormir mejor.'],
+  ],
+  alcohol: [
+    ['Ojo con dejarlo de golpe', 'Si bebes mucho a diario, dejarlo de golpe puede ser peligroso (temblores, convulsiones). Habla antes con tu médico para hacerlo con seguridad.'],
+    ['Fuera de casa', 'No tengas alcohol en casa y ten preparada una bebida alternativa para los momentos sociales.'],
+    ['Cambia los planes', 'Si tus planes giran en torno a beber, propón otros: deporte, comidas, excursiones. Y avisa a tus amigos de que lo has dejado.'],
+  ],
+  tabaco: [
+    ['Las ganas duran poco', 'El deseo fuerte de fumar suele durar solo unos minutos. Bebe agua, mastica chicle sin azúcar o respira hondo hasta que pase.'],
+    ['Pide ayuda en la farmacia o al médico', 'Existen tratamientos (parches, chicles, medicación) que duplican las posibilidades de éxito. No es hacer trampa.'],
+    ['Cambia las rutinas asociadas', 'Café, después de comer, al conducir: cambia el orden o el sitio de esas rutinas durante las primeras semanas.'],
+  ],
+  redes: [
+    ['Borra las apps del móvil', 'Si las necesitas, úsalas solo desde el ordenador. Quitar la app reduce el uso más que cualquier fuerza de voluntad.'],
+    ['Límites de tiempo con contraseña', 'Pon un límite diario en los ajustes del móvil y que otra persona guarde el código.'],
+    ['Pantalla en gris', 'Activar la escala de grises hace el móvil mucho menos atractivo.'],
+  ],
+  juegos: [
+    ['Fuera del alcance', 'Desinstala los juegos, guarda la consola en un armario o dásela a alguien durante un tiempo.'],
+    ['Llena las horas', 'Planifica de antemano qué harás en las horas en que solías jugar: deporte, quedar con gente, aprender algo.'],
+  ],
+  apuestas: [
+    ['Autoexclúyete', 'Inscríbete en el registro de autoexclusión del juego de tu país (en España, el RGIAJ) para que no puedas entrar en casas de apuestas ni webs de juego.'],
+    ['Corta el dinero fácil', 'Que otra persona de confianza gestione tus tarjetas durante un tiempo, y bloquea los pagos a webs de apuestas desde tu banco.'],
+    ['Busca grupos de apoyo', 'Jugadores Anónimos y asociaciones de ayuda al jugador funcionan muy bien. No tienes que hacerlo solo.'],
+  ],
+  azucar: [
+    ['Que no esté en casa', 'Si no lo compras, no lo comes. Haz la compra después de comer, nunca con hambre.'],
+    ['Come de verdad', 'Muchas ganas de dulce son hambre o cansancio: come proteína y duerme bien.'],
+  ],
+};
+
+let libSel = null, libTimer = null, sos = null;
+const pad2 = v => String(v).padStart(2, '0');
+const durParts = ms => { ms = Math.max(0, ms); const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4), s = Math.floor(ms % 6e4 / 1000); return { d, h, m, s }; };
+const fightName = f => f.hidden ? 'Mi lucha' : f.name;
+const fightEmoji = f => f.hidden ? '⚔️' : f.emoji;
+function nextMilestone(days) { for (const m of MILESTONES) if (days < m) return m; return Math.ceil((days + 1) / 365) * 365; }
+function prevMilestone(days) { let p = 0; for (const m of MILESTONES) if (days >= m) p = m; return p; }
+function bestMs(f) { return Math.max(f.best || 0, Date.now() - f.start); }
+
+function renderLib() {
+  const el = $('lib'), fs = db.fights || [];
+  clearInterval(libTimer);
+  if (!fs.length) {
+    el.innerHTML = `<div class="card lib-intro">
+        <div class="eyebrow">Libertad</div>
+        <p class="lib-lead">Aquí llevas la cuenta de los días que llevas libre de lo que quieras dejar atrás. Un contador, un botón de emergencia para cuando lleguen las ganas y consejos que funcionan.</p>
+        <q class="stage-q">${V_LIB[1][0]}</q><cite>${V_LIB[1][1]}</cite>
+        <button class="primary" id="libStart">Empezar una lucha</button>
+        <p class="hint" style="margin:14px 0 0">Todo lo que apuntes aquí es privado. Puedes activar el modo discreto para que no se vea el nombre.</p>
+      </div>`;
+    $('libStart').onclick = openNewFight;
+    return;
+  }
+  if (!fs.find(f => f.id === libSel)) libSel = fs[0].id;
+  const f = fs.find(x => x.id === libSel);
+  const now = Date.now(), p = durParts(now - f.start), days = p.d;
+  const nx = nextMilestone(days), pv = prevMilestone(days);
+  const pct = Math.min(100, ((now - f.start) / 864e5 - pv) / (nx - pv) * 100);
+  const won = (f.urges || []).filter(u => u.won).length;
+  const rel = f.relapses || [];
+  // disparadores más frecuentes
+  const tc = {};
+  rel.forEach(r => (r.trig || []).forEach(t => { tc[t] = (tc[t] || 0) + 1; }));
+  const top = Object.entries(tc).sort((a, b) => b[1] - a[1]).slice(0, 4);
+  // últimos 28 días
+  let cells = '';
+  for (let i = 27; i >= 0; i--) {
+    const d = addDays(new Date(), -i), ds = ymd(d), dayEnd = new Date(d); dayEnd.setHours(23, 59, 59, 999);
+    const fell = rel.some(r => ymd(new Date(r.t)) === ds), before = dayEnd.getTime() < f.created;
+    cells += `<i class="lc ${before ? 'pre' : fell ? 'fell' : 'ok'}${i === 0 ? ' now' : ''}" title="${ds}"></i>`;
+  }
+  const tips = (TIPS[f.key] || []).concat(TIPS_GENERAL);
+  const verse = pick(V_LIB, dayNum(TODAY) + days);
+  el.innerHTML = `
+    ${`<div class="lib-tabs">${fs.map(x => `<button class="chip ${x.id === f.id ? 'on' : ''}" data-f="${x.id}">${fightEmoji(x)} ${esc(fightName(x))}</button>`).join('')}<button class="chip" id="libAdd">＋</button></div>`}
+    <div class="card lib-main">
+      <div class="lib-head"><span class="eyebrow">${esc(fightEmoji(f))} ${esc(fightName(f))}</span><button class="more" id="libOpts" aria-label="Opciones">⋯</button></div>
+      <div class="lib-days"><b id="libD">${days}</b><span>${plural(days, 'día', 'días')} libre</span></div>
+      <div class="lib-clock" id="libClock">${pad2(p.h)} h ${pad2(p.m)} min ${pad2(p.s)} s</div>
+      <div class="rank-track"><i style="width:${pct}%"></i></div>
+      <div class="sub">Próxima meta: <b>${nx} ${plural(nx, 'día', 'días')}</b> · faltan ${nx - days}</div>
+      ${f.why && f.why.length ? `<div class="lib-why">${f.why.map(w => `<span>${esc(w)}</span>`).join('')}</div>` : ''}
+      <div class="lib-btns">
+        <button class="primary sos-btn" id="libSos">Tengo ganas</button>
+        <button class="primary secondary" id="libFall">He caído</button>
+      </div>
+    </div>
+
+    <div class="tiles">
+      <div class="stat"><b>${Math.floor(bestMs(f) / 864e5)}</b><span>Mejor racha (días)</span></div>
+      <div class="stat"><b>${won}</b><span>Ganas vencidas</span></div>
+      <div class="stat"><b>${rel.length}</b><span>Caídas</span></div>
+      <div class="stat"><b>${Math.floor((now - f.created) / 864e5)}</b><span>Días luchando</span></div>
+    </div>
+
+    <div class="sec-title">Metas</div>
+    <div class="medals">${MILESTONES.slice(0, 15).map(m => `<div class="medal ${days >= m ? 'on' : ''}${m === nx ? ' next' : ''}"><b>${m}</b><span>${m === 1 ? 'día' : 'días'}</span></div>`).join('')}</div>
+
+    <div class="sec-title">Últimas 4 semanas</div>
+    <div class="card"><div class="lcal">${cells}</div>
+      <div class="legend"><i style="background:var(--gold)"></i> Libre <i style="background:var(--danger)"></i> Caída</div></div>
+
+    ${top.length ? `<div class="sec-title">Tus disparadores</div><div class="card"><p class="hint" style="margin:0 0 10px">Lo que más veces ha llevado a una caída. Ahí es donde tienes que estar en guardia.</p><div class="chips">${top.map(([t, c]) => `<span class="chip trig">${esc(t)} · ${c}</span>`).join('')}</div></div>` : ''}
+
+    <div class="sec-title">Palabra para hoy</div>
+    <div class="card"><q class="stage-q" style="margin-top:0">${verse[0]}</q><cite>${verse[1]}</cite></div>
+
+    <div class="sec-title">Consejos</div>
+    <div class="tips">${tips.map(([t, d]) => `<details class="tip"><summary>${t}</summary><p>${d}</p></details>`).join('')}</div>
+    <p class="hint" style="margin-top:14px">Si alguna vez te sientes sin salida o piensas en hacerte daño, habla hoy mismo con alguien de confianza o llama al teléfono de emergencias de tu país.</p>`;
+  el.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { libSel = b.dataset.f; renderLib(); });
+  $('libAdd').onclick = openNewFight;
+  $('libOpts').onclick = () => openFightOptions(f);
+  $('libSos').onclick = () => openSos(f);
+  $('libFall').onclick = () => openFall(f);
+  libTimer = setInterval(() => {
+    if (view !== 'lib' || !$('libClock')) return clearInterval(libTimer);
+    const q = durParts(Date.now() - f.start);
+    $('libClock').textContent = `${pad2(q.h)} h ${pad2(q.m)} min ${pad2(q.s)} s`;
+    if (q.d !== days) renderLib();
+  }, 1000);
+}
+
+// Nueva lucha: todo con botones
+function openNewFight() {
+  const st = { key: '', name: '', emoji: '', since: 'now', date: TODAY, why: new Set(), hidden: false };
+  const paint = keep => {
+    openSheet(`
+      <div class="sheet-head"><h2>Nueva lucha</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+      <div class="label first">¿Qué quieres dejar?</div>
+      <div class="grid">${FIGHTS.map(x => `<button class="tile ${st.key === x.key ? 'sel' : ''}" data-k="${x.key}"><span class="te">${x.emoji}</span><span class="tl">${x.name}</span></button>`).join('')}
+        <button class="tile ${st.key === 'otro' ? 'sel' : ''}" data-k="otro"><span class="te">✍️</span><span class="tl">Otra</span></button></div>
+      ${st.key === 'otro' ? `<input class="text-input" id="fightName" maxlength="30" placeholder="Ej: Cafeína" value="${esc(st.name)}" style="margin-top:10px">` : ''}
+      <div class="label">¿Desde cuándo estás libre?</div>
+      <div class="chips">${[['now', 'Desde ahora'], ['1', 'Desde ayer'], ['7', 'Hace una semana'], ['date', 'Elegir fecha']].map(([k, l]) => `<button class="chip ${st.since === k ? 'on' : ''}" data-s="${k}">${l}</button>`).join('')}</div>
+      ${st.since === 'date' ? `<input class="text-input" type="date" id="fightDate" max="${TODAY}" value="${st.date}" style="margin-top:10px">` : ''}
+      <div class="label">¿Por qué lo haces?</div>
+      <p class="hint">Te lo recordaré cuando lleguen las ganas. Elige los que quieras.</p>
+      <div class="chips">${REASONS.map(r => `<button class="chip ${st.why.has(r) ? 'on' : ''}" data-w="${r}">${r}</button>`).join('')}</div>
+      <div class="label">Privacidad</div>
+      <div class="chips"><button class="chip ${st.hidden ? 'on' : ''}" data-h>Modo discreto: ocultar el nombre</button></div>
+      <button class="primary" data-ok>Empezar la lucha</button>`, keep);
+    const ni = $('fightName'); if (ni) ni.oninput = () => { st.name = ni.value; };
+    const di = $('fightDate'); if (di) di.onchange = () => { st.date = di.value || TODAY; };
+    bind('[data-close]', closeSheet);
+    bind('[data-k]', b => { st.key = b.dataset.k; paint(true); });
+    bind('[data-s]', b => { st.since = b.dataset.s; paint(true); });
+    bind('[data-w]', b => { const w = b.dataset.w; st.why.has(w) ? st.why.delete(w) : st.why.add(w); paint(true); });
+    bind('[data-h]', () => { st.hidden = !st.hidden; paint(true); });
+    bind('[data-ok]', () => {
+      if (!st.key) return toast('Elige qué quieres dejar');
+      const preset = FIGHTS.find(x => x.key === st.key);
+      const name = preset ? preset.name : (st.name || '').trim();
+      if (!name) { if ($('fightName')) $('fightName').focus(); return toast('Escribe un nombre corto'); }
+      let start = Date.now();
+      if (st.since === '1' || st.since === '7') start -= +st.since * 864e5;
+      if (st.since === 'date') { const d = parse(st.date || TODAY); start = Math.min(Date.now(), d.getTime()); }
+      const f = { id: newId(), key: preset ? preset.key : 'otro', name, emoji: preset ? preset.emoji : '⚔️', start, created: Date.now(), best: 0, relapses: [], urges: [], why: [...st.why], hidden: st.hidden };
+      db.fights = (db.fights || []).concat(f);
+      libSel = f.id;
+      save(); closeSheet(); renderLib(); vibrate(25);
+      toast('Lucha empezada. Un día cada vez.');
+    });
+  };
+  paint();
+}
+
+function openFightOptions(f) {
+  let armed = false;
+  const paint = () => {
+    openSheet(`
+      <div class="sheet-head"><h2>${esc(fightEmoji(f))} ${esc(fightName(f))}</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+      <div class="menu">
+        <button data-h>${f.hidden ? 'Mostrar el nombre' : 'Modo discreto: ocultar el nombre'}</button>
+        <button data-why>Cambiar mis motivos</button>
+        <button class="warn" data-del>${armed ? 'Pulsa otra vez para borrar' : 'Borrar esta lucha y su historial'}</button>
+      </div>`, true);
+    bind('[data-close]', closeSheet);
+    bind('[data-h]', () => { f.hidden = !f.hidden; save(); closeSheet(); renderLib(); });
+    bind('[data-why]', () => openWhy(f));
+    bind('[data-del]', () => {
+      if (!armed) { armed = true; return paint(); }
+      db.fights = db.fights.filter(x => x !== f); save(); closeSheet(); renderLib(); toast('Lucha borrada');
+    });
+  };
+  paint();
+}
+function openWhy(f) {
+  const why = new Set(f.why || []);
+  const paint = keep => {
+    openSheet(`
+      <div class="sheet-head"><h2>Mis motivos</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+      <div class="chips">${REASONS.map(r => `<button class="chip ${why.has(r) ? 'on' : ''}" data-w="${r}">${r}</button>`).join('')}</div>
+      <button class="primary" data-ok>Guardar</button>`, keep);
+    bind('[data-close]', closeSheet);
+    bind('[data-w]', b => { const w = b.dataset.w; why.has(w) ? why.delete(w) : why.add(w); paint(true); });
+    bind('[data-ok]', () => { f.why = [...why]; save(); closeSheet(); renderLib(); });
+  };
+  paint();
+}
+
+// Caída: registrar sin castigo, con lo que la provocó
+function openFall(f) {
+  const trig = new Set();
+  const paint = keep => {
+    openSheet(`
+      <div class="sheet-head"><h2>Levántate</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+      <p class="hint">Caer no te define. Lo que importa es lo que haces ahora. Marca qué lo provocó para aprender de ello.</p>
+      <div class="label first">¿Qué lo provocó?</div>
+      <div class="chips">${TRIGGERS.map(t => `<button class="chip ${trig.has(t) ? 'on' : ''}" data-t="${t}">${t}</button>`).join('')}</div>
+      <button class="primary" data-ok>Registrar y empezar de nuevo</button>
+      <button class="primary secondary" data-close>Cancelar</button>`, keep);
+    bind('[data-close]', closeSheet);
+    bind('[data-t]', b => { const t = b.dataset.t; trig.has(t) ? trig.delete(t) : trig.add(t); paint(true); });
+    bind('[data-ok]', () => {
+      const now = Date.now();
+      f.best = Math.max(f.best || 0, now - f.start);
+      f.relapses = (f.relapses || []).concat({ t: now, trig: [...trig] });
+      f.start = now;
+      save(); closeSheet(); renderLib();
+      const v = pick(V_FALL, f.relapses.length);
+      openSheet(`
+        <div class="sheet-head"><h2>Empieza de nuevo</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+        <q class="stage-q" style="margin-top:0">${v[0]}</q><cite>${v[1]}</cite>
+        <p class="hint" style="margin-top:16px">Tu mejor racha sigue guardada: ${Math.floor(f.best / 864e5)} ${plural(Math.floor(f.best / 864e5), 'día', 'días')}. Ahora mismo haz una cosa: ${f.relapses.length % 2 ? 'cuéntaselo hoy a alguien de confianza' : 'sal de donde estás y cambia de actividad'}.</p>
+        <button class="primary" data-close>Vuelvo a la lucha</button>`);
+      bind('[data-close]', closeSheet);
+    });
+  };
+  paint();
+}
+
+/* --- Tengo ganas: 10 minutos para que pase la ola --- */
+function openSos(f) {
+  sos = { f, end: Date.now() + 10 * 60000, i: 0, t0: Date.now() };
+  const v = V_LIB[0];
+  $('sosBox').innerHTML = `
+    <div class="eyebrow">Aguanta. La ola pasa.</div>
+    <div class="breath" id="breath"><div class="b-ring"></div><span id="breathTxt">Inspira</span></div>
+    <div class="t-clock sos-clock" id="sosClock">10:00</div>
+    <p class="sos-sub">Las ganas bajan en unos minutos si no las alimentas.</p>
+    ${f.why && f.why.length ? `<div class="lib-why center">${f.why.map(w => `<span>${esc(w)}</span>`).join('')}</div>` : ''}
+    <div class="sos-act" id="sosAct"></div>
+    <q>${v[0]}</q><cite>${v[1]}</cite>
+    <div class="t-actions">
+      <button class="primary" id="sosWin">Lo he superado</button>
+      <button class="linkbtn" id="sosLost">He caído</button>
+    </div>`;
+  $('sos').hidden = false;
+  $('sos').scrollTop = 0;
+  const act = () => { const a = SOS_ACTIONS[sos.i % SOS_ACTIONS.length]; $('sosAct').innerHTML = `<span>${a[0]}</span><b>${a[1]}</b><button class="chip" id="sosNext">Otra idea</button>`; $('sosNext').onclick = () => { sos.i++; act(); }; };
+  act();
+  const tick = () => {
+    if (!sos) return;
+    const left = Math.max(0, sos.end - Date.now()), s = Math.ceil(left / 1000);
+    $('sosClock').textContent = left ? `${pad2(Math.floor(s / 60))}:${pad2(s % 60)}` : 'Pasó';
+    const ph = ((Date.now() - sos.t0) / 1000) % 14;                 // 4 s inspira, 4 s mantén, 6 s suelta
+    $('breathTxt').textContent = ph < 4 ? 'Inspira' : ph < 8 ? 'Mantén' : 'Suelta';
+    $('breath').className = 'breath ' + (ph < 4 ? 'in' : ph < 8 ? 'hold' : 'out');
+  };
+  tick();
+  clearInterval(sos.iv); sos.iv = setInterval(tick, 250);
+  try { navigator.wakeLock && navigator.wakeLock.request('screen').then(w => { sos && (sos.wake = w); }).catch(() => {}); } catch (e) {}
+  $('sosWin').onclick = () => closeSos(true);
+  $('sosLost').onclick = () => { const fi = sos.f; closeSos(false); openFall(fi); };
+}
+function closeSos(won) {
+  if (!sos) return;
+  clearInterval(sos.iv);
+  try { sos.wake && sos.wake.release(); } catch (e) {}
+  const f = sos.f;
+  f.urges = (f.urges || []).concat({ t: Date.now(), won: !!won });
+  sos = null;
+  $('sos').hidden = true;
+  save(); renderLib();
+  if (won) { vibrate([30, 60, 30]); toast('Victoria. Una batalla ganada.'); }
 }
 
 /* ---------- Hoja inferior ---------- */
@@ -1801,15 +2213,17 @@ $('overlay').onclick = closeSheet;
 $('victoryClose').onclick = () => { $('victory').classList.remove('show'); if (pendingEvo) showEvo(); };
 $('evoClose').onclick = () => { $('evo').hidden = true; $('evo').classList.remove('go'); };
 $('avatar').onclick = () => go('prog');
-$('fab').onclick = stepCategory;
+$('fab').onclick = () => view === 'lib' ? openNewFight() : stepCategory();
+$('tabLib').onclick = () => go('lib');
 $('tabHoy').onclick = () => go('hoy');
 $('tabProg').onclick = () => go('prog');
 $('prevWeek').onclick = () => { weekStart = addDays(weekStart, -7); render(); };
 $('nextWeek').onclick = () => { weekStart = addDays(weekStart, 7); render(); };
-window.addEventListener('hashchange', () => { const v = location.hash === '#progreso' ? 'prog' : 'hoy'; if (v !== view) setView(v); });
+const viewFromHash = () => location.hash === '#progreso' ? 'prog' : location.hash === '#libertad' ? 'lib' : 'hoy';
+window.addEventListener('hashchange', () => { const v = viewFromHash(); if (v !== view) setView(v); });
 
 try { const raw = localStorage.getItem(KEY); if (raw) adopt(JSON.parse(raw)); else adopt({}); } catch (e) { adopt({}); }
-setView(location.hash === '#progreso' ? 'prog' : 'hoy');
+setView(viewFromHash());
 renderSync();
 if (pendingEvo) { saveLocal(); setTimeout(showEvo, 500); }
 initCloud();
