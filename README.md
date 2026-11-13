@@ -38,6 +38,7 @@ Pestaña para dejar adicciones (pornografía, alcohol, tabaco, redes, videojuego
 - Botón **He caído**: registra qué lo provocó y vuelve a empezar sin perder la mejor racha.
 - Disparadores más frecuentes, calendario de las últimas 4 semanas y consejos prácticos.
 - Modo discreto para ocultar el nombre de la lucha.
+- Un personaje que evoluciona con los días libre en 8 etapas: de encerrado en un cuarto oscuro con el móvil (día 0) a ejecutivo trajeado junto a un deportivo (día 60).
 
 ### Progreso
 
