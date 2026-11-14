@@ -195,6 +195,9 @@
   .label.first { margin-top: 0; }
   .hint { color: var(--muted); font-size: 13px; line-height: 1.45; margin: 0 2px 12px; }
   .sync { text-align: center; font-size: 12px; margin: 20px 0 0; }
+  .row2b { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .row2b .primary { margin-top: 0; font-size: 14px; letter-spacing: .05em; padding: 14px 6px; }
+  .bk-text { width: 100%; min-height: 110px; font: 12px/1.4 ui-monospace, Menlo, monospace; padding: 12px; border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); color: var(--text); user-select: text; -webkit-user-select: text; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; font-weight: 600; font-size: 14px; transition: transform .12s; }
   .chip:active { transform: scale(.94); }
@@ -500,6 +503,12 @@
       </div>
     </header>
     <div id="prog"></div>
+    <div class="sec-title">Copia de seguridad</div>
+    <div class="card backup">
+      <p class="hint" style="margin:0 0 12px">Guarda un archivo con todos tus datos para no perderlos o pasarlos a otro móvil o a la otra versión de la app.</p>
+      <div class="row2b"><button class="primary secondary" id="bkSave">Guardar copia</button><button class="primary secondary" id="bkLoad">Recuperar copia</button></div>
+      <input type="file" id="bkFile" accept=".json,application/json,text/plain" hidden>
+    </div>
     <p class="hint sync" id="sync"></p>
   </section>
 </div>
@@ -1077,7 +1086,7 @@ function computeStats() {
   let first = TODAY;
   for (const g of db.goals) { const d = g.repeat === 'once' ? g.date : g.from; if (d && d < first) first = d; }
   const month = TODAY.slice(0, 7), end = parse(TODAY);
-  const r = { pts: 0, wins: 0, best: 0, streak: 0, mPts: 0, mWins: 0, mDays: 0, today: 0 };
+  const r = { pts: 0, wins: 0, best: 0, streak: 0, mPts: 0, mWins: 0, mDays: 0, today: 0, lib: 0 };
   let run = 0, guard = 0;
   for (let d = parse(first); d <= end && guard < 6000; d = addDays(d, 1), guard++) {
     const ds = ymd(d), dow = d.getDay(), marks = db.done[ds] || {};
@@ -1102,6 +1111,19 @@ function computeStats() {
     if (ds === TODAY) r.today = p;
   }
   r.streak = run;
+  // Libertad: 30 puntos por cada día limpio en cada lucha (cuentan hasta dos luchas por día)
+  const clean = {};
+  for (const f of db.fights || []) {
+    const fell = new Set((f.relapses || []).map(x => ymd(new Date(x.t))));
+    let d = parse(ymd(new Date(Math.min(f.origin || f.created || Date.now(), f.created || Date.now()))));
+    for (let g = 0; d <= end && g < 3000; d = addDays(d, 1), g++) { const ds = ymd(d); if (!fell.has(ds)) clean[ds] = Math.min(2, (clean[ds] || 0) + 1); }
+  }
+  for (const ds in clean) {
+    const p = 30 * clean[ds];
+    r.pts += p; r.lib = (r.lib || 0) + p;
+    if (ds.slice(0, 7) === month) r.mPts += p;
+    if (ds === TODAY) r.today += p;
+  }
   return r;
 }
 // Rango, galón (I a III dentro de cada rango) y lo que falta para el siguiente
@@ -1128,20 +1150,22 @@ function setCount(g, d, n) {
 }
 // Guarda, repinta y celebra: puntos ganados, galón nuevo, ascenso y día ganado
 let pendingEvo = null;
+// Detecta si los puntos han dado un galón o un ascenso nuevo
+function levelCheck() {
+  const lv = levelInfo(computeStats().pts), seen = db.seen || 0;
+  if (lv.step <= seen) return '';
+  db.seen = lv.step;
+  if (lv.i > Math.floor(seen / 3)) { pendingEvo = { from: Math.floor(seen / 3), to: lv.i }; return ''; }
+  return lv.label;
+}
 function commit(before, d, origin) {
-  const prev = S.pts, lv = levelInfo(computeStats().pts), seen = db.seen || 0;
-  let galon = false;
-  if (lv.step > seen) {
-    if (lv.i > Math.floor(seen / 3)) pendingEvo = { from: Math.floor(seen / 3), to: lv.i };
-    else galon = true;
-    db.seen = lv.step;
-  }
+  const prev = S.pts, galon = levelCheck();
   save();
   render();
   if (S.pts > prev) { pumpAvatar(); if (origin) floatPoints(origin, S.pts - prev); }
   if (perfect(dayStats(d)) && !perfect(before)) victory();
   else if (pendingEvo) showEvo();
-  if (galon) toast('Nuevo galón: ' + lv.label);
+  if (galon) toast('Nuevo galón: ' + galon);
 }
 
 function planChapter(g, ds) {
@@ -1349,8 +1373,9 @@ function soldierSection() {
         <div><span>Puntos en ${month}</span><b>${fmt(S.mPts)}</b></div>
         <div><span>Días ganados</span><b>${S.mWins} de ${S.mDays}</b></div>
       </div>
+      ${S.lib ? `<div class="sub" style="margin-top:10px">${fmt(S.lib)} de tus puntos vienen de tus días limpios en Libertad</div>` : ''}
     </div>
-    <p class="hint" style="margin-top:12px">Cada día suma hasta 100 puntos según lo que cumplas, 50 más si lo cumples todo y hasta 50 extra por racha. Llegar a Vencedor pide un año entero de días ganados.</p>
+    <p class="hint" style="margin-top:12px">Cada día suma hasta 100 puntos según lo que cumplas, 50 más si lo cumples todo y hasta 50 extra por racha. Cada día limpio en Libertad suma 30 más. Llegar a Vencedor pide un año entero de días ganados.</p>
     <div class="sec-title">Las doce formas</div>
     <div class="stages" id="stages">${LEVELS.map((l, k) => `
       <button class="stage ${k < lv.i ? 'on' : k === lv.i ? 'cur' : 'lock' + (reveal ? ' shown' : '')}" data-stage="${k}">
@@ -1827,6 +1852,9 @@ function bestMs(f) { return Math.max(f.best || 0, Date.now() - f.start); }
 
 function renderLib() {
   const el = $('lib'), fs = db.fights || [];
+  const galon = levelCheck();
+  S = computeStats();
+  if (galon || pendingEvo) { save(); if (pendingEvo) setTimeout(showEvo, 400); else setTimeout(() => toast('Nuevo galón: ' + galon), 400); }
   clearInterval(libTimer);
   if (!fs.length) {
     el.innerHTML = `<div class="card lib-intro">
@@ -1961,7 +1989,7 @@ function openNewFight() {
       let start = Date.now();
       if (st.since === '1' || st.since === '7') start -= +st.since * 864e5;
       if (st.since === 'date') { const d = parse(st.date || TODAY); start = Math.min(Date.now(), d.getTime()); }
-      const f = { id: newId(), key: preset ? preset.key : 'otro', name, emoji: preset ? preset.emoji : '⚔️', start, created: Date.now(), best: 0, relapses: [], urges: [], why: [...st.why], hidden: st.hidden };
+      const f = { id: newId(), key: preset ? preset.key : 'otro', name, emoji: preset ? preset.emoji : '⚔️', start, origin: start, created: Date.now(), best: 0, relapses: [], urges: [], why: [...st.why], hidden: st.hidden };
       db.fights = (db.fights || []).concat(f);
       libSel = f.id;
       save(); closeSheet(); renderLib(); vibrate(25);
@@ -2081,6 +2109,78 @@ function closeSos(won) {
   save(); renderLib();
   if (won) { vibrate([30, 60, 30]); toast('Victoria. Una batalla ganada.'); }
 }
+
+/* ---------- Copia de seguridad ---------- */
+function backupText() { return JSON.stringify({ app: 'mi-agenda', v: 1, saved: new Date().toISOString(), data: db }); }
+async function saveBackup() {
+  const text = backupText(), name = `mi-agenda-${TODAY}.json`;
+  try {                                                       // dentro de Claude: guardar con permiso del visor
+    if (window.claude && window.claude.use) {
+      const dl = await claude.use('downloads');
+      if (dl) { await dl.save({ filename: name, data: text }); toast('Copia guardada'); return; }
+    }
+  } catch (e) { if (e && e.code && e.code !== 'unavailable') { toast('No se guardó la copia'); return; } }
+  try {                                                       // fuera de Claude: descarga normal
+    if (!(window.claude && window.claude.use)) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+      a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      toast('Copia guardada en Descargas'); return;
+    }
+  } catch (e) {}
+  // último recurso: mostrar el texto para copiarlo
+  openSheet(`<div class="sheet-head"><h2>Tu copia</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+    <p class="hint">No se ha podido guardar como archivo aquí. Copia este texto y guárdalo en Notas: con él podrás recuperar todo.</p>
+    <textarea class="bk-text" id="bkOut" readonly>${esc(text)}</textarea>
+    <button class="primary" data-copy>Copiar</button>`);
+  bind('[data-close]', closeSheet);
+  bind('[data-copy]', () => { const t = $('bkOut'); navigator.clipboard.writeText(t.value).then(() => toast('Copiado'), () => { t.select(); toast('Selecciona y copia el texto'); }); });
+}
+function parseBackup(text) {
+  try {
+    const o = JSON.parse(String(text).trim()), d = o && o.data ? o.data : o;
+    if (!d || !Array.isArray(d.goals) || typeof d.done !== 'object') return null;
+    return d;
+  } catch (e) { return null; }
+}
+function confirmRestore(d) {
+  const n = d.goals.length, f = (d.fights || []).length;
+  let armed = false;
+  const paint = () => {
+    openSheet(`<div class="sheet-head"><h2>Recuperar copia</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+      <p class="hint">La copia tiene ${n} ${plural(n, 'objetivo', 'objetivos')}${f ? ` y ${f} ${plural(f, 'lucha', 'luchas')} en Libertad` : ''}. Sustituirá todo lo que tienes ahora en esta app.</p>
+      <button class="primary" data-ok>${armed ? 'Pulsa otra vez para sustituir' : 'Recuperar esta copia'}</button>
+      <button class="primary secondary" data-close>Cancelar</button>`);
+    bind('[data-close]', closeSheet);
+    bind('[data-ok]', () => {
+      if (!armed) { armed = true; return paint(); }
+      adopt(d); save(); closeSheet(); render(); if (view === 'lib') renderLib();
+      toast('Copia recuperada');
+    });
+  };
+  paint();
+}
+function loadBackup() {
+  openSheet(`<div class="sheet-head"><h2>Recuperar copia</h2><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+    <button class="primary" data-file style="margin-top:0">Elegir el archivo de la copia</button>
+    <div class="label">O pega aquí el texto de la copia</div>
+    <textarea class="bk-text" id="bkIn" placeholder="{&quot;app&quot;:&quot;mi-agenda&quot;, …}"></textarea>
+    <button class="primary secondary" data-paste>Usar el texto pegado</button>`);
+  bind('[data-close]', closeSheet);
+  bind('[data-file]', () => $('bkFile').click());
+  bind('[data-paste]', () => { const d = parseBackup($('bkIn').value); if (!d) return toast('Ese texto no es una copia válida'); confirmRestore(d); });
+}
+$('bkFile').onchange = e => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  const rd = new FileReader();
+  rd.onload = () => { const d = parseBackup(rd.result); if (!d) return toast('Ese archivo no es una copia válida'); confirmRestore(d); };
+  rd.readAsText(file);
+};
+$('bkSave').onclick = saveBackup;
+$('bkLoad').onclick = loadBackup;
 
 /* ---------- Hoja inferior ---------- */
 function openSheet(html, keepScroll) {
@@ -2502,6 +2602,11 @@ setView(viewFromHash());
 renderSync();
 if (pendingEvo) { saveLocal(); setTimeout(showEvo, 500); }
 initCloud();
+// Funciona sin internet cuando se abre desde la pantalla de inicio (no aplica dentro de Claude)
+try {
+  if ('serviceWorker' in navigator && window.top === window && window.isSecureContext && !/claude\.ai|claudeusercontent/.test(location.hostname))
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+} catch (e) {}
 </script>
 
 </body></html>
