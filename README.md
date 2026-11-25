@@ -55,14 +55,3 @@ Instalada en la pantalla de inicio desde GitHub Pages, la app funciona sin conex
 ## Datos
 
 Todo se guarda en el propio navegador (`localStorage`); no hace falta cuenta ni internet, salvo para cargar las tipografías. No hay avisos ni notificaciones.
-
----
-
-# Zúrich de bolsillo (`zurich/`)
-
-Guía de viaje para Zúrich ciudad (25–29 de noviembre), aparte de Mi Agenda. Se abre en `zurich/index.html` y se instala en el iPhone con Safari › Compartir › «Añadir a pantalla de inicio».
-
-- **Comer:** escribe el tipo de comida o toca un filtro; sale ordenado por valoración o por cercanía.
-- **Qué ver, Naturaleza, Monumentos:** ordenados de más a menos interés.
-- **Museo Lindt, Tiendas, Trenes, Útil:** horarios, domingo, billetes, emergencias, plan por días y frases.
-- **Mi piso:** guarda la dirección (búsqueda, ubicación actual, coordenadas o zona) y todas las tarjetas muestran los minutos a pie.
