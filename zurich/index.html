@@ -363,12 +363,16 @@ ul.clean { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
         <h3>Otras formas de marcarlo</h3>
         <button type="button" class="btn big" id="use-here">Estoy en el piso: usar mi ubicación</button>
         <div class="field">
-          <label for="coords">O pega coordenadas o un enlace de Google Maps / Apple Maps</label>
+          <label for="coords">O pega las coordenadas del piso</label>
           <div class="search">
-            <input id="coords" type="text" placeholder="47.3769, 8.5417" autocomplete="off" inputmode="text">
+            <input id="coords" type="text" placeholder="47,37690° N, 8,54170° E" autocomplete="off" inputmode="text">
             <button type="button" id="coords-go">Guardar</button>
           </div>
         </div>
+        <ul class="clean msg">
+          <li><b>Apple Maps:</b> busca la dirección, mantén el dedo pulsado sobre el edificio hasta que caiga un alfiler, desliza la ficha hacia arriba y toca las coordenadas para copiarlas.</li>
+          <li><b>Google Maps:</b> mantén pulsado sobre el edificio; las coordenadas salen arriba, en la barra de búsqueda. Tócalas y cópialas.</li>
+        </ul>
         <div class="field">
           <label for="zone">O elige la parada o zona más cercana al piso</label>
           <select id="zone"></select>
@@ -883,13 +887,66 @@ async function searchAddress() {
       box.appendChild(b);
     });
   } catch (e) {
-    msg.className = 'msg err';
-    msg.textContent = 'Aquí no puedo buscar direcciones (sin conexión o la página no lo permite). Pega las coordenadas o elige la zona más cercana abajo.';
+    askClaudeForAddress(q);
   }
 }
+
+// Plan B dentro del enlace de Claude: la página no puede conectarse al buscador, así que se lo pregunta a Claude.
+async function askClaudeForAddress(q) {
+  const msg = $('#addr-msg'), box = $('#addr-results');
+  let sample = null;
+  try { sample = window.claude && window.claude.use ? await window.claude.use('sample') : null; } catch (e) { sample = null; }
+  if (!sample) {
+    msg.className = 'msg err';
+    msg.textContent = 'Aquí no puedo buscar direcciones. Copia las coordenadas desde Apple Maps (mira los pasos de abajo) o elige la zona más cercana.';
+    return;
+  }
+  msg.className = 'msg';
+  msg.textContent = 'Buscando la dirección con Claude… (la primera vez te pide permiso; tarda unos segundos)';
+  const prompt = 'Eres un geocodificador para la ciudad de Zúrich (Suiza). Dirección escrita por un turista: "' + q.replace(/"/g, "'") + '".\n' +
+    'Da las coordenadas WGS84 del portal o, si no lo sabes con exactitud, del tramo de la calle que corresponde a ese número. ' +
+    'Responde SOLO con JSON, sin texto alrededor: {"lat": número, "lng": número, "direccion": "calle y número normalizados, código postal y Zürich", "precision": "portal" | "tramo de calle" | "barrio"}. ' +
+    'Si la calle no existe en Zúrich, responde {"lat": null, "direccion": "", "precision": "no encontrada"}.';
+  try {
+    const r = await sample.json(prompt, { modelTier: 'default' });
+    const lat = Number(r && r.lat), lng = Number(r && r.lng);
+    if (!r || !isFinite(lat) || !isFinite(lng) || lat < 47.2 || lat > 47.5 || lng < 8.3 || lng > 8.7) {
+      msg.className = 'msg err';
+      msg.textContent = 'No he encontrado esa dirección en Zúrich. Revisa cómo se escribe (Strasse, Gasse, Weg…) o usa las coordenadas de Apple Maps.';
+      return;
+    }
+    const label = String(r.direccion || q).slice(0, 120);
+    const prec = String(r.precision || 'aproximada');
+    msg.className = 'msg';
+    msg.textContent = `Encontrada (precisión: ${prec}). Compruébala en el mapa y, si está bien, guárdala:`;
+    const save = document.createElement('button');
+    save.type = 'button';
+    save.textContent = 'Guardar: ' + label;
+    save.onclick = () => {
+      saveHome(lat, lng, label.split(',')[0], prec === 'portal' ? '' : 'Aproximado ·');
+      box.innerHTML = ''; msg.className = 'msg ok'; msg.textContent = 'Guardado.';
+    };
+    const check = document.createElement('a');
+    check.className = 'btn';
+    check.target = '_blank'; check.rel = 'noopener';
+    check.href = `https://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent('Mi piso')}`;
+    check.textContent = 'Ver el punto en Apple Maps';
+    box.append(save, check);
+  } catch (e) {
+    msg.className = 'msg err';
+    msg.textContent = e && e.code === 'not_granted'
+      ? 'Sin permiso para preguntar a Claude. Usa las coordenadas de Apple Maps (pasos abajo) o elige la zona.'
+      : 'No he podido buscarla ahora. Inténtalo en un momento o usa las coordenadas de Apple Maps.';
+  }
+}
+
+// Acepta «47.37690, 8.54170», «47,37690° N, 8,54170° E» (Apple Maps en español) y enlaces con @47.37,8.54
 function parseCoords(text) {
-  const m = String(text).match(/(4[5-8]\.\d+)\s*[,;\s]\s*(-?(?:[5-9]|10)\.\d+)/);
-  return m ? [parseFloat(m[1]), parseFloat(m[2])] : null;
+  const nums = (String(text).match(/\d{1,2}[.,]\d{3,}/g) || []).map(s => parseFloat(s.replace(',', '.')));
+  const lat = nums.find(n => n >= 45.8 && n <= 47.9);
+  if (lat === undefined) return null;
+  const lng = nums.slice(nums.indexOf(lat) + 1).find(n => n >= 5.9 && n <= 10.6);
+  return lng === undefined ? null : [lat, lng];
 }
 
 /* ---------- Ubicación actual ---------- */
