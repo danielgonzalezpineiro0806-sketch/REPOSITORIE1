@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zúrich de bolsillo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Zúrich">
+<meta name="theme-color" content="#1546b8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: una sola columna de móvil; cabecera fija con pestañas desplazables, tarjetas de sitio con distancia a pie. Azul de Zúrich (escudo y trams) como único acento. */
+:root {
+  --bg: #f2f4f9;
+  --surface: #ffffff;
+  --surface-2: #e8edf7;
+  --fg: #0e1630;
+  --muted: #586380;
+  --line: #d9e0ee;
+  --accent: #1546b8;
+  --accent-ink: #ffffff;
+  --accent-soft: #dfe7fb;
+  --star: #a96d00;
+  --good: #137a4b;
+  --warn: #a84300;
+  --danger: #b3122e;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Inter", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --r: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a0f1e; --surface: #131a2c; --surface-2: #1b2440; --fg: #e9edf7; --muted: #9ba6c3;
+    --line: #26304d; --accent: #7aa2ff; --accent-ink: #08102a; --accent-soft: #1d2a52;
+    --star: #f3b73e; --good: #4fcf8e; --warn: #ff9a57; --danger: #ff6b81; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a0f1e; --surface: #131a2c; --surface-2: #1b2440; --fg: #e9edf7; --muted: #9ba6c3;
+  --line: #26304d; --accent: #7aa2ff; --accent-ink: #08102a; --accent-soft: #1d2a52;
+  --star: #f3b73e; --good: #4fcf8e; --warn: #ff9a57; --danger: #ff6b81; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 15px/1.45 var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+a { color: var(--accent); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); max-width: 760px; margin: 0 auto; }
+
+/* Cabecera */
+header.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 12px; padding-block: 10px 6px; }
+.shield { width: 30px; height: 34px; flex: none; }
+.brand h1 { font: 800 22px/1 var(--font-display); font-stretch: 80%; letter-spacing: .01em; margin: 0; text-transform: uppercase; }
+.brand .dates { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.origin { margin-left: auto; display: flex; gap: 2px; background: var(--surface-2); border-radius: 999px; padding: 3px; flex: none; }
+.origin button { border: 0; background: transparent; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.origin button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+nav.tabs { display: flex; gap: 6px; overflow-x: auto; padding-block: 6px 10px; scrollbar-width: none; scroll-snap-type: x proximity; }
+nav.tabs::-webkit-scrollbar { display: none; }
+nav.tabs a {
+  flex: none; text-decoration: none; color: var(--fg); background: var(--surface-2);
+  padding: 8px 13px; border-radius: 999px; font: 600 14px/1 var(--font-display); font-stretch: 90%;
+  scroll-snap-align: start; white-space: nowrap;
+}
+nav.tabs a[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
+
+main { padding-block: 14px 40px; }
+section.view[hidden] { display: none; }
+.view-head { display: grid; gap: 4px; margin-bottom: 12px; }
+.view-head h2 { font: 800 28px/1.05 var(--font-display); font-stretch: 85%; margin: 0; text-wrap: balance; }
+.view-head p { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* Controles */
+.search { display: flex; gap: 8px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px 6px 4px 12px; }
+.search input { flex: 1; min-width: 0; border: 0; background: transparent; padding: 9px 0; outline: none; font-size: 16px; }
+.search button { border: 0; background: var(--surface-2); border-radius: 8px; padding: 6px 10px; color: var(--muted); cursor: pointer; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.chip { border: 1px solid var(--line); background: var(--surface); padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 500; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 14px 0 10px; flex-wrap: wrap; }
+.count { color: var(--muted); font-size: 13px; }
+.seg { display: inline-flex; background: var(--surface-2); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: transparent; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+
+/* Tarjetas */
+.list { display: grid; gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 13px 14px; display: grid; gap: 7px; min-width: 0; }
+.card-top { display: flex; gap: 10px; align-items: flex-start; }
+.rank { flex: none; width: 26px; height: 26px; border-radius: 8px; background: var(--surface-2); display: grid; place-items: center; font: 700 13px/1 var(--font-display); color: var(--muted); font-variant-numeric: tabular-nums; }
+.card h3 { margin: 0; font: 700 17px/1.2 var(--font-display); font-stretch: 92%; min-width: 0; }
+.meta { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.score { margin-left: auto; flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+.stars { font: 700 16px/1 var(--font-display); color: var(--star); }
+.stars small { font-size: 11px; color: var(--muted); font-weight: 500; display: block; margin-top: 3px; }
+.interest { font: 700 15px/1 var(--font-display); }
+.interest small { display: block; font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 3px; }
+.note { margin: 0; font-size: 14px; }
+.tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--muted); }
+.tag.hot { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.tag.ok { color: var(--good); }
+.tag.warn { color: var(--warn); }
+.card-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+.dist { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; display: inline-flex; align-items: center; gap: 5px; }
+.dist svg { width: 15px; height: 15px; }
+.dist.none { color: var(--muted); font-weight: 500; }
+.actions { margin-left: auto; display: flex; gap: 6px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; border: 1px solid var(--line); background: var(--surface); color: var(--fg); padding: 7px 11px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.big { padding: 11px 14px; font-size: 15px; border-radius: 12px; }
+.empty { text-align: center; color: var(--muted); padding: 30px 10px; }
+
+/* Bloques de información */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; }
+.panel h3 { margin: 0; font: 700 18px/1.2 var(--font-display); font-stretch: 90%; }
+.panel p { margin: 0; }
+.stack { display: grid; gap: 12px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; min-width: 0; }
+ul.clean { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
+.phones { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.phone { text-decoration: none; color: var(--fg); background: var(--surface-2); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; }
+.phone b { font: 800 24px/1 var(--font-display); color: var(--danger); font-variant-numeric: tabular-nums; }
+.phone span { font-size: 13px; color: var(--muted); }
+.day { display: grid; grid-template-columns: 62px 1fr; gap: 12px; padding-block: 10px; border-top: 1px solid var(--line); }
+.day:first-of-type { border-top: 0; padding-top: 0; }
+.day .d { font: 800 15px/1.1 var(--font-display); font-stretch: 85%; text-transform: uppercase; }
+.day .d small { display: block; font-size: 12px; color: var(--muted); font-weight: 500; text-transform: none; margin-top: 2px; }
+.phrase { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding-top: 7px; font-size: 14px; }
+.phrase:first-child { border-top: 0; padding-top: 0; }
+.phrase b { font-family: var(--font-display); }
+.lindt-hero { background: linear-gradient(135deg, #3b1f12, #7a4325); color: #fbeee2; border: 0; }
+.lindt-hero h3 { font-size: 24px; }
+.lindt-hero .meta { color: #e8cdb8; }
+.lindt-hero .btn { border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.12); color: #fff; }
+.lindt-hero .btn.primary { background: #fbeee2; color: #3b1f12; border-color: #fbeee2; }
+.sub { font: 700 13px/1 var(--font-display); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 22px 0 10px; }
+
+/* Casa */
+.field { display: grid; gap: 6px; }
+.field label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.field .search input { border: 0; padding: 9px 0; background: transparent; }
+.field > input, .field select { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 11px 12px; font-size: 16px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row > .field { flex: 1 1 200px; }
+.msg { font-size: 13px; color: var(--muted); }
+.msg.err { color: var(--danger); }
+.msg.ok { color: var(--good); }
+.results { display: grid; gap: 6px; }
+.results button { text-align: left; border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 9px 11px; cursor: pointer; font-size: 14px; }
+.home-status { display: flex; gap: 12px; align-items: center; }
+.home-status .pin { width: 42px; height: 42px; border-radius: 12px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; flex: none; }
+.home-status .pin svg { width: 22px; height: 22px; }
+.home-status b { font: 700 17px/1.2 var(--font-display); display: block; }
+.mini { display: grid; gap: 6px; }
+.mini a { display: flex; justify-content: space-between; gap: 10px; text-decoration: none; color: var(--fg); padding: 8px 10px; border-radius: 10px; background: var(--surface-2); font-size: 14px; }
+.mini a span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+.foot { color: var(--muted); font-size: 12px; text-align: center; margin-top: 26px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: rise .25s ease both; }
+  @keyframes rise { from { transform: translateY(4px); } to { transform: none; } }
+}
+@media (max-width: 380px) {
+  .brand h1 { font-size: 19px; }
+  .origin button { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="shield" viewBox="0 0 30 34" aria-hidden="true">
+        <path d="M2 2h26v15c0 8-6 13-13 15C8 30 2 25 2 17z" fill="var(--accent)"/>
+        <path d="M2 2h26L2 28z" fill="#ffffff"/>
+        <path d="M2 2h26v15c0 8-6 13-13 15C8 30 2 25 2 17z" fill="none" stroke="var(--fg)" stroke-opacity=".25" stroke-width="1.2"/>
+      </svg>
+      <div>
+        <h1>Zúrich</h1>
+        <div class="dates">25–29 nov · zona 110</div>
+      </div>
+      <div class="origin" role="group" aria-label="Medir distancias desde casa o desde donde estás">
+        <button type="button" id="o-home" aria-pressed="true">Casa</button>
+        <button type="button" id="o-here" aria-pressed="false">Aquí</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Secciones">
+      <a href="#comer">Comer</a>
+      <a href="#ver">Qué ver</a>
+      <a href="#naturaleza">Naturaleza</a>
+      <a href="#monumentos">Monumentos</a>
+      <a href="#lindt">Museo Lindt</a>
+      <a href="#tiendas">Tiendas</a>
+      <a href="#transporte">Trenes</a>
+      <a href="#util">Útil</a>
+      <a href="#casa">Mi piso</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- COMER -->
+  <section class="view" id="v-comer">
+    <div class="view-head">
+      <h2>Dónde comer</h2>
+      <p>Escribe qué te apetece (fondue, pizza, sushi, barato…) y te salen ordenados de mejor a peor valorados.</p>
+    </div>
+    <div class="search">
+      <input id="food-q" type="search" placeholder="Tipo de comida: fondue, italiana, vegetariana…" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="food-clear" aria-label="Borrar búsqueda">Borrar</button>
+    </div>
+    <div class="chips" id="food-chips"></div>
+    <div class="bar">
+      <span class="count" id="food-count"></span>
+      <div class="seg" role="group" aria-label="Ordenar">
+        <button type="button" data-sort="rating" aria-pressed="true">Mejor valorados</button>
+        <button type="button" data-sort="dist" aria-pressed="false">Más cerca</button>
+      </div>
+    </div>
+    <div class="list" id="food-list"></div>
+  </section>
+
+  <!-- QUÉ VER -->
+  <section class="view" id="v-ver" hidden>
+    <div class="view-head">
+      <h2>Qué ver</h2>
+      <p>De lo más imprescindible y bonito a lo que puedes dejar si vas justo de tiempo.</p>
+    </div>
+    <div class="bar">
+      <span class="count" id="ver-count"></span>
+      <div class="seg" role="group" aria-label="Ordenar">
+        <button type="button" data-sort="score" aria-pressed="true">Más interés</button>
+        <button type="button" data-sort="dist" aria-pressed="false">Más cerca</button>
+      </div>
+    </div>
+    <div class="list" id="ver-list"></div>
+  </section>
+
+  <!-- NATURALEZA -->
+  <section class="view" id="v-naturaleza" hidden>
+    <div class="view-head">
+      <h2>Naturaleza</h2>
+      <p>Lago, miradores, bosques e invernaderos para días fríos, sin salir de Zúrich.</p>
+    </div>
+    <div class="bar">
+      <span class="count" id="naturaleza-count"></span>
+      <div class="seg" role="group" aria-label="Ordenar">
+        <button type="button" data-sort="score" aria-pressed="true">Más interés</button>
+        <button type="button" data-sort="dist" aria-pressed="false">Más cerca</button>
+      </div>
+    </div>
+    <div class="list" id="naturaleza-list"></div>
+  </section>
+
+  <!-- MONUMENTOS -->
+  <section class="view" id="v-monumentos" hidden>
+    <div class="view-head">
+      <h2>Monumentos</h2>
+      <p>Iglesias, casas gremiales y edificios históricos, de más a menos importantes.</p>
+    </div>
+    <div class="bar">
+      <span class="count" id="monumentos-count"></span>
+      <div class="seg" role="group" aria-label="Ordenar">
+        <button type="button" data-sort="score" aria-pressed="true">Más interés</button>
+        <button type="button" data-sort="dist" aria-pressed="false">Más cerca</button>
+      </div>
+    </div>
+    <div class="list" id="monumentos-list"></div>
+  </section>
+
+  <!-- LINDT -->
+  <section class="view" id="v-lindt" hidden>
+    <div class="stack" id="lindt-box"></div>
+  </section>
+
+  <!-- TIENDAS -->
+  <section class="view" id="v-tiendas" hidden>
+    <div class="view-head">
+      <h2>Tiendas y servicios</h2>
+      <p>Supermercados, chocolate, compras y farmacia. El domingo casi todo cierra salvo lo marcado como «abre domingo».</p>
+    </div>
+    <div class="chips" id="shop-chips"></div>
+    <div class="bar">
+      <span class="count" id="shop-count"></span>
+      <div class="seg" role="group" aria-label="Ordenar">
+        <button type="button" data-sort="score" aria-pressed="true">Más útiles</button>
+        <button type="button" data-sort="dist" aria-pressed="false">Más cerca</button>
+      </div>
+    </div>
+    <div class="list" id="shop-list"></div>
+  </section>
+
+  <!-- TRANSPORTE -->
+  <section class="view" id="v-transporte" hidden>
+    <div class="view-head">
+      <h2>Trenes, trams y funiculares</h2>
+      <p>Toda la ciudad es la zona 110: con un billete de esa zona vale tram, bus, tren, barco y funicular.</p>
+    </div>
+    <div class="bar">
+      <span class="count" id="transporte-count"></span>
+      <div class="seg" role="group" aria-label="Ordenar">
+        <button type="button" data-sort="score" aria-pressed="true">Más útiles</button>
+        <button type="button" data-sort="dist" aria-pressed="false">Más cerca</button>
+      </div>
+    </div>
+    <div class="list" id="transporte-list"></div>
+  </section>
+
+  <!-- ÚTIL -->
+  <section class="view" id="v-util" hidden>
+    <div class="view-head">
+      <h2>Lo útil, rápido</h2>
+      <p>Emergencias, billetes, horarios, plan por días y frases básicas.</p>
+    </div>
+    <div class="stack" id="util-box"></div>
+  </section>
+
+  <!-- CASA -->
+  <section class="view" id="v-casa" hidden>
+    <div class="view-head">
+      <h2>Mi piso</h2>
+      <p>Guarda dónde te alojas y toda la app te dirá cuánto tardas andando a cada sitio.</p>
+    </div>
+    <div class="stack">
+      <div class="panel" id="home-status"></div>
+
+      <div class="panel">
+        <h3>Buscar la dirección</h3>
+        <div class="field">
+          <label for="addr">Calle y número (por ejemplo: Badenerstrasse 120)</label>
+          <div class="search">
+            <input id="addr" type="search" placeholder="Dirección del piso" autocomplete="street-address" enterkeyhint="search">
+            <button type="button" id="addr-go">Buscar</button>
+          </div>
+        </div>
+        <div class="results" id="addr-results"></div>
+        <p class="msg" id="addr-msg"></p>
+      </div>
+
+      <div class="panel">
+        <h3>Otras formas de marcarlo</h3>
+        <button type="button" class="btn big" id="use-here">Estoy en el piso: usar mi ubicación</button>
+        <div class="field">
+          <label for="coords">O pega coordenadas o un enlace de Google Maps / Apple Maps</label>
+          <div class="search">
+            <input id="coords" type="text" placeholder="47.3769, 8.5417" autocomplete="off" inputmode="text">
+            <button type="button" id="coords-go">Guardar</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="zone">O elige la parada o zona más cercana al piso</label>
+          <select id="zone"></select>
+        </div>
+        <div class="field">
+          <label for="home-name">Nombre para mostrar (opcional)</label>
+          <input id="home-name" type="text" placeholder="Mi piso" autocomplete="off">
+        </div>
+        <p class="msg" id="alt-msg"></p>
+      </div>
+
+      <div id="near-box" class="stack"></div>
+    </div>
+  </section>
+
+  <p class="foot">Valoraciones aproximadas de Google (pueden variar unas décimas). Tiempos a pie estimados a 4,8 km/h por calles. Toca «Google Maps» para ver horario y opiniones al momento.</p>
+</main>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- Datos ---------- */
+// ll: [latitud, longitud]. r: valoración aprox. de Google. s: interés 1–10.
+const FOOD = [
+  { n: 'Raclette Stube', c: 'Suiza · raclette', t: 'suiza raclette queso tradicional cena', r: 4.6, p: 'CHF 40–60', a: 'Niederdorf', d: 'Raclette a voluntad en un local rústico y pequeño. Muy de noviembre. Reserva.', ll: [47.3745, 8.5438], top: 1 },
+  { n: 'Zunfthaus zur Waag', c: 'Suiza clásica', t: 'suiza tradicional geschnetzeltes rosti elegante carne', r: 4.5, p: 'CHF 50–80', a: 'Münsterhof', d: 'Casa gremial junto al Fraumünster. Pide Zürcher Geschnetzeltes (ternera en salsa de nata) con rösti.', ll: [47.3700, 8.5405], top: 1 },
+  { n: 'Zeughauskeller', c: 'Suiza · cervecería', t: 'suiza tradicional salchicha cerveza rosti schnitzel carne', r: 4.4, p: 'CHF 35–55', a: 'Paradeplatz', d: 'Antiguo arsenal de 1487. Salchichas, Geschnetzeltes y rösti en raciones grandes. Siempre lleno: reserva o ve pronto.', ll: [47.3705, 8.5399], top: 1 },
+  { n: 'Le Dézaley', c: 'Fondue', t: 'fondue suiza queso fondue chinoise tradicional', r: 4.4, p: 'CHF 40–60', a: 'Altstadt', d: 'Fondue de queso y fondue chinoise en una casa antigua del casco viejo.', ll: [47.3716, 8.5450] },
+  { n: 'Swiss Chuchi', c: 'Fondue · raclette', t: 'fondue raclette suiza queso rosti', r: 4.3, p: 'CHF 35–55', a: 'Niederdorf', d: 'Fondue, raclette y rösti sin complicaciones en pleno Niederdorf. Turístico pero fiable.', ll: [47.3733, 8.5442] },
+  { n: 'Chäsalp', c: 'Fondue en el bosque', t: 'fondue suiza queso chalet montana', r: 4.4, p: 'CHF 40–60', a: 'Zürichberg', d: 'Chalet de fondue en lo alto del Zürichberg, ambiente de montaña. Mejor en taxi o bus; reserva.', ll: [47.3812, 8.5855] },
+  { n: 'Zum Kropf', c: 'Suiza · cervecería', t: 'suiza cerveza tradicional salchicha carne', r: 4.4, p: 'CHF 35–55', a: 'Paradeplatz', d: 'Salón histórico con techos pintados, cocina suiza y bávara, buena cerveza.', ll: [47.3708, 8.5401] },
+  { n: 'Zunfthaus zur Zimmerleuten', c: 'Suiza', t: 'suiza tradicional elegante rio', r: 4.4, p: 'CHF 50–80', a: 'Limmatquai', d: 'Casa gremial junto al río, cocina suiza cuidada. Abajo, la Küferstube, más informal.', ll: [47.3712, 8.5434] },
+  { n: 'Kronenhalle', c: 'Suiza y francesa', t: 'suiza francesa elegante arte alta cocina capricho', r: 4.4, p: 'CHF 80–130', a: 'Bellevue', d: 'Mítico: Chagall, Miró y Picasso originales en las paredes. Mousse de chocolate legendaria. Reserva. El bar de al lado vale para una copa.', ll: [47.3672, 8.5465], top: 1 },
+  { n: 'Haus Hiltl', c: 'Vegetariana', t: 'vegetariana vegana buffet sano barato rapido', r: 4.4, p: 'CHF 25–45', a: 'Bahnhofstrasse', d: 'El vegetariano más antiguo del mundo (1898). Buffet al peso o carta, abierto todo el día.', ll: [47.3733, 8.5367] },
+  { n: 'Tibits Bellevue', c: 'Vegetariana · buffet', t: 'vegetariana vegana buffet barato rapido sano', r: 4.4, p: 'CHF 20–35', a: 'Ópera', d: 'Buffet vegetariano al peso, rápido y bueno. Perfecto para comer sin perder tiempo.', ll: [47.3658, 8.5469] },
+  { n: 'Sternen Grill', c: 'Salchichas', t: 'salchicha bratwurst barato rapido calle suiza', r: 4.4, p: 'CHF 8–15', a: 'Bellevue', d: 'La Kalbsbratwurst con pan Bürli más famosa de Zúrich. De pie y en dos minutos.', ll: [47.3668, 8.5457], top: 1 },
+  { n: 'Rheinfelder Bierhalle', c: 'Suiza económica', t: 'suiza barato cerveza cordon bleu carne', r: 4.3, p: 'CHF 20–35', a: 'Niederdorf', d: 'Cervecería sencilla y barata, famosa por su cordon bleu gigante.', ll: [47.3752, 8.5443] },
+  { n: 'Schipfe 16', c: 'Suiza casera', t: 'suiza casera barato rio comida mediodia', r: 4.4, p: 'CHF 20–35', a: 'Schipfe', d: 'Cocina casera a buen precio junto al Limmat, en el barrio más antiguo. Sobre todo a mediodía.', ll: [47.3734, 8.5418] },
+  { n: 'Kantorei', c: 'Suiza moderna', t: 'suiza moderna temporada vino tranquilo', r: 4.4, p: 'CHF 40–60', a: 'Neumarkt', d: 'En una plaza tranquila del casco antiguo. Cocina de temporada y buenos vinos.', ll: [47.3730, 8.5460] },
+  { n: 'Volkshaus', c: 'Suiza · cervecería', t: 'suiza cerveza local barato schnitzel', r: 4.2, p: 'CHF 25–45', a: 'Helvetiaplatz', d: 'Gran salón de 1910 con cocina suiza y ambiente local, lejos de los turistas.', ll: [47.3747, 8.5268] },
+  { n: 'Bodega Española', c: 'Española · tapas', t: 'espanola tapas jamon vino', r: 4.4, p: 'CHF 35–60', a: 'Niederdorf', d: 'Desde 1874. Tapas, jamón y vinos españoles en una bodega con mucho encanto.', ll: [47.3713, 8.5443] },
+  { n: 'Bianchi', c: 'Pescado y marisco', t: 'pescado marisco italiana rio', r: 4.4, p: 'CHF 50–80', a: 'Limmatquai', d: 'Eliges el pescado fresco en el mostrador. Vistas al río.', ll: [47.3735, 8.5435] },
+  { n: 'Fischers Fritz', c: 'Pescado del lago', t: 'pescado lago terraza', r: 4.3, p: 'CHF 40–70', a: 'Wollishofen', d: 'Pescado del lago junto al agua. Tram 7 hasta Wollishofen. Comprueba el horario de invierno.', ll: [47.3424, 8.5368] },
+  { n: 'Ristorante Conti', c: 'Italiana', t: 'italiana pasta elegante', r: 4.5, p: 'CHF 50–80', a: 'Ópera', d: 'Italiano clásico junto a la Ópera: pasta fresca y buen servicio.', ll: [47.3652, 8.5478] },
+  { n: 'Rosso', c: 'Pizza', t: 'pizza italiana napolitana barato joven', r: 4.5, p: 'CHF 25–40', a: 'Zürich West', d: 'Pizza napolitana en una nave junto a las vías. Ambiente joven.', ll: [47.3862, 8.5294] },
+  { n: 'Ristorante Cooperativo', c: 'Italiana', t: 'italiana pasta trattoria casera', r: 4.3, p: 'CHF 35–55', a: 'Kreis 4', d: 'Trattoria histórica de cocina italiana casera.', ll: [47.3740, 8.5298] },
+  { n: 'Sala of Tokyo', c: 'Japonesa · sushi', t: 'japonesa sushi sashimi teppanyaki asiatica', r: 4.5, p: 'CHF 50–90', a: 'Kreis 5', d: 'Japonés de referencia desde 1981: sushi, sashimi y teppanyaki.', ll: [47.3810, 8.5365] },
+  { n: 'Hato', c: 'Asiática moderna', t: 'japonesa asiatica sushi fusion cocteles', r: 4.5, p: 'CHF 60–100', a: 'Enge', d: 'Cocina pan-asiática moderna y cócteles en un local muy vistoso. Reserva.', ll: [47.3672, 8.5325] },
+  { n: "Lily's Stomach Supply", c: 'Tailandesa · asiática', t: 'tailandesa asiatica curry wok barato rapido', r: 4.4, p: 'CHF 20–35', a: 'Langstrasse', d: 'Curries y woks rápidos y baratos. Un clásico de la Langstrasse.', ll: [47.3810, 8.5270] },
+  { n: 'Nooch Asian Kitchen', c: 'Asiática', t: 'asiatica ramen sushi wok japonesa', r: 4.2, p: 'CHF 25–40', a: 'Sihlporte', d: 'Ramen, sushi y wok sin complicaciones. Buena opción para grupos.', ll: [47.3734, 8.5363] },
+  { n: 'NENI', c: 'Mediterránea · israelí', t: 'mediterranea israeli hummus compartir oriente', r: 4.3, p: 'CHF 35–55', a: 'Langstrasse', d: 'Platos para compartir: hummus, shakshuka, pita. Muy animado.', ll: [47.3790, 8.5280] },
+  { n: 'Holy Cow!', c: 'Hamburguesas', t: 'hamburguesa burger barato rapido carne', r: 4.3, p: 'CHF 20–30', a: 'Niederdorf', d: 'Hamburguesas de carne suiza, rápido y sin reserva.', ll: [47.3742, 8.5440] },
+  { n: 'Les Halles', c: 'Bistró · mejillones', t: 'bistro francesa mejillones moules frites marisco', r: 4.3, p: 'CHF 30–50', a: 'Zürich West', d: 'Nave industrial con tienda bio. Famoso por los mejillones con patatas.', ll: [47.3885, 8.5208] },
+  { n: 'Markthalle Im Viadukt', c: 'Mercado gastronómico', t: 'mercado picar queso panaderia barato rapido desayuno', r: 4.5, p: 'CHF 15–35', a: 'Zürich West', d: 'Mercado cubierto bajo los arcos del viaducto: quesos, embutidos, pan y restaurante. Ideal para picar.', ll: [47.3868, 8.5270] },
+  { n: 'Frau Gerolds Garten', c: 'Fondue de invierno', t: 'fondue suiza queso ambiente bar', r: 4.3, p: 'CHF 30–50', a: 'Zürich West', d: 'Jardín urbano junto a Freitag. En invierno monta su cabaña de fondue (comprueba que esté abierta).', ll: [47.3856, 8.5302] },
+  { n: 'Café Sprüngli', c: 'Café · pastelería', t: 'cafe pasteleria dulces chocolate desayuno merienda', r: 4.4, p: 'CHF 10–30', a: 'Paradeplatz', d: 'Institución desde 1836. Prueba los Luxemburgerli (mini macarons) y el chocolate caliente.', ll: [47.3697, 8.5394], top: 1 },
+  { n: 'Conditorei Péclard (Schober)', c: 'Café · chocolate caliente', t: 'cafe chocolate dulces merienda pasteleria', r: 4.4, p: 'CHF 10–25', a: 'Niederdorf', d: 'Café de cuento con un chocolate caliente famoso. Perfecto con frío.', ll: [47.3720, 8.5450] },
+  { n: 'Café Henrici', c: 'Desayuno · brunch', t: 'desayuno brunch cafe bagel', r: 4.5, p: 'CHF 15–30', a: 'Niederdorf', d: 'Desayunos, bagels y buen café junto a la Grossmünster.', ll: [47.3723, 8.5440] },
+  { n: "Babu's Bakery", c: 'Desayuno · brunch', t: 'desayuno brunch cafe panaderia', r: 4.4, p: 'CHF 15–30', a: 'Löwenstrasse', d: 'Panadería-café para desayunar. Muy popular el fin de semana.', ll: [47.3738, 8.5370] },
+  { n: 'Café Felix', c: 'Café · tartas', t: 'cafe pasteleria tartas dulces merienda', r: 4.3, p: 'CHF 10–25', a: 'Bellevue', d: 'Tartas enormes frente a Bellevue.', ll: [47.3668, 8.5452] },
+  { n: 'Brasserie Lipp', c: 'Brasserie francesa', t: 'francesa brasserie marisco vistas', r: 4.2, p: 'CHF 40–70', a: 'Uraniastrasse', d: 'Brasserie de estilo parisino. Arriba, el bar de la torre Urania con vistas.', ll: [47.3741, 8.5395] },
+  { n: 'Pavillon (Baur au Lac)', c: 'Alta cocina', t: 'alta cocina michelin capricho elegante', r: 4.7, p: 'CHF 150+', a: 'Junto al lago', d: 'Estrellas Michelin en el hotel Baur au Lac. Para un capricho; reserva con antelación.', ll: [47.3668, 8.5385] },
+  { n: 'Widder Restaurant', c: 'Alta cocina', t: 'alta cocina elegante capricho', r: 4.6, p: 'CHF 120+', a: 'Rennweg', d: 'Cocina de autor en el hotel Widder, en pleno casco antiguo.', ll: [47.3725, 8.5395] }
+];
+
+const FOOD_CHIPS = [
+  ['Suiza', 'suiza'], ['Fondue', 'fondue'], ['Raclette', 'raclette'], ['Barato', 'barato'], ['Rápido', 'rapido'],
+  ['Italiana / pizza', 'italiana|pizza'], ['Vegetariana', 'vegetariana'], ['Asiática / sushi', 'asiatica|japonesa|sushi|tailandesa'],
+  ['Hamburguesas', 'hamburguesa'], ['Pescado', 'pescado'], ['Café y dulces', 'cafe|dulces|chocolate'], ['Desayuno', 'desayuno|brunch'],
+  ['Española', 'espanola'], ['Alta cocina', 'alta cocina']
+];
+
+const SIGHTS = [
+  { n: 'Casco antiguo: Altstadt y Niederdorf', s: 10, a: 'Altstadt', d: 'Callejuelas medievales a ambos lados del río. Empieza en Rathaus, sube por Niederdorfstrasse y piérdete por Spiegelgasse y Napfgasse.', ll: [47.3725, 8.5442], h: 'Siempre abierto' },
+  { n: 'Lindenhof', s: 10, a: 'Altstadt', d: 'La colina del antiguo castro romano: la mejor vista del río, la Grossmünster y la Universidad. Precioso al atardecer.', ll: [47.3731, 8.5408], h: 'Siempre abierto · gratis' },
+  { n: 'Grossmünster y su torre', s: 9, a: 'Altstadt', d: 'Símbolo de Zúrich. Sube los 187 escalones de la torre Karlsturm para ver toda la ciudad y el lago.', ll: [47.3700, 8.5441], h: 'Torre aprox. CHF 5' },
+  { n: 'Fraumünster: vidrieras de Chagall', s: 9, a: 'Münsterhof', d: 'Cinco vidrieras de Marc Chagall en el coro. Mejor con luz de día.', ll: [47.3698, 8.5414], h: 'Entrada aprox. CHF 5' },
+  { n: 'Mercados navideños', s: 9, a: 'Varios', d: 'Wienachtsdorf en Sechseläutenplatz (el más bonito), Christkindlimarkt dentro de la estación central y mercadillos en Niederdorf y Münsterhof. Glühwein y raclette.', ll: [47.3660, 8.5465], h: 'Desde finales de noviembre' },
+  { n: 'Orilla del lago y Bürkliplatz', s: 9, a: 'Lago', d: 'Donde acaba la Bahnhofstrasse empieza el lago. Con día claro se ven los Alpes al fondo. Sigue por Utoquai hacia Zürichhorn.', ll: [47.3665, 8.5412], h: 'Siempre abierto' },
+  { n: 'Bahnhofstrasse iluminada', s: 8, a: 'Centro', d: 'La calle comercial más cara del mundo, de la estación al lago. En Navidad, con las luces «Lucy» colgando sobre la calle.', ll: [47.3720, 8.5390], h: 'Luces al anochecer' },
+  { n: 'Polyterrasse (ETH) con la Polybahn', s: 8, a: 'Central', d: 'Sube en el funicular rojo desde Central (2 min) a la terraza de la universidad ETH: vista panorámica sobre los tejados.', ll: [47.3764, 8.5476], h: 'Gratis la terraza' },
+  { n: 'Augustinergasse y Rennweg', s: 8, a: 'Altstadt', d: 'Las calles más fotogénicas: casas pintadas con miradores de madera (Erker).', ll: [47.3714, 8.5396] },
+  { n: 'Landesmuseum (Museo Nacional)', s: 8, a: 'Hauptbahnhof', d: 'Castillo de cuento junto a la estación con la historia de Suiza. Ideal si llueve.', ll: [47.3790, 8.5404], h: 'Mar–dom 10–17 · jue hasta 19' },
+  { n: 'Kunsthaus', s: 8, a: 'Heimplatz', d: 'El gran museo de arte: Munch, Monet, Chagall, Giacometti. Ampliación de Chipperfield.', ll: [47.3703, 8.5482], h: 'Mar–dom 10–18 · jue hasta 20' },
+  { n: 'Iglesia de St. Peter', s: 7, a: 'Altstadt', d: 'Tiene la esfera de reloj de iglesia más grande de Europa (8,7 m).', ll: [47.3712, 8.5404] },
+  { n: 'Schipfe', s: 7, a: 'Altstadt', d: 'El barrio más antiguo, pegado al río bajo Lindenhof. Talleres y casitas junto al agua.', ll: [47.3734, 8.5418] },
+  { n: 'Zürich West: Freitag, Im Viadukt, Prime Tower', s: 7, a: 'Kreis 5', d: 'El antiguo barrio industrial: torre de contenedores de Freitag, tiendas bajo los arcos del viaducto y vistas desde el bar Clouds (planta 35).', ll: [47.3854, 8.5292] },
+  { n: 'Árbol de Navidad que canta', s: 7, a: 'Werdmühleplatz', d: 'Coros sobre una gran grada en forma de árbol. Varias actuaciones cada tarde en temporada.', ll: [47.3738, 8.5378], h: 'Desde finales de noviembre' },
+  { n: 'Thermalbad & Spa Zürich', s: 7, a: 'Enge', d: 'Baños termales en las bodegas de una antigua cervecería, con piscina en la azotea con vistas. Ideal para el frío. Reserva.', ll: [47.3632, 8.5280] },
+  { n: 'Museo Rietberg', s: 7, a: 'Enge', d: 'Arte de Asia, África y América en una villa dentro de un parque.', ll: [47.3592, 8.5303], h: 'Mar–dom 10–17' },
+  { n: 'Spiegelgasse y Cabaret Voltaire', s: 6, a: 'Niederdorf', d: 'Aquí nació el dadaísmo y vivió Lenin. Callejón con mucho encanto.', ll: [47.3720, 8.5448] },
+  { n: 'FIFA Museum', s: 6, a: 'Enge', d: 'Museo del fútbol mundial, interactivo. Para futboleros.', ll: [47.3628, 8.5313] }
+];
+
+const NATURE = [
+  { n: 'Uetliberg', s: 10, a: '871 m', d: 'La montaña de Zúrich. Tren S10 desde la estación central (20 min, zona 110) y 10 min subiendo. Torre mirador. En noviembre suele haber mar de niebla abajo y sol arriba.', ll: [47.3497, 8.4915], h: 'Lleva calzado para barro' },
+  { n: 'Paseo del lago: Utoquai a Zürichhorn', s: 9, a: 'Seefeld', d: 'Unos 2 km llanos junto al agua, con cisnes, el parque Zürichhorn y vistas a los Alpes si está claro.', ll: [47.3590, 8.5490] },
+  { n: 'Sendero de los Planetas: Uetliberg – Felsenegg', s: 8, a: 'Cresta del Albis', d: 'Ruta fácil de 1 h 30 por la cresta. Bajas en el teleférico de Felsenegg a Adliswil y vuelves en S4. Fuera de zona 110: billete aparte.', ll: [47.3170, 8.5040] },
+  { n: 'Barco por el lago (ZSG)', s: 8, a: 'Bürkliplatz', d: 'Salidas desde Bürkliplatz. En invierno hay menos frecuencias; los barcos cortos entran en la zona 110.', ll: [47.3662, 8.5410], h: 'Horario de invierno' },
+  { n: 'Zoo de Zúrich y selva Masoala', s: 8, a: 'Zürichberg', d: 'Zoo grande con una selva tropical de Madagascar bajo techo: 25 °C aunque fuera haga frío. Tram 6 hasta Zoo.', ll: [47.3849, 8.5747], h: 'Abierto todos los días' },
+  { n: 'Jardín Botánico de la Universidad', s: 7, a: 'Seefeld', d: 'Gratis. Tres invernaderos de cúpula con plantas tropicales. Buen plan con frío.', ll: [47.3580, 8.5603], h: 'Gratis' },
+  { n: 'Zürichberg y Dolderbahn', s: 7, a: 'Hottingen', d: 'Funicular desde Römerhof hasta el Dolder. Bosques, miradores y, en invierno, la gran pista de hielo al aire libre del Dolder.', ll: [47.3735, 8.5740] },
+  { n: 'Mirador Rigiblick', s: 6, a: 'Oberstrass', d: 'Funicular corto hasta un mirador sobre toda la ciudad y el lago. Poca gente.', ll: [47.3889, 8.5530] },
+  { n: 'Sukkulenten-Sammlung', s: 6, a: 'Mythenquai', d: 'Gratis. Colección enorme de cactus y suculentas en invernaderos junto al lago.', ll: [47.3573, 8.5368], h: 'Gratis' },
+  { n: 'Arboretum', s: 6, a: 'Mythenquai', d: 'Parque con árboles junto al lago, en la orilla oeste. Bonito paseo hacia el Rietberg.', ll: [47.3615, 8.5375] },
+  { n: 'Chinagarten', s: 5, a: 'Zürichhorn', d: 'Jardín chino regalo de Kunming. En invierno suele estar cerrado; se ve desde fuera al pasear por Zürichhorn.', ll: [47.3548, 8.5523], h: 'Cerrado en invierno' },
+  { n: 'Platzspitz', s: 5, a: 'Hauptbahnhof', d: 'Parque en la punta donde se unen el Limmat y el Sihl, detrás del Landesmuseum.', ll: [47.3812, 8.5410] }
+];
+
+const MONUMENTS = [
+  { n: 'Grossmünster', s: 10, a: 'Altstadt', d: 'Iglesia románica de dos torres, punto de partida de la Reforma de Zwingli. Puertas de bronce y cripta.', ll: [47.3700, 8.5441] },
+  { n: 'Fraumünster', s: 9, a: 'Münsterhof', d: 'Fundada en el 853. Vidrieras de Chagall y Giacometti.', ll: [47.3698, 8.5414] },
+  { n: 'St. Peter', s: 8, a: 'Altstadt', d: 'La iglesia parroquial más antigua, con la mayor esfera de reloj de Europa.', ll: [47.3712, 8.5404] },
+  { n: 'Lindenhof', s: 8, a: 'Altstadt', d: 'Restos del castro romano Turicum y palacio carolingio. Hoy plaza con tilos y vistas.', ll: [47.3731, 8.5408] },
+  { n: 'Landesmuseum', s: 8, a: 'Hauptbahnhof', d: 'Edificio neogótico de 1898 con aspecto de castillo, el gran museo nacional.', ll: [47.3790, 8.5404] },
+  { n: 'Rathaus (Ayuntamiento)', s: 7, a: 'Limmatquai', d: 'Edificio barroco de 1698 construido sobre el propio río.', ll: [47.3717, 8.5428] },
+  { n: 'Wasserkirche y estatua de Zwingli', s: 7, a: 'Limmatquai', d: 'Iglesia gótica sobre la antigua isla donde martirizaron a los patronos de la ciudad.', ll: [47.3693, 8.5433] },
+  { n: 'Casas gremiales del Limmatquai', s: 7, a: 'Limmatquai', d: 'Haus zum Rüden, Zimmerleuten, Saffran: fachadas de los antiguos gremios a lo largo del río.', ll: [47.3712, 8.5434] },
+  { n: 'Estación central y estatua de Alfred Escher', s: 7, a: 'Hauptbahnhof', d: 'Gran estación de 1871. En el vestíbulo cuelga el «Ángel guardián» de Niki de Saint Phalle.', ll: [47.3779, 8.5403] },
+  { n: 'Edificio principal de la ETH', s: 7, a: 'Universitätstrasse', d: 'Obra de Gottfried Semper; donde estudió Einstein. Cúpula y terraza con vistas.', ll: [47.3764, 8.5480] },
+  { n: 'Opernhaus', s: 7, a: 'Sechseläutenplatz', d: 'Teatro de la Ópera de 1891, junto al lago.', ll: [47.3653, 8.5469] },
+  { n: 'Kunsthaus (edificios Moser y Chipperfield)', s: 6, a: 'Heimplatz', d: 'Dos edificios que dialogan a ambos lados de la plaza; la puerta del Infierno de Rodin está en la fachada.', ll: [47.3703, 8.5482] },
+  { n: 'Universidad de Zúrich', s: 6, a: 'Rämistrasse', d: 'Edificio con torre de 1914; su patio interior es espectacular.', ll: [47.3745, 8.5490] },
+  { n: 'Predigerkirche', s: 6, a: 'Niederdorf', d: 'Iglesia gótica con la torre más alta del casco antiguo.', ll: [47.3742, 8.5450] },
+  { n: 'Pavillon Le Corbusier', s: 5, a: 'Zürichhorn', d: 'Último edificio de Le Corbusier, de acero y cristal de colores. Temporada hasta finales de noviembre: comprueba si está abierto.', ll: [47.3560, 8.5516] }
+];
+
+const SHOPS = [
+  { n: 'Coop y Migros de la estación central (Shopville)', g: 'super', s: 10, sun: 1, a: 'Hauptbahnhof', d: 'Los supermercados salvavidas: abren todos los días hasta tarde, domingo incluido.', ll: [47.3775, 8.5400] },
+  { n: 'Supermercados de la estación Stadelhofen', g: 'super', s: 8, sun: 1, a: 'Stadelhofen', d: 'Tiendas de estación con horario amplio, también el domingo. Útil en la zona del lago y la Ópera.', ll: [47.3667, 8.5486] },
+  { n: 'Migros City', g: 'super', s: 8, a: 'Löwenstrasse', d: 'Gran Migros en varias plantas. Lunes a sábado.', ll: [47.3747, 8.5363] },
+  { n: 'Coop City St. Annahof', g: 'super', s: 8, a: 'Bahnhofstrasse', d: 'Supermercado en la planta baja de unos grandes almacenes. Lunes a sábado.', ll: [47.3730, 8.5382] },
+  { n: 'Globus (sótano gourmet)', g: 'super', s: 7, a: 'Löwenplatz', d: 'Grandes almacenes con un delicatessen caro pero muy bueno para regalos.', ll: [47.3745, 8.5375] },
+  { n: 'Confiserie Sprüngli Paradeplatz', g: 'choco', s: 10, a: 'Paradeplatz', d: 'Luxemburgerli, trufas y bombones. El regalo clásico de Zúrich.', ll: [47.3697, 8.5394] },
+  { n: 'Läderach', g: 'choco', s: 9, a: 'Bahnhofstrasse', d: 'Chocolate fresco en placas enormes que cortan al peso.', ll: [47.3758, 8.5390] },
+  { n: 'Max Chocolatier', g: 'choco', s: 8, a: 'Altstadt', d: 'Chocolatería artesana pequeña, bombones de temporada.', ll: [47.3718, 8.5413] },
+  { n: 'Teuscher', g: 'choco', s: 7, a: 'Altstadt', d: 'Famosos por las trufas de champán.', ll: [47.3708, 8.5410] },
+  { n: 'Shopville (debajo de la estación)', g: 'compras', s: 9, sun: 1, a: 'Hauptbahnhof', d: 'Unas 200 tiendas bajo la estación, abiertas también el domingo.', ll: [47.3779, 8.5403] },
+  { n: 'Bahnhofstrasse', g: 'compras', s: 8, a: 'Centro', d: 'Relojes, joyas y grandes marcas. De la estación a Paradeplatz.', ll: [47.3720, 8.5390] },
+  { n: 'Niederdorfstrasse', g: 'compras', s: 7, a: 'Niederdorf', d: 'Souvenirs, navajas suizas, tiendas pequeñas y bares.', ll: [47.3735, 8.5443] },
+  { n: 'Im Viadukt', g: 'compras', s: 7, a: 'Zürich West', d: 'Tiendas de diseño local bajo los arcos del viaducto del tren.', ll: [47.3870, 8.5268] },
+  { n: 'Freitag Flagship Store', g: 'compras', s: 7, a: 'Zürich West', d: 'Torre de contenedores: bolsos hechos con lonas de camión. Sube arriba a ver las vías.', ll: [47.3854, 8.5292] },
+  { n: 'Bahnhof Apotheke (farmacia)', g: 'servicios', s: 10, sun: 1, a: 'Hauptbahnhof', d: 'Farmacia abierta todos los días de 7:00 a 24:00.', ll: [47.3776, 8.5395] },
+  { n: 'Oficina de turismo', g: 'servicios', s: 8, sun: 1, a: 'Hauptbahnhof', d: 'Dentro de la estación central. Mapas, Zürich Card y entradas.', ll: [47.3778, 8.5398] },
+  { n: 'Consigna y cambio SBB', g: 'servicios', s: 7, sun: 1, a: 'Hauptbahnhof', d: 'Taquillas para maletas y cambio de moneda en la estación central.', ll: [47.3780, 8.5405] },
+  { n: 'Correos Sihlpost', g: 'servicios', s: 5, a: 'Kasernenstrasse', d: 'Oficina de correos grande junto a la estación, con horario amplio.', ll: [47.3770, 8.5320] }
+];
+const SHOP_GROUPS = [['todo', 'Todo'], ['super', 'Supermercados'], ['domingo', 'Abre domingo'], ['choco', 'Chocolate'], ['compras', 'Compras'], ['servicios', 'Farmacia y servicios']];
+
+const TRANSPORT = [
+  { n: 'Zürich HB (estación central)', s: 10, a: 'Trams 3, 4, 6, 7, 10, 11, 13, 14 y más', d: 'Trenes a todo el país, aeropuerto (10–13 min), S10 al Uetliberg (andenes subterráneos) y S8 a Kilchberg para Lindt.', ll: [47.3779, 8.5403] },
+  { n: 'Paradeplatz (tram)', s: 9, a: 'Trams 2, 6, 7, 8, 9, 11, 13', d: 'Cruce de trams en plena Bahnhofstrasse, junto a Sprüngli.', ll: [47.3697, 8.5390] },
+  { n: 'Bellevue (tram)', s: 9, a: 'Trams 2, 4, 5, 8, 9, 11, 15', d: 'Junto al lago y la Ópera. Para Sternen Grill, Kronenhalle y el mercado navideño.', ll: [47.3670, 8.5450] },
+  { n: 'Central (tram) y Polybahn', s: 9, a: 'Trams 3, 4, 6, 7, 10, 15', d: 'Al otro lado del río desde la estación. Aquí sale el funicular Polybahn a la ETH.', ll: [47.3767, 8.5440] },
+  { n: 'Stadelhofen', s: 8, a: 'S-Bahn y trams', d: 'Estación del lado del lago este, cerca de Bellevue, la Ópera y el Kunsthaus.', ll: [47.3667, 8.5486] },
+  { n: 'Bürkliplatz (barcos y trams)', s: 8, a: 'Trams 2, 5, 8, 9, 11', d: 'Embarcadero de los barcos del lago, al final de la Bahnhofstrasse.', ll: [47.3667, 8.5413] },
+  { n: 'Flughafen (aeropuerto)', s: 8, a: 'Zona 121', d: 'Trenes cada pocos minutos a la estación central. El billete necesita las zonas 110 y 121.', ll: [47.4502, 8.5622] },
+  { n: 'Enge', s: 7, a: 'S-Bahn', d: 'Para el FIFA Museum, Rietberg, el Thermalbad y la orilla oeste.', ll: [47.3640, 8.5314] },
+  { n: 'Stauffacher (tram)', s: 7, a: 'Trams 2, 3, 8, 9, 14', d: 'Puerta a la Langstrasse y Kreis 4.', ll: [47.3733, 8.5290] },
+  { n: 'Hardbrücke', s: 7, a: 'S-Bahn', d: 'Zürich West: Prime Tower, Viadukt, Freitag.', ll: [47.3851, 8.5170] },
+  { n: 'Selnau', s: 6, a: 'S4 y S10', d: 'Estación subterránea; la S10 al Uetliberg también para aquí.', ll: [47.3717, 8.5315] },
+  { n: 'Uetliberg', s: 6, a: 'Final de la S10', d: 'Estación de la montaña, a 10 min a pie de la cima.', ll: [47.3520, 8.4880] },
+  { n: 'Kilchberg', s: 6, a: 'S8', d: 'Para el Lindt Home of Chocolate (5 min a pie). Fuera de la zona 110.', ll: [47.3236, 8.5459] },
+  { n: 'Dolderbahn (funicular)', s: 5, a: 'Desde Römerhof', d: 'Sube al Dolder: bosque, hotel y pista de hielo.', ll: [47.3657, 8.5620] },
+  { n: 'Oerlikon', s: 5, a: 'S-Bahn y trenes', d: 'Gran estación del norte, Hallenstadion.', ll: [47.4115, 8.5440] },
+  { n: 'Wiedikon', s: 4, a: 'S-Bahn', d: 'Barrio residencial al suroeste del centro.', ll: [47.3714, 8.5236] },
+  { n: 'Altstetten', s: 4, a: 'S-Bahn y trenes', d: 'Oeste de la ciudad.', ll: [47.3912, 8.4891] }
+];
+
+const ZONES = [
+  ['Hauptbahnhof (estación central)', 47.3779, 8.5402], ['Central', 47.3767, 8.5440], ['Bellevue', 47.3670, 8.5450], ['Paradeplatz', 47.3697, 8.5390],
+  ['Stadelhofen', 47.3667, 8.5486], ['Niederdorf (casco antiguo)', 47.3735, 8.5443], ['Stauffacher', 47.3733, 8.5290], ['Helvetiaplatz / Langstrasse', 47.3760, 8.5260],
+  ['Limmatplatz', 47.3845, 8.5310], ['Escher-Wyss-Platz', 47.3910, 8.5220], ['Hardbrücke', 47.3851, 8.5170], ['Albisriederplatz', 47.3780, 8.5100],
+  ['Wiedikon', 47.3714, 8.5236], ['Enge', 47.3640, 8.5314], ['Wollishofen', 47.3460, 8.5310], ['Kreuzplatz (Seefeld)', 47.3637, 8.5560],
+  ['Römerhof (Hottingen)', 47.3657, 8.5620], ['Hegibachplatz', 47.3600, 8.5640], ['ETH / Universidad', 47.3764, 8.5476], ['Rigiblick / Oberstrass', 47.3889, 8.5530],
+  ['Schaffhauserplatz', 47.3907, 8.5410], ['Wipkingen', 47.3930, 8.5290], ['Milchbuck', 47.3962, 8.5450], ['Oerlikon', 47.4115, 8.5440],
+  ['Altstetten', 47.3912, 8.4891], ['Triemli', 47.3680, 8.4950], ['Zoo / Zürichberg', 47.3849, 8.5747], ['Aeropuerto', 47.4502, 8.5622]
+];
+
+const LINDT = { n: 'Lindt Home of Chocolate', ll: [47.3185, 8.5498] };
+
+/* ---------- Utilidades ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const fmt1 = n => n.toFixed(1).replace('.', ',');
+
+let home = store.get('zh-home', null);           // { lat, lng, label }
+let originMode = store.get('zh-origin', 'home');  // 'home' | 'here'
+let here = null;
+let watchId = null;
+
+function haversine(a, b) {
+  const R = 6371, toR = x => x * Math.PI / 180;
+  const dLat = toR(b[0] - a[0]), dLng = toR(b[1] - a[1]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a[0])) * Math.cos(toR(b[0])) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function origin() {
+  if (originMode === 'here' && here) return here;
+  if (home) return [home.lat, home.lng];
+  return null;
+}
+function walk(ll, from = origin()) {
+  if (!from) return null;
+  const km = haversine(from, ll) * 1.25; // las calles no van en línea recta
+  return { km, min: Math.max(1, Math.round(km / 4.8 * 60)) };
+}
+function walkText(w) {
+  if (!w) return '';
+  const t = w.min >= 60 ? `${Math.floor(w.min / 60)} h ${w.min % 60} min` : `${w.min} min`;
+  return `${t} a pie · ${w.km < 1 ? Math.round(w.km * 1000) + ' m' : fmt1(w.km) + ' km'}`;
+}
+const WALK_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="13.5" cy="4" r="2"/><path d="M10 8.5 7 10v4h2v-2.7l1.4-.7-1.6 8.4H11l1-4.6 2 2V22h2v-6.4l-2.2-2.2.7-3.3A6 6 0 0 0 18 12v-2a4 4 0 0 1-3.4-2l-1-1.6A2 2 0 0 0 12 5.5c-.3 0-.6.1-.9.2z"/></svg>';
+
+function distHTML(ll) {
+  const w = walk(ll);
+  if (!w) return `<a class="dist none" href="#casa">Guarda tu piso para ver distancias</a>`;
+  const far = w.min > 35 ? ' <span class="tag warn">mejor en tram</span>' : '';
+  return `<span class="dist">${WALK_SVG}${esc(walkText(w))}</span>${far}`;
+}
+const appleWalk = (ll, name) => `https://maps.apple.com/?daddr=${ll[0]},${ll[1]}&dirflg=w&q=${encodeURIComponent(name)}`;
+const gmaps = name => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ', Zürich')}`;
+
+function actionsHTML(item, q) {
+  return `<div class="actions">
+    <a class="btn primary" href="${appleWalk(item.ll, item.n)}" target="_blank" rel="noopener">Ir</a>
+    <a class="btn" href="${gmaps(q || item.n)}" target="_blank" rel="noopener">Google Maps</a>
+  </div>`;
+}
+
+function sortBy(items, mode, key) {
+  const arr = items.slice();
+  if (mode === 'dist' && origin()) {
+    arr.sort((a, b) => haversine(origin(), a.ll) - haversine(origin(), b.ll));
+  } else {
+    arr.sort((a, b) => b[key] - a[key] || a.n.localeCompare(b.n));
+  }
+  return arr;
+}
+function interestLabel(s) {
+  return s >= 9 ? 'Imprescindible' : s >= 7 ? 'Muy recomendable' : s >= 5 ? 'Si hay tiempo' : 'Opcional';
+}
+
+/* ---------- Comer ---------- */
+const foodState = { q: '', chip: '', sort: 'rating' };
+function chipMatches(item, chip) {
+  if (!chip) return true;
+  const tags = norm(item.c + ' ' + item.t);
+  return chip.split('|').some(p => tags.includes(norm(p)));
+}
+function foodMatches(item, q) {
+  if (!q) return true;
+  const hay = norm([item.n, item.c, item.t, item.a, item.d].join(' '));
+  const words = norm(q).split(/[\s,]+/).filter(Boolean);
+  // Tienen que coincidir todas las palabras escritas; cada palabra admite plural y sinónimos.
+  return words.every(w => {
+    const base = w.length > 4 && w.endsWith('s') ? w.slice(0, -1) : w;
+    const alias = { burger: 'hamburguesa', hamburguesas: 'hamburguesa', comida: '', restaurante: '', suizo: 'suiza', italiano: 'italiana', japones: 'japonesa', vegano: 'vegana', vegetariano: 'vegetariana', pez: 'pescado', mariscos: 'marisco', cafeteria: 'cafe', postre: 'dulces', chino: 'asiatica', thai: 'tailandesa', tapa: 'tapas', espanol: 'espanola', economico: 'barato', barata: 'barato' }[base];
+    if (alias === '') return true;
+    return hay.includes(base) || (alias && hay.includes(alias));
+  });
+}
+function renderFood() {
+  const list = FOOD.filter(f => chipMatches(f, foodState.chip) && foodMatches(f, foodState.q));
+  const sorted = sortBy(list, foodState.sort, 'r');
+  const label = [foodState.chipLabel, foodState.q].filter(Boolean).join(' + ');
+  $('#food-count').textContent = `${sorted.length} ${sorted.length === 1 ? 'sitio' : 'sitios'}${label ? ' · ' + label : ''}`;
+  $('#food-list').innerHTML = sorted.length ? sorted.map((f, i) => `
+    <article class="card">
+      <div class="card-top">
+        <span class="rank">${i + 1}</span>
+        <div style="min-width:0">
+          <h3>${esc(f.n)}</h3>
+          <div class="meta">${esc(f.c)} · ${esc(f.a)} · ${esc(f.p)}</div>
+        </div>
+        <div class="score"><div class="stars">${fmt1(f.r)} ★</div></div>
+      </div>
+      <p class="note">${esc(f.d)}</p>
+      ${f.top ? '<div class="tags"><span class="tag hot">Recomendado</span></div>' : ''}
+      <div class="card-foot">${distHTML(f.ll)}${actionsHTML(f)}</div>
+    </article>`).join('') : `<div class="empty">No tengo nada guardado para «${esc(label)}». Prueba con otra palabra o búscalo en <a href="${gmaps((foodState.q || foodState.chipLabel || '') + ' restaurant')}" target="_blank" rel="noopener">Google Maps</a>.</div>`;
+  document.querySelectorAll('#food-chips .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.q === foodState.chip)));
+}
+
+/* ---------- Listas con interés ---------- */
+const listState = { ver: 'score', naturaleza: 'score', monumentos: 'score', transporte: 'score', tiendas: 'score' };
+function renderScored(key, items, opts = {}) {
+  const sorted = sortBy(items, listState[key], 's');
+  $(`#${key}-count`).textContent = `${sorted.length} sitios`;
+  $(`#${key}-list`).innerHTML = sorted.map((it, i) => `
+    <article class="card">
+      <div class="card-top">
+        <span class="rank">${i + 1}</span>
+        <div style="min-width:0">
+          <h3>${esc(it.n)}</h3>
+          <div class="meta">${esc(it.a)}${it.h ? ' · ' + esc(it.h) : ''}</div>
+        </div>
+        ${opts.noScore ? '' : `<div class="score"><div class="interest">${it.s}/10<small>${interestLabel(it.s)}</small></div></div>`}
+      </div>
+      <p class="note">${esc(it.d)}</p>
+      <div class="card-foot">${distHTML(it.ll)}${actionsHTML(it)}</div>
+    </article>`).join('');
+}
+
+/* ---------- Tiendas ---------- */
+let shopGroup = 'todo';
+function renderShops() {
+  const items = SHOPS.filter(s => shopGroup === 'todo' || (shopGroup === 'domingo' ? s.sun : s.g === shopGroup));
+  const sorted = sortBy(items, listState.tiendas, 's');
+  $('#shop-count').textContent = `${sorted.length} sitios`;
+  $('#shop-list').innerHTML = sorted.map(it => `
+    <article class="card">
+      <div class="card-top">
+        <div style="min-width:0">
+          <h3>${esc(it.n)}</h3>
+          <div class="meta">${esc(it.a)}</div>
+        </div>
+      </div>
+      <p class="note">${esc(it.d)}</p>
+      <div class="tags">${it.sun ? '<span class="tag ok">Abre domingo</span>' : '<span class="tag">Cerrado domingo</span>'}</div>
+      <div class="card-foot">${distHTML(it.ll)}${actionsHTML(it)}</div>
+    </article>`).join('');
+  document.querySelectorAll('#shop-chips .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.g === shopGroup)));
+}
+
+/* ---------- Lindt ---------- */
+function renderLindt() {
+  const w = walk(LINDT.ll);
+  $('#lindt-box').innerHTML = `
+    <div class="panel lindt-hero">
+      <div class="meta">Kilchberg · a 15–25 min del centro</div>
+      <h3>Lindt Home of Chocolate</h3>
+      <p>El museo del chocolate de Lindt: historia del cacao, fuente de chocolate de 9 m, degustación libre al final y la tienda Lindt más grande del mundo.</p>
+      <div class="row">
+        <a class="btn primary" href="https://www.lindt-home-of-chocolate.com" target="_blank" rel="noopener">Comprar entradas</a>
+        <a class="btn" href="https://maps.apple.com/?daddr=${LINDT.ll[0]},${LINDT.ll[1]}&dirflg=r&q=Lindt%20Home%20of%20Chocolate" target="_blank" rel="noopener">Cómo llegar en tren</a>
+        <a class="btn" href="${gmaps('Lindt Home of Chocolate Kilchberg')}" target="_blank" rel="noopener">Google Maps</a>
+      </div>
+      ${w ? `<div class="meta">Desde ${originMode === 'here' && here ? 'aquí' : 'tu piso'}: ${esc(walkText(w))} (mejor en tren)</div>` : ''}
+    </div>
+    <div class="panel">
+      <h3>Lo esencial</h3>
+      <dl class="kv">
+        <dt>Horario</dt><dd>Todos los días, 10:00–18:00 (última entrada aprox. 17:00)</dd>
+        <dt>Entrada</dt><dd>Aprox. CHF 15–20 adultos. Compra online con hora: el fin de semana se agota.</dd>
+        <dt>Duración</dt><dd>1 a 1,5 h el museo, más el tiempo de tienda y café</dd>
+        <dt>Dirección</dt><dd>Schokoladenplatz 1, 8802 Kilchberg</dd>
+      </dl>
+    </div>
+    <div class="panel">
+      <h3>Cómo ir</h3>
+      <ul class="clean">
+        <li><b>Tren S8</b> desde Zürich HB (también para en Enge) hasta <b>Kilchberg</b>: unos 10 min, luego 5 min andando cuesta abajo.</li>
+        <li><b>Bus</b> por la orilla del lago desde Bürkliplatz: más lento pero con vistas. La app SBB te dice cuál pasa antes.</li>
+        <li><b>Billete:</b> Kilchberg está fuera de la zona 110. Compra el billete para «Kilchberg ZH» en la app SBB o usa FAIRTIQ, que calcula solo.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Consejos</h3>
+      <ul class="clean">
+        <li>Ve a primera hora (10:00) o después de las 15:00 para evitar grupos, sobre todo sábado y domingo.</li>
+        <li>La degustación del final es libre: no comas mucho antes.</li>
+        <li>En la tienda, las bolsas de Lindor para rellenar a tu gusto salen más baratas que en España.</li>
+        <li>Los talleres de chocolate (Chocolateria) se reservan aparte y se llenan pronto.</li>
+      </ul>
+    </div>
+    <p class="sub">Más chocolate en la ciudad</p>
+    <div class="list">${SHOPS.filter(s => s.g === 'choco').map(it => `
+      <article class="card">
+        <div class="card-top"><div style="min-width:0"><h3>${esc(it.n)}</h3><div class="meta">${esc(it.a)}</div></div></div>
+        <p class="note">${esc(it.d)}</p>
+        <div class="card-foot">${distHTML(it.ll)}${actionsHTML(it)}</div>
+      </article>`).join('')}</div>`;
+}
+
+/* ---------- Útil ---------- */
+function renderUtil() {
+  const tel = (n, l) => `<a class="phone" href="tel:${n}"><b>${n}</b><span>${l}</span></a>`;
+  $('#util-box').innerHTML = `
+    <div class="panel">
+      <h3>Emergencias</h3>
+      <div class="phones">
+        ${tel('112', 'Emergencias general')}${tel('144', 'Ambulancia')}${tel('117', 'Policía')}${tel('118', 'Bomberos')}${tel('145', 'Intoxicaciones')}${tel('1414', 'Rescate aéreo Rega')}
+      </div>
+      <p class="msg">Farmacia abierta todos los días hasta medianoche: Bahnhof Apotheke, en la estación central.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Plan para estos días</h3>
+      <div>
+        <div class="day"><div class="d">Mié 25<small>tarde</small></div><div>Llegada. Bahnhofstrasse iluminada, Lindenhof al atardecer, Niederdorf y cena de raclette o fondue. Mercado navideño de Sechseläutenplatz.</div></div>
+        <div class="day"><div class="d">Jue 26</div><div>Casco antiguo: Fraumünster (Chagall), St. Peter, Grossmünster y su torre. Comida en Zunfthaus zur Waag o Zeughauskeller. Tarde: Lindt Home of Chocolate.</div></div>
+        <div class="day"><div class="d">Vie 27</div><div>Uetliberg por la mañana si hay sol o mar de niebla. Comida en el Viadukt, torre Freitag y Zürich West. Tarde en el Landesmuseum. Noche por la Langstrasse.</div></div>
+        <div class="day"><div class="d">Sáb 28</div><div>Paseo del lago hasta Zürichhorn, Kunsthaus, Polybahn a la Polyterrasse al atardecer. Compras: las tiendas cierran el sábado entre las 18 y las 20.</div></div>
+        <div class="day"><div class="d">Dom 29</div><div>Casi todo cerrado: zoo y Masoala, Thermalbad o Rietberg. Compras de última hora en Shopville (estación central).</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Transporte</h3>
+      <ul class="clean">
+        <li>Toda la ciudad es la <b>zona 110</b>. Un billete vale para tram, bus, S-Bahn, barco y funiculares.</li>
+        <li>Billete de 24 h zona 110 aprox. CHF 9. La <b>Zürich Card</b> (aprox. CHF 29 por 24 h, CHF 56 por 72 h) incluye transporte, aeropuerto y descuentos en museos.</li>
+        <li>App <b>FAIRTIQ</b>: deslizas al subir y al bajar y te cobra el billete más barato del día.</li>
+        <li>App <b>SBB Mobile</b> para horarios y billetes de tren (Lindt, aeropuerto).</li>
+        <li>Aeropuerto ↔ estación central: tren cada pocos minutos, 10–13 min. Necesitas zonas 110 + 121.</li>
+        <li>No hay tornos: hay revisores y la multa es de unos CHF 100. Compra siempre antes de subir.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Horarios y domingo</h3>
+      <ul class="clean">
+        <li>Tiendas: lunes a viernes 9–20 h aprox., sábado hasta 18–20 h.</li>
+        <li><b>El domingo cierra casi todo.</b> Abren las tiendas de las estaciones (HB, Stadelhofen), el aeropuerto, museos y restaurantes.</li>
+        <li>Cocinas de restaurante: mediodía 11:30–14:00 y cena 18:00–22:00. Fuera de eso, cafés o la estación.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Dinero, tiempo y enchufes</h3>
+      <dl class="kv">
+        <dt>Moneda</dt><dd>Francos suizos (CHF). Tarjeta y Apple Pay en casi todo. Algunos aceptan euros, con mal cambio.</dd>
+        <dt>Propina</dt><dd>Incluida. Si te gusta, redondea un 5–10 %.</dd>
+        <dt>Tiempo</dt><dd>Finales de noviembre: 0–7 °C, posible lluvia o niebla. Anochece hacia las 16:45. Ropa de capas y calzado impermeable.</dd>
+        <dt>Enchufes</dt><dd>Tipo J. El cargador plano de 2 patas (como el del iPhone) entra; el enchufe redondo grueso español no: lleva adaptador.</dd>
+        <dt>Agua</dt><dd>Las más de 1.200 fuentes de la ciudad son de agua potable. Rellena la botella.</dd>
+        <dt>Baños</dt><dd>Baños públicos «Züri WC» gratuitos; los de la estación central son de pago.</dd>
+      </dl>
+    </div>
+
+    <div class="panel">
+      <h3>Frases básicas</h3>
+      <div>
+        <div class="phrase"><b>Grüezi</b><span>Hola (de usted)</span></div>
+        <div class="phrase"><b>Hoi / Sali</b><span>Hola (informal)</span></div>
+        <div class="phrase"><b>Merci vielmal</b><span>Muchas gracias</span></div>
+        <div class="phrase"><b>Ich hätte gern…</b><span>Querría…</span></div>
+        <div class="phrase"><b>Zahlen, bitte</b><span>La cuenta, por favor</span></div>
+        <div class="phrase"><b>Uf Widerluege</b><span>Adiós</span></div>
+        <div class="phrase"><b>Sprechen Sie Englisch?</b><span>¿Habla inglés? (casi todos sí)</span></div>
+      </div>
+    </div>`;
+}
+
+/* ---------- Casa ---------- */
+function saveHome(lat, lng, label, source) {
+  const name = $('#home-name').value.trim();
+  home = { lat: +lat, lng: +lng, label: name || label || 'Mi piso', source: source || '' };
+  store.set('zh-home', home);
+  if (originMode !== 'here') setOrigin('home');
+  renderAll();
+}
+function renderHome() {
+  const st = $('#home-status');
+  if (!home) {
+    st.innerHTML = `<div class="home-status"><div class="pin">${PIN_SVG}</div><div><b>Aún no has guardado el piso</b><span class="msg">Busca la dirección abajo o pulsa «Estoy en el piso» cuando llegues.</span></div></div>`;
+    $('#near-box').innerHTML = '';
+    return;
+  }
+  st.innerHTML = `
+    <div class="home-status"><div class="pin">${PIN_SVG}</div>
+      <div style="min-width:0"><b>${esc(home.label)}</b><span class="msg">${esc(home.source || '')} ${home.lat.toFixed(5)}, ${home.lng.toFixed(5)}</span></div>
+    </div>
+    <div class="row">
+      <a class="btn primary big" href="https://maps.apple.com/?daddr=${home.lat},${home.lng}&dirflg=w&q=${encodeURIComponent(home.label)}" target="_blank" rel="noopener">Volver a casa andando</a>
+      <a class="btn big" href="https://maps.apple.com/?daddr=${home.lat},${home.lng}&dirflg=r&q=${encodeURIComponent(home.label)}" target="_blank" rel="noopener">En tram</a>
+      <button type="button" class="btn big" id="home-del">Borrar</button>
+    </div>`;
+  $('#home-del').onclick = () => { home = null; store.set('zh-home', null); renderAll(); };
+
+  const from = [home.lat, home.lng];
+  const near = (items, k = 4) => items.slice().sort((a, b) => haversine(from, a.ll) - haversine(from, b.ll)).slice(0, k);
+  const block = (title, items) => `<div class="panel"><h3>${title}</h3><div class="mini">${items.map(it =>
+    `<a href="${appleWalk(it.ll, it.n)}" target="_blank" rel="noopener"><span>${esc(it.n)}</span><span>${esc(walkText(walk(it.ll, from)))}</span></a>`).join('')}</div></div>`;
+  $('#near-box').innerHTML = `<p class="sub">Lo más cerca de tu piso</p>` +
+    block('Para comer', near(FOOD, 5)) +
+    block('Supermercados', near(SHOPS.filter(s => s.g === 'super'), 3)) +
+    block('Estaciones y paradas', near(TRANSPORT, 3)) +
+    block('Qué ver', near(SIGHTS.concat(MONUMENTS), 4));
+}
+const PIN_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 3 10v11h6v-6h6v6h6V10z"/></svg>';
+
+async function searchAddress() {
+  const q = $('#addr').value.trim();
+  const msg = $('#addr-msg'), box = $('#addr-results');
+  box.innerHTML = '';
+  if (!q) { msg.className = 'msg err'; msg.textContent = 'Escribe la calle y el número.'; return; }
+  msg.className = 'msg'; msg.textContent = 'Buscando…';
+  const url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=ch&accept-language=es&viewbox=8.44,47.44,8.63,47.31&q=' + encodeURIComponent(/z(u|ü)rich/i.test(q) ? q : q + ', Zürich');
+  try {
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error('http');
+    const data = await res.json();
+    if (!data.length) { msg.className = 'msg err'; msg.textContent = 'No la encuentro. Revisa cómo se escribe (Strasse, Gasse, Weg…) o usa las otras opciones de abajo.'; return; }
+    msg.textContent = 'Toca la dirección correcta:';
+    data.forEach(r => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = r.display_name;
+      b.onclick = () => {
+        const short = r.display_name.split(',').slice(0, 2).join(',').trim();
+        saveHome(r.lat, r.lon, short, '');
+        box.innerHTML = ''; msg.className = 'msg ok'; msg.textContent = 'Guardado.';
+      };
+      box.appendChild(b);
+    });
+  } catch (e) {
+    msg.className = 'msg err';
+    msg.textContent = 'Aquí no puedo buscar direcciones (sin conexión o la página no lo permite). Pega las coordenadas o elige la zona más cercana abajo.';
+  }
+}
+function parseCoords(text) {
+  const m = String(text).match(/(4[5-8]\.\d+)\s*[,;\s]\s*(-?(?:[5-9]|10)\.\d+)/);
+  return m ? [parseFloat(m[1]), parseFloat(m[2])] : null;
+}
+
+/* ---------- Ubicación actual ---------- */
+function startHere(cb) {
+  const msgEl = $('#alt-msg');
+  if (!('geolocation' in navigator)) { if (cb) cb(null, 'Este navegador no da la ubicación.'); return; }
+  navigator.geolocation.getCurrentPosition(
+    p => { here = [p.coords.latitude, p.coords.longitude]; if (cb) cb(here); },
+    () => { if (cb) cb(null, 'No he podido leer tu ubicación. En el iPhone: Ajustes › Privacidad › Localización › Safari, y permite el acceso.'); },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
+  );
+  if (watchId === null && navigator.geolocation.watchPosition) {
+    try {
+      watchId = navigator.geolocation.watchPosition(p => { here = [p.coords.latitude, p.coords.longitude]; if (originMode === 'here') renderAll(); }, () => {}, { enableHighAccuracy: true, maximumAge: 30000 });
+    } catch (e) {}
+  }
+}
+function setOrigin(mode) {
+  originMode = mode;
+  store.set('zh-origin', mode);
+  $('#o-home').setAttribute('aria-pressed', String(mode === 'home'));
+  $('#o-here').setAttribute('aria-pressed', String(mode === 'here'));
+}
+
+/* ---------- Pestañas ---------- */
+const VIEWS = ['comer', 'ver', 'naturaleza', 'monumentos', 'lindt', 'tiendas', 'transporte', 'util', 'casa'];
+function show(view) {
+  if (!VIEWS.includes(view)) view = store.get('zh-tab', 'comer');
+  if (!VIEWS.includes(view)) view = 'comer';
+  VIEWS.forEach(v => { $('#v-' + v).hidden = v !== view; });
+  document.querySelectorAll('#tabs a').forEach(a => {
+    const on = a.getAttribute('href') === '#' + view;
+    if (on) { a.setAttribute('aria-current', 'page'); a.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+    else a.removeAttribute('aria-current');
+  });
+  store.set('zh-tab', view);
+  window.scrollTo(0, 0);
+}
+
+function renderAll() {
+  renderFood();
+  renderScored('ver', SIGHTS);
+  renderScored('naturaleza', NATURE);
+  renderScored('monumentos', MONUMENTS);
+  renderScored('transporte', TRANSPORT, { noScore: true });
+  renderShops();
+  renderLindt();
+  renderHome();
+}
+
+/* ---------- Eventos ---------- */
+function init() {
+  // Chips de comida
+  $('#food-chips').innerHTML = FOOD_CHIPS.map(([l, q]) => `<button type="button" class="chip" data-q="${esc(q)}" aria-pressed="false">${esc(l)}</button>`).join('');
+  $('#food-chips').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    const off = foodState.chip === c.dataset.q;
+    foodState.chip = off ? '' : c.dataset.q;
+    foodState.chipLabel = off ? '' : c.textContent;
+    renderFood();
+  });
+  $('#food-q').addEventListener('input', e => { foodState.q = e.target.value.trim(); renderFood(); });
+  $('#food-clear').addEventListener('click', () => { foodState.q = ''; foodState.chip = ''; foodState.chipLabel = ''; $('#food-q').value = ''; renderFood(); });
+
+  // Chips de tiendas
+  $('#shop-chips').innerHTML = SHOP_GROUPS.map(([g, l]) => `<button type="button" class="chip" data-g="${g}" aria-pressed="false">${esc(l)}</button>`).join('');
+  $('#shop-chips').addEventListener('click', e => { const c = e.target.closest('.chip'); if (!c) return; shopGroup = c.dataset.g; renderShops(); });
+
+  // Ordenación
+  document.querySelectorAll('.seg').forEach(seg => seg.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const view = seg.closest('section').id.slice(2);
+    if (b.dataset.sort === 'dist' && !origin()) { location.hash = '#casa'; $('#addr').focus(); return; }
+    seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    if (view === 'comer') { foodState.sort = b.dataset.sort; renderFood(); }
+    else { listState[view] = b.dataset.sort; view === 'tiendas' ? renderShops() : renderScored(view, { ver: SIGHTS, naturaleza: NATURE, monumentos: MONUMENTS, transporte: TRANSPORT }[view], { noScore: view === 'transporte' }); }
+  }));
+
+  // Origen de las distancias
+  $('#o-home').addEventListener('click', () => {
+    setOrigin('home');
+    if (!home) { location.hash = '#casa'; }
+    renderAll();
+  });
+  $('#o-here').addEventListener('click', () => {
+    setOrigin('here');
+    startHere((pos, err) => {
+      if (!pos) { setOrigin('home'); alertBar(err); }
+      renderAll();
+    });
+  });
+
+  // Casa
+  $('#zone').innerHTML = '<option value="">Elige una zona…</option>' + ZONES.map((z, i) => `<option value="${i}">${esc(z[0])}</option>`).join('');
+  $('#zone').addEventListener('change', e => {
+    const z = ZONES[e.target.value]; if (!z) return;
+    saveHome(z[1], z[2], 'Cerca de ' + z[0], 'Aproximado ·');
+    $('#alt-msg').className = 'msg ok'; $('#alt-msg').textContent = 'Guardado de forma aproximada. Cuando estés en el piso, pulsa «Estoy en el piso» para afinar.';
+  });
+  $('#addr-go').addEventListener('click', searchAddress);
+  $('#addr').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); searchAddress(); } });
+  $('#coords-go').addEventListener('click', () => {
+    const c = parseCoords($('#coords').value);
+    const m = $('#alt-msg');
+    if (!c) { m.className = 'msg err'; m.textContent = 'No encuentro coordenadas de Zúrich en ese texto. Deben parecerse a 47.3769, 8.5417.'; return; }
+    saveHome(c[0], c[1], 'Mi piso', '');
+    m.className = 'msg ok'; m.textContent = 'Guardado.';
+  });
+  $('#use-here').addEventListener('click', () => {
+    const m = $('#alt-msg'); m.className = 'msg'; m.textContent = 'Leyendo tu ubicación…';
+    startHere((pos, err) => {
+      if (!pos) { m.className = 'msg err'; m.textContent = err; return; }
+      saveHome(pos[0], pos[1], 'Mi piso', '');
+      m.className = 'msg ok'; m.textContent = 'Piso guardado en tu ubicación actual.';
+    });
+  });
+
+  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+  setOrigin(originMode === 'here' ? 'here' : 'home');
+  if (originMode === 'here') startHere(() => renderAll());
+  renderUtil();
+  renderAll();
+  show(location.hash.slice(1));
+}
+
+function alertBar(text) {
+  const m = $('#alt-msg');
+  if (m) { m.className = 'msg err'; m.textContent = text || ''; }
+  location.hash = '#casa';
+}
+
+init();
+
+// Funciona sin internet una vez instalada (solo en la versión publicada en GitHub Pages)
+if ('serviceWorker' in navigator && /github\.io$/.test(location.hostname)) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+})();
+</script>
+</body>
+</html>

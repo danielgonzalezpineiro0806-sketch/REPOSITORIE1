@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1546b8"/>
+  <path d="M136 96h240v150c0 84-58 136-120 170-62-34-120-86-120-170z" fill="#1546b8" stroke="#ffffff" stroke-width="18"/>
+  <path d="M136 96h240L136 368z" fill="#ffffff"/>
+  <text x="256" y="474" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="800" font-size="56" letter-spacing="6" fill="#ffffff">ZÜRICH</text>
+</svg>
